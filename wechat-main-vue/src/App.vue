@@ -1,0 +1,67 @@
+<template>
+  <div id="app">
+    <!-- <div id="nav">
+      <router-link to="/">Home</router-link>|
+      <router-link to="/about">About</router-link>
+    </div>-->
+    <router-view />
+  </div>
+</template>
+
+<style lang="stylus">
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* *@rem+vw布局  动态改变font-size的值
+ */
+html {
+  font-size: 16px;
+}
+
+@media screen and (min-width: 375px) {
+  html {
+    /* iPhone6的375px尺寸作为16px基准，414px正好18px大小, 600 20px */
+    font-size: calc(100% + 2 * (100vw - 375px) / 39);
+    font-size: calc(16px + 2 * (100vw - 375px) / 39);
+  }
+}
+
+@media screen and (min-width: 414px) {
+  html {
+    /* 414px-1000px每100像素宽字体增加1px(18px-22px) */
+    font-size: calc(112.5% + 4 * (100vw - 414px) / 586);
+    font-size: calc(18px + 4 * (100vw - 414px) / 586);
+  }
+}
+
+@media screen and (min-width: 600px) {
+  html {
+    /* 600px-1000px每100像素宽字体增加1px(20px-24px) */
+    font-size: calc(125% + 4 * (100vw - 600px) / 400);
+    font-size: calc(20px + 4 * (100vw - 600px) / 400);
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  html {
+    /* 1000px往后是每100像素0.5px增加 */
+    font-size: calc(137.5% + 6 * (100vw - 1000px) / 1000);
+    font-size: calc(22px + 6 * (100vw - 1000px) / 1000);
+  }
+}
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  width: 100%;
+  height: 100%;
+  // background-color: yellow;
+}
+</style>
