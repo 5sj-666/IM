@@ -38,7 +38,17 @@ export default {
   setup() {
     const launchFullScreen = () => {
       // console.log("切换全屏");
-      document.documentElement.webkitRequestFullscreen();
+      const element = document.documentElement;
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+      // document.documentElement.webkitRequestFullscreen();
     };
 
     const avatarUrl = require("../../assets/img/avatar.jpg");

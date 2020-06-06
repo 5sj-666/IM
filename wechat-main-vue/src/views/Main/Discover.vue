@@ -3,16 +3,16 @@
     <!-- Discover -->
     <section
       class="border-line_top border-line_bottom"
-      v-for="(discoverArr,index) in discoverList"
-      :style="{marginTop:index=='0'?0:0.5+'rem'}"
+      v-for="(discoverArr, index) in discoverList"
+      :style="{ marginTop: index == '0' ? 0 : 0.5 + 'rem' }"
       :key="index"
     >
       <so-cell
-        v-for="(item,index) in discoverArr"
+        v-for="(item, index) in discoverArr"
         :key="index"
         :name="item.name"
         :adTitle="item.adTitle"
-        :isLast="index == discoverArr.length-1 ? true : false"
+        :isLast="index == discoverArr.length - 1 ? true : false"
       >
         <template v-slot:default>
           <img style="width: 1.6rem;height: 1.6rem;" :src="item.icon" />

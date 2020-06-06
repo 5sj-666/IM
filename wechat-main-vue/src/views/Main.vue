@@ -7,87 +7,102 @@
         <div>添加</div>
       </div>
     </header>
+    <so-swiper @swipeEvent="swipeEvent($event,param)">
+      <template v-slot:firstItem>
+        <Chats></Chats>
+      </template>
+      <template v-slot:secondItem>
+        <Contacts></Contacts>
+      </template>
+      <template v-slot:thirdItem>
+        <Discover></Discover>
+      </template>
+      <template v-slot:fourthItem>
+        <Me></Me>
+      </template>
+    </so-swiper>
 
-    <Chats v-show="tabList[0].active"></Chats>
-
-    <Contacts v-show="tabList[1].active"></Contacts>
-
-    <Discover v-show="tabList[2].active"></Discover>
-
-    <Me v-show="tabList[3].active"></Me>
-
-    <footer class="main-tab">
-      <div
-        class="main-tab-item"
-        v-for="(tab,index) in tabList"
-        :key="index"
-        @click="changeTab(index)"
-      >
-        <!-- <img src="" alt=""> -->
-        <div
-          style="
-                box-sizing:border-box;
-                width: 1.52rem;
-                height: 1.52rem;
-                border: 1px solid #ddd;
-                "
-        ></div>
-        {{tab.name}}
-      </div>
-    </footer>
+    <main-tab :tabList="tabList" :swipeParam="swipeParam"></main-tab>
   </article>
 </template>
 
 <script>
-import { ref, reactive } from "vue";
+import { reactive, toRefs } from "vue";
+import SoSwiper from "../components/so-swiper";
 import Chats from "./Main/Chats";
 import Contacts from "./Main/Contacts";
 import Discover from "./Main/Discover";
 import Me from "./Main/Me";
+import MainTab from "../components/main-tab";
 
 export default {
   components: {
+    SoSwiper,
     Chats,
     Contacts,
     Discover,
-    Me
+    Me,
+    MainTab
   },
   setup() {
-    const content = ref("主页面内容");
-    // console.log("content:", content, "/n content value:", content.value);
+    let swipeParam = reactive({
+      progress: 0,
+      activeIndex: 0,
+      step: "panend"
+    });
+    function swipeEvent(param) {
+      swipeParam.progress = param.progress;
+      swipeParam.activeIndex = param.activeIndex;
+      swipeParam.activeIndex = param.activeIndex;
+      console.log("aaaa", param, swipeParam);
+    }
+
+    let colorManage = reactive({
+      MeColor: "#00f",
+      MeBg: "#00f"
+    });
+
+    setTimeout(() => {
+      colorManage.MeBg = "#0f0";
+      console.log("颜色转化", colorManage.MeBg);
+    }, 2000);
+    setTimeout(() => {
+      colorManage.MeBg = "#0ff";
+      console.log("颜色转化", colorManage.MeBg);
+    }, 4000);
 
     let tabList = reactive([
       {
         name: "微信",
-        active: false
+        icon: "CHATS",
+        iconColor: "#000",
+        iconBg: "#f00"
       },
       {
         name: "通讯录",
-        active: false
+        icon: "CONTACTS",
+        iconColor: "#000",
+        iconBg: "#f00"
       },
       {
         name: "发现",
-        active: false
+        icon: "DISCOVER",
+        iconColor: "#00f",
+        iconBg: "#f00"
       },
       {
         name: "我",
-        active: true
+        icon: "ME",
+        iconColor: "#000",
+        iconBg: "#f00"
       }
     ]);
 
-    function changeTab(index) {
-      // console.log("index", index);
-      for (let item of tabList) {
-        item.active = false;
-      }
-      tabList[index].active = true;
-      return index;
-    }
-
     return {
-      content,
+      swipeParam,
+      swipeEvent,
       tabList,
-      changeTab
+      ...toRefs(colorManage)
     };
   }
 };
@@ -108,11 +123,13 @@ export default {
 // $main-tab-border_color = #d6d6d6;
 .main-container {
   box-sizing: border-box;
-  padding-top: 3rem;
+  position: relative;
+  // padding-top: 3rem;
   position: relative;
   width: 100%;
   height: 100%;
   background: $main-background_primary;
+  overflow: hidden;
   user-select: none;
 
   .main-head {
@@ -142,45 +159,6 @@ export default {
       div {
         margin: 0 0.85rem;
       }
-    }
-  }
-
-  .main-tab {
-    box-sizing: border-box;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: space-around;
-    flex-direction: row;
-    width: 100%;
-    height: 3.26rem;
-    color: $main-tab-color;
-    font-size: 0.65rem;
-    background: $main-tab-bg;
-    z-index: 10;
-
-    &:after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      border-top: 1px solid $main-tab-border_color;
-      z-index: 100;
-      transform-origin: 0 0;
-      transform: scale(1, 0.25);
-    }
-
-    .main-tab-item {
-      box-sizing: border-box;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      flex-grow: 1;
-      min-width: 0;
-      height: 100%;
     }
   }
 }
