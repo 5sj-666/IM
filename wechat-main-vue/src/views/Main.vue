@@ -7,7 +7,7 @@
         <div>添加</div>
       </div>
     </header>
-    <so-swiper @swipeEvent="swipeEvent($event,param)">
+    <so-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)">
       <template v-slot:firstItem>
         <Chats></Chats>
       </template>
@@ -22,12 +22,12 @@
       </template>
     </so-swiper>
 
-    <main-tab :tabList="tabList" :swipeParam="swipeParam"></main-tab>
+    <main-tab :tabList="tabList" :swipeParam="swipeParam" @changeTab="changeTab($event,index)"></main-tab>
   </article>
 </template>
 
 <script>
-import { reactive, toRefs } from "vue";
+import { reactive, watchEffect } from "vue";
 import SoSwiper from "../components/so-swiper";
 import Chats from "./Main/Chats";
 import Contacts from "./Main/Contacts";
@@ -45,6 +45,20 @@ export default {
     MainTab
   },
   setup() {
+    let activeIndex = reactive({
+      index: 1
+    });
+
+    function changeTab(index) {
+      // console.log("main changeTab:", index);
+      activeIndex.index = index;
+    }
+
+    watchEffect(() => {
+      // console.log("mian 1111");
+      return activeIndex.value;
+    });
+
     let swipeParam = reactive({
       progress: 0,
       activeIndex: 0,
@@ -53,23 +67,9 @@ export default {
     function swipeEvent(param) {
       swipeParam.progress = param.progress;
       swipeParam.activeIndex = param.activeIndex;
-      swipeParam.activeIndex = param.activeIndex;
-      console.log("aaaa", param, swipeParam);
+      swipeParam.step = param.step;
+      // console.log("aaaa", param, swipeParam);
     }
-
-    let colorManage = reactive({
-      MeColor: "#00f",
-      MeBg: "#00f"
-    });
-
-    setTimeout(() => {
-      colorManage.MeBg = "#0f0";
-      console.log("颜色转化", colorManage.MeBg);
-    }, 2000);
-    setTimeout(() => {
-      colorManage.MeBg = "#0ff";
-      console.log("颜色转化", colorManage.MeBg);
-    }, 4000);
 
     let tabList = reactive([
       {
@@ -82,7 +82,7 @@ export default {
         name: "通讯录",
         icon: "CONTACTS",
         iconColor: "#000",
-        iconBg: "#f00"
+        iconBg: "#000"
       },
       {
         name: "发现",
@@ -102,7 +102,8 @@ export default {
       swipeParam,
       swipeEvent,
       tabList,
-      ...toRefs(colorManage)
+      activeIndex,
+      changeTab
     };
   }
 };

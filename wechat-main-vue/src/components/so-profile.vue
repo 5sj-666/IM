@@ -44,7 +44,7 @@ export default {
   },
   setup() {
     onMounted(() => {
-      console.log("onMounted");
+      // console.log("onMounted");
     });
     return {};
   }

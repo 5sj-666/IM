@@ -3,16 +3,16 @@
     <svg
       version="1.0"
       xmlns="http://www.w3.org/2000/svg"
-      width="2rem"
-      height="2rem"
+      width="1.7rem"
+      height="1.7rem"
       viewBox="0 0 800 800"
       preserveAspectRatio="xMidYMid meet"
       v-if="type === 'CHATS'"
     >
-      <g fill="#000" stroke="none">
+      <g :fill="color" stroke="none">
         <path d="M0 400 l0 -400 400 0 400 0 0 400 0 400 -400 0 -400 0 0 -400z" />
       </g>
-      <g id="msg102" :fill="color" stroke="none">
+      <g :fill="color" stroke="none">
         <path
           d="M0 400 l0 -400 400 0 400 0 0 400 0 400 -400 0 -400 0 0 -400z m177 236 c51 -17 55 -17 113 3 161 56 334 3 417 -126 31 -48 35 -63 36 -121 1 -99 -45 -180 -134 -234 -118 -73 -303 -65 -402 16 -108 89 -141 217 -82 324 25 47 27 53 13 74 -24 38 -40 91 -25 85 6 -2 36 -12 64 -21z"
         />
@@ -35,8 +35,8 @@
     <svg
       version="1.0"
       xmlns="http://www.w3.org/2000/svg"
-      width="2rem"
-      height="2rem"
+      width="1.7rem"
+      height="1.7rem"
       viewBox="0 0 800 800"
       preserveAspectRatio="xMidYMid meet"
       v-if="type === 'CONTACTS'"
@@ -70,8 +70,8 @@
     <svg
       version="1.0"
       xmlns="http://www.w3.org/2000/svg"
-      width="2rem"
-      height="2rem"
+      width="1.7rem"
+      height="1.7rem"
       viewBox="0 0 800 800"
       preserveAspectRatio="xMidYMid meet"
       v-if="type === 'DISCOVER'"
@@ -114,8 +114,8 @@
     <svg
       version="1.0"
       xmlns="http://www.w3.org/2000/svg"
-      width="2rem"
-      height="2rem"
+      width="1.7rem"
+      height="1.7rem"
       viewBox="0 0 800 800"
       preserveAspectRatio="xMidYMid meet"
       v-if="type === 'ME'"
@@ -170,8 +170,8 @@ export default {
       default: "#f7f7f7"
     }
   },
-  setup(props) {
-    console.log("svg-cell: props", props);
+  setup() {
+    // console.log("svg-cell: props", props);
   }
 };
 </script>
