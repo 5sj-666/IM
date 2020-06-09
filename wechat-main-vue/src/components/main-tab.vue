@@ -1,11 +1,5 @@
 <template>
   <footer class="main-tab">
-    <!-- <div
-      class="main-tab-item"
-      v-for="(tab,index) in tabList"
-      :key="index"
-      @click="changeTab(index)"
-    >-->
     <div
       class="main-tab-item"
       v-for="(tab,index) in tabList"
@@ -20,7 +14,6 @@
 
 <script>
 import SvgCell from "./svg-cell.vue";
-// import { effect } from "vue";
 import { watchEffect } from "vue";
 
 /**
@@ -32,7 +25,7 @@ import { watchEffect } from "vue";
  */
 function rgbComputed(startRGB, endRGB, percent) {
   if (percent >= 1) {
-    return;
+    percent = 1;
   }
   console.log(startRGB, endRGB, percent);
 
@@ -52,7 +45,6 @@ function rgbComputed(startRGB, endRGB, percent) {
 
 function colorComputed(swipeParam, tabList) {
   if (swipeParam.step === "panmove") {
-    // console.warn("main tab panmove!!");
     if (
       (swipeParam.activeIndex <= 0 && swipeParam.progress > 0) ||
       (swipeParam.activeIndex >= 3 && swipeParam.progress < 0)
@@ -63,51 +55,33 @@ function colorComputed(swipeParam, tabList) {
        * color: #000 -> #21a469( 0->100% 100%->0% )
        * bg: #f7f7f7 -> #09c162( 0->50% 100%->50%)
        */
-      // console.warn("******************************", swipeParam.progress);
       if (swipeParam.progress < 0) {
-        rgbComputed([0, 0, 0], [100, 100, 100], 0.5);
-        // tabList[swipeParam.activeIndex].iconColor =
-        //   "rgb(" +
-        //   Math.round(33 * (1 + swipeParam.progress)) +
-        //   "," +
-        //   Math.round(164 * (1 + swipeParam.progress)) +
-        //   "," +
-        //   Math.round(105 * (1 + swipeParam.progress)) +
-        //   ")";
+        let progress = swipeParam.progress;
         tabList[swipeParam.activeIndex].iconColor = rgbComputed(
+          [33, 164, 105],
+          [0, 0, 0],
+          Math.abs(progress)
+        );
+        tabList[swipeParam.activeIndex + 1].iconColor = rgbComputed(
           [0, 0, 0],
           [33, 164, 105],
-          1 + swipeParam.progress
+          Math.abs(progress)
         );
-        tabList[swipeParam.activeIndex + 1].iconColor =
-          "rgb(" +
-          Math.round(33 * Math.abs(swipeParam.progress)) +
-          "," +
-          Math.round(164 * Math.abs(swipeParam.progress)) +
-          "," +
-          Math.round(105 * Math.abs(swipeParam.progress)) +
-          ")";
-        if (swipeParam.progress > -0.5) {
-          tabList[swipeParam.activeIndex].iconBg =
-            "rgb(" +
-            Math.round(9 + 238 * Math.abs(swipeParam.progress) * 2) +
-            "," +
-            Math.round(193 + 54 * Math.abs(swipeParam.progress) * 2) +
-            "," +
-            Math.round(49 + 149 * Math.abs(swipeParam.progress) * 2) +
-            ")";
 
+        if (swipeParam.progress > -0.5) {
+          tabList[swipeParam.activeIndex].iconBg = rgbComputed(
+            [9, 193, 49],
+            [247, 247, 247],
+            Math.abs(progress) * 2
+          );
           tabList[swipeParam.activeIndex + 1].iconBg = "#f7f7f7";
         } else if (swipeParam.progress < -0.5 && swipeParam.progress > -1) {
           tabList[swipeParam.activeIndex].iconBg = "#f7f7f7";
-          tabList[swipeParam.activeIndex + 1].iconBg =
-            "rgb(" +
-            Math.round(247 - 238 * Math.abs(swipeParam.progress + 0.5) * 2) +
-            "," +
-            Math.round(247 - 54 * Math.abs(swipeParam.progress + 0.5) * 2) +
-            "," +
-            Math.round(247 - 149 * Math.abs(swipeParam.progress + 0.5) * 2) +
-            ")";
+          tabList[swipeParam.activeIndex + 1].iconBg = rgbComputed(
+            [247, 247, 247],
+            [9, 193, 49],
+            Math.abs(progress + 0.5) * 2
+          );
         }
       } else if (swipeParam.progress > 0) {
         //
