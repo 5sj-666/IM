@@ -29,10 +29,11 @@ export default {
       default: 1
     }
   },
-  refs: {},
   setup(props, ctx) {
+    // let x = new setupComponent();
+    console.log("window ", window);
     onMounted(() => {
-      console.log("VNodeProps:");
+      // console.log("VNodeProps:");
       BindPanEvent();
     });
     let activeIndex = 0;
@@ -44,7 +45,7 @@ export default {
       //slideTo中需要获取dom节点，所以需要在nextTick函数重执行
       nextTick(() => {
         activeIndex = props.activeIndex;
-        slideTo(activeIndex, 8);
+        slideTo(activeIndex, 0);
         emitSwipeEvent(ctx, 0, activeIndex, "panend");
       });
       return props.activeIndex;

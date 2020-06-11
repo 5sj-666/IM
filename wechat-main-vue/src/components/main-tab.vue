@@ -27,8 +27,7 @@ function rgbComputed(startRGB, endRGB, percent) {
   if (percent >= 1) {
     percent = 1;
   }
-  console.log(startRGB, endRGB, percent);
-
+  // console.log(startRGB, endRGB, percent);
   let RGB =
     "rgb(" +
     Math.round(startRGB[0] + (endRGB[0] - startRGB[0]) * percent) +
@@ -37,9 +36,7 @@ function rgbComputed(startRGB, endRGB, percent) {
     "," +
     Math.round(startRGB[2] + (endRGB[2] - startRGB[2]) * percent) +
     ")";
-
-  console.log("targetRGB:", RGB);
-
+  // console.log("targetRGB:", RGB);
   return RGB;
 }
 
@@ -55,8 +52,8 @@ function colorComputed(swipeParam, tabList) {
        * color: #000 -> #21a469( 0->100% 100%->0% )
        * bg: #f7f7f7 -> #09c162( 0->50% 100%->50%)
        */
+      let progress = swipeParam.progress;
       if (swipeParam.progress < 0) {
-        let progress = swipeParam.progress;
         tabList[swipeParam.activeIndex].iconColor = rgbComputed(
           [33, 164, 105],
           [0, 0, 0],
@@ -68,60 +65,51 @@ function colorComputed(swipeParam, tabList) {
           Math.abs(progress)
         );
 
-        if (swipeParam.progress > -0.5) {
-          tabList[swipeParam.activeIndex].iconBg = rgbComputed(
-            [9, 193, 49],
-            [247, 247, 247],
-            Math.abs(progress) * 2
-          );
-          tabList[swipeParam.activeIndex + 1].iconBg = "#f7f7f7";
-        } else if (swipeParam.progress < -0.5 && swipeParam.progress > -1) {
-          tabList[swipeParam.activeIndex].iconBg = "#f7f7f7";
-          tabList[swipeParam.activeIndex + 1].iconBg = rgbComputed(
-            [247, 247, 247],
-            [9, 193, 49],
-            Math.abs(progress + 0.5) * 2
-          );
+        switch (true) {
+          case progress > -0.5:
+            tabList[swipeParam.activeIndex].iconBg = rgbComputed(
+              [9, 193, 49],
+              [247, 247, 247],
+              Math.abs(progress) * 2
+            );
+            tabList[swipeParam.activeIndex + 1].iconBg = "#f7f7f7";
+            break;
+          case progress < -0.5 && progress > -1:
+            tabList[swipeParam.activeIndex].iconBg = "#f7f7f7";
+            tabList[swipeParam.activeIndex + 1].iconBg = rgbComputed(
+              [247, 247, 247],
+              [9, 193, 49],
+              Math.abs(progress + 0.5) * 2
+            );
+            break;
         }
       } else if (swipeParam.progress > 0) {
-        //
-        tabList[swipeParam.activeIndex].iconColor =
-          "rgb(" +
-          Math.round(33 * (1 - swipeParam.progress)) +
-          "," +
-          Math.round(164 * (1 - swipeParam.progress)) +
-          "," +
-          Math.round(105 * (1 - swipeParam.progress)) +
-          ")";
-        tabList[swipeParam.activeIndex - 1].iconColor =
-          "rgb(" +
-          Math.round(33 * swipeParam.progress) +
-          "," +
-          Math.round(164 * swipeParam.progress) +
-          "," +
-          Math.round(105 * swipeParam.progress) +
-          ")";
-        if (swipeParam.progress < 0.5) {
-          tabList[swipeParam.activeIndex].iconBg =
-            "rgb(" +
-            Math.round(9 + 238 * swipeParam.progress * 2) +
-            "," +
-            Math.round(193 + 54 * swipeParam.progress * 2) +
-            "," +
-            Math.round(49 + 149 * swipeParam.progress * 2) +
-            ")";
-
-          tabList[swipeParam.activeIndex - 1].iconBg = "#f7f7f7";
-        } else if (swipeParam.progress > 0.5 && swipeParam.progress < 1) {
-          tabList[swipeParam.activeIndex].iconBg = "#f7f7f7";
-          tabList[swipeParam.activeIndex - 1].iconBg =
-            "rgb(" +
-            Math.round(247 - 238 * (swipeParam.progress - 0.5) * 2) +
-            "," +
-            Math.round(247 - 54 * (swipeParam.progress - 0.5) * 2) +
-            "," +
-            Math.round(247 - 149 * (swipeParam.progress - 0.5) * 2) +
-            ")";
+        tabList[swipeParam.activeIndex].iconColor = rgbComputed(
+          [33, 164, 105],
+          [0, 0, 0],
+          progress
+        );
+        tabList[swipeParam.activeIndex - 1].iconColor = rgbComputed(
+          [0, 0, 0],
+          [33, 164, 105],
+          progress
+        );
+        switch (true) {
+          case progress < 0.5:
+            (tabList[swipeParam.activeIndex].iconBg = rgbComputed(
+              [9, 193, 49],
+              [247, 247, 247],
+              progress * 2
+            )),
+              (tabList[swipeParam.activeIndex - 1].iconBg = "#f7f7f7");
+            break;
+          case progress > 0.5 && progress < 1:
+            tabList[swipeParam.activeIndex].iconBg = "#f7f7f7";
+            tabList[swipeParam.activeIndex - 1].iconBg = rgbComputed(
+              [247, 247, 247],
+              [9, 193, 49],
+              (progress - 0.5) * 2
+            );
         }
       }
     }

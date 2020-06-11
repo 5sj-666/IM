@@ -25,7 +25,6 @@ function renderApp() {
     .use(router)
     .use(store)
     .mount("#app");
-
 }
 
 // 独立运行时，直接挂载应用

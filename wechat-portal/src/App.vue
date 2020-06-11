@@ -7,6 +7,8 @@
     <router-view />
   </div>-->
   <section id="micro-portal" class="micro-portal">
+    <router-link v-show="$route.name" to="/react">login |</router-link>
+    <router-link v-show="$route.name" to="/vue">vue</router-link>
     <!-- 微应用加载！ -->
     <router-view v-show="$route.name"></router-view>
     <section v-show="!$route.name" id="frame" class="frame"></section>
