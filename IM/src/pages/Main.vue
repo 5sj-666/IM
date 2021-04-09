@@ -38,6 +38,7 @@ import Me from "./Main/Me";
 import MainTab from "../components/main-tab";
 
 export default {
+  name: "Main",
   components: {
     SoSwiper,
     Chats,
