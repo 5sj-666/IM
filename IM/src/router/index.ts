@@ -1,9 +1,9 @@
 // import { createRouter, createWebHistory } from "vue-router";
-import Home from "../pages/Home.vue";
-import Main from "@/pages/Main";
-import NotFound from "@/pages/NotFound"
+import Home from "@/pages/Home.vue";
+import Main from "@/pages/Main.vue";
+import NotFound from "@/pages/NotFound.vue"
 
-import Dialogue from "@/pages/Chats/Dialogue"
+import Dialogue from "@/pages/Chats/Dialogue.vue"
 
 const routes = [
   {

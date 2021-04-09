@@ -3,7 +3,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  name: "NotFound",
+  setup() {}
+  
+};
 </script>
 
 <style lang="stylus" scoped></style>
