@@ -22,96 +22,49 @@
     </style>
 </head>
 <body>
-<!-- <button onclick="sendMsg()">发送消息</button> -->
+    <article class="container">
+        <div>
+            <input id="sendName" type="text">
+            <button onclick="send('init')">请输入名称</button>
+        </div>
+        <div>
+            <div id="msgHistory" class="msg-container"></div>
+            <input id="receiveName" placeholder="接收者名称" type="text">
+            <input id="instantMsg" placeholder="内容" type="text">
+            <button onclick="send('instantMsg')">发送消息</button>
+        </div>
+        <div>
+            <video width=400 height=300x style="background-color: green;" id="video-self" src="" autoplay>
+                你的浏览器不支持video
+            </video>
+            <video width=400 height=300x style="background-color: orange;" id="video" src="" autoplay>
+                你的浏览器不支持video
+            </video>
+            <button onclick="initRTC()">初始化webRTC</button>
+            <button onclick="invite()">发送RTCoffer</button>
+        </div>
+    </article>
 
-<article class="container">
-    <div>
-        <input id="sendName" type="text">
-        <button onclick="send('init')">请输入名称</button>
-    </div>
-    <div>
-        <div id="msgHistory" class="msg-container"></div>
-        <input id="receiveName" placeholder="接收者名称" type="text">
-        <input id="instantMsg" placeholder="内容" type="text">
-        <button onclick="send('instantMsg')">发送消息</button>
-    </div>
-    <div>
-        <video width=400 height=300x style="background-color: green;" id="video-self" src="" autoplay>
-            你的浏览器不支持video
-        </video>
-        <video width=400 height=300x style="background-color: orange;" id="video" src="" autoplay>
-            你的浏览器不支持video
-        </video>
-        <button onclick="initRTC()">初始化webRTC</button>
-        <button onclick="invite()">发送RTCoffer</button>
-        <!-- <button>接受RTC邀请</button> -->
-    </div>
-    <!-- <div>
-        <input id="receiveName" type="text">
-        <button onclick="send('receiveName')">接收者名字</button>
-    </div> -->
-</article>
+    <script>
+        let WS = initWS();
 
-<script>
-
-    
-
-    
-    /**
-     * @descript 发送事件
-     * @param 
-    */
-    function send(type) {
-        console.log("---send type: ", type);
-        let sendName = document.querySelector("#sendName").value,
-            receiveName = document.querySelector("#receiveName").value,
-            msgHistory = document.querySelector("#msgHistory"),
-            instantMsg = document.querySelector("#instantMsg").value;
-        
-
-
-        // const Mapping = {
-        //     sendName: sendName.value,
-        //     receiveName: receiveName.value,
-        //     instantMsg: instantMsg.value,
-        // }
-        if(type === "init") {
-            // console.log("---值: ", JSON.stringify({type, content: sendName}));
-            // window.userws.send(JSON.stringify({type, content: sendName}));
-            let data = JSON.stringify({type, id: sendName});
-            console.log("---值: ", data);
-            window.userws.send(data);
-        }else if(type === "instantMsg") {
-            try {
-                let data = JSON.stringify({type, send: sendName, receive: receiveName, content: instantMsg});
-                console.log("---值: ", data);
-                window.userws.send(data);
-                msgHistory.innerText += `${data}\n `;
-            } catch (error) {
-                console.error("---发送出错",error.msg);
-            }
-            
-        }
-        // console.log("---值: ", Mapping[type]);
-        // window.userws.send(JSON.stringify({type, content: Mapping[type]}))
-    }
-
-
-    
-    (function WebSocketTest() {
-        if ("WebSocket" in window) {
-            console.log("---正在连接wss---");
-            // 打开一个 web socket
-            // var ws = new WebSocket("ws://127.0.0.1:3001/");
-            var ws = new WebSocket("wss://www.fffuture.top");
-            ws.onopen = function () {
-                console.log("---成功连接wss---");
-                window.userws = ws;
-                // Web Socket 已连接上，使用 send() 方法发送数据
-                // ws.send("发送数据");
+        /**
+         * @description initial websocket
+         * @return {Object} websocket object
+        */
+        function initWS() {
+            if(!Reflect.has(window, "WebSocket")) {
+                console.log("浏览器不支持websocket!!");
+                return;
             };
 
-            ws.onmessage = function (evt) {
+            let WS = new WebSocket("wss://www.fffuture.top");
+            window.userws = WS;
+            WS.onopen = function() {
+                console.log("---成功连接websocket---");
+            }
+
+            WS.onmessage = function(evt) {
                 console.log("---onmessage--:", evt);
                 let data = JSON.parse(evt.data);
                 if(data.type === "offer") {
@@ -122,304 +75,224 @@
                 }else if(data.type === "candidate") {
                     setRemoteICE(data);
                 }
-                // var received_msg = evt.data;
-                // alert("数据已接收..." + evt.data);
-            };
-
-            ws.onclose = function () {
-                console.log("--wss.close");
-                // 关闭 websocket
-                // alert("连接已关闭...");
-            };
-        }
-
-        else {
-            // 浏览器不支持 WebSocket
-            alert("您的浏览器不支持 WebSocket!");
-        }
-    })()
-
-var pc = null;
-
-function initRTC() {
-
-    let sendName = document.querySelector("#sendName").value,
-        receiveName = document.querySelector("#receiveName").value,
-        msgHistory = document.querySelector("#msgHistory"),
-        instantMsg = document.querySelector("#instantMsg").value,
-        videoSelf = document.querySelector("#video-self");
-    if(!sendName && !receiveName) return;
-
-    var mediaConstraints = {
-        audio: true, // We want an audio track
-        video: true // ...and we want a video track
-    };
-
-    // const offerOptions = { offerToReceiveVideo: 1, offerToReceiveAudio: 1};
-
-    var config = {
-        iceServers: [
-            {
-                urls: "stun:139.224.75.6:3478",
-                username:"",
-                credential:""
-            },
-            {
-                urls: "turn:139.224.75.6:3478",
-                username: "wsj",
-                credential: "123456"
             }
-        ],
-        iceTransportPolicy:"all",
-        iceCandidatePoolSize:"0"
-    };
-    console.log("--config:", config)
-    pc = new RTCPeerConnection(config);
 
-    navigator.mediaDevices.getUserMedia(mediaConstraints)
-    .then(function(localStream) {
-        console.log("----获取到本地媒体流----");
-        videoSelf.srcObject = localStream;
-        // pc.addStream(localStream);
-        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-        // localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-    })
-    .catch(handleGetUserMediaError);
+            WS.onclose = function() {
+                console.log("---已断开webSocket---");
+            }
 
-    function handleGetUserMediaError(e) {
-        switch(e.name) {
-            case "NotFoundError":
-            alert("Unable to open your call because no camera and/or microphone" +
-                    "were found.");
-            break;
-            case "SecurityError":
-            case "PermissionDeniedError":
-            // Do nothing; this is the same as the user canceling the call.
-            break;
-            default:
-            alert("Error opening your camera and/or microphone: " + e.message);
-            break;
+            WS.onerror = function(error) {
+                console.error(error);
+            }
+
+            return WS;
         }
 
-        // closeVideoCall();
-    }
 
-    pc.ontrack = function(event) {
-        console.warn("----设置远程媒体流: ", event);
-        document.getElementById("video").srcObject = event.streams[0];
-        // document.getElementById("hangup-button").disabled = false;
-    };
-    // pa.addTrack
-
-
-    pc.onicecandidate = function(event) {
-        if(event && !event.candidate) {
-            console.log("--onicecandidate获取为null: ", event);
-            return; 
+        /**
+         * @descript send func
+         * @param {String} type
+        */
+        function send(type) {
+            let sendName = document.querySelector("#sendName").value,
+                receiveName = document.querySelector("#receiveName").value,
+                msgHistory = document.querySelector("#msgHistory"),
+                instantMsg = document.querySelector("#instantMsg").value;
+            
+            let data = null;
+            if(type === "init") {
+                data = {type, id: sendName};
+            }else if(type === "instantMsg") {
+                try {
+                    data = {type, send: sendName, receive: receiveName, content: instantMsg};
+                    msgHistory.innerText += `${JSON.stringify(data)}\n `;
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            WS.send(JSON.stringify(data));
         }
-        console.log("--onicecandidate获取到候选者: ", event);
-        let data = {
-            type: "candidate",
-            send: sendName,
-            receive: receiveName,
-            content: event.candidate
-        };
-        console.log("----发送candidate: ", JSON.stringify(data));
-        window.userws.send(JSON.stringify(data));
-    };
-
-    pc.onnegotiationneeded = function() {
-        console.warn("----WebRTC基础结构需要你重新启动会话协商过程onnegotiationneeded---")
-    }
-
-    pc.onicegatheringstatechange = function() {
-        console.log("----gatheringStateChange: ");
-        if (pc.iceGatheringState !== 'complete') return;
-    };
-
-    pc.onicecandidateerror = function(e) {
-        console.log("---获取候选者出错onicecandidateerror: ", e);
-    };
-
-    // pc.createOffer(offerOptions)
-    // .then(
-    //     gotDescription,
-    //     noDescription
-    // );
-
-    // function gotDescription(desc) {
-    //     console.log("---gotDescription: ", desc);
-    //     // begin = window.performance.now();
-    //     // candidates = [];
-    //     pc.setLocalDescription(desc).then(()=>{
-    //         console.log("--设置成功");
-    //         console.warn("--pc.localDescription: ", pc.localDescription);
-    //         console.log("---可以发送offer了");
-    //         let data = {
-    //             type: "offer",
-    //             send: sendName,
-    //             receive: receiveName,
-    //             content: pc.localDescription
-    //         };
-    //         window.userws.send(JSON.stringify(data));
-    //     });
-        
-    //     // window.userws.send(JSON.stringify({type: "offer", sdp: pc.localDescription}));
-    //     // let data = JSON.stringify({type, send: sendName, receive: receiveName, content: instantMsg});
-
-    //     // send("offer", JSON.stringify(pc.localDescription));
-    //     // window.userws.send();
-
-    // }
-
-    // function noDescription(error) {
-    //     console.log('Error creating offer: ', error);
-    // }
 
 
-    // function sendMsg() {
-    //     console.log("---执行发送消息");
-    //     window.userws.send("--客户端1发送消息--");
-    // }
+        var pc = null;
 
-}
-function setRemoteICE(data) {
-    console.log("---接收到candidate: ", data);
-    var candidate = new RTCIceCandidate(data.content);
-    pc.addIceCandidate(candidate)
-    .then(res => {console.log("---设置远程candidate成功--:", res)})
-    .catch(err => {console.error("----设置candidate出错:　", error)})
-}
+        function initRTC() {
 
-function setRemoteSDP(data) {
-    let sendName = document.querySelector("#sendName").value,
-        receiveName = document.querySelector("#receiveName").value,
-        msgHistory = document.querySelector("#msgHistory"),
-        instantMsg = document.querySelector("#instantMsg").value;
-    if(!sendName && !receiveName) return;
-    var mediaConstraints = {
-        audio: true, // We want an audio track
-        video: true // ...and we want a video track
-    };
+            let sendName = document.querySelector("#sendName").value,
+                receiveName = document.querySelector("#receiveName").value,
+                msgHistory = document.querySelector("#msgHistory"),
+                instantMsg = document.querySelector("#instantMsg").value;
 
-    let pc = window.pc;
-    var remoteDesc = new RTCSessionDescription(data.content);
-    pc.setRemoteDescription(remoteDesc)
-    // .then(function () {
-    //     return navigator.mediaDevices.getUserMedia(mediaConstraints);
-    // })
-    // .then(function(stream) {
-    //     localStream = stream;
-    //     document.getElementById("video").srcObject = localStream;
-    //     localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-    // })
-    .then(()=>{
-        console.log("---invite成功设置远程SDP");
-    });
-}
+            if(!sendName && !receiveName) return;
 
-function answerOffer(data) {
-    let sendName = document.querySelector("#sendName").value,
-        receiveName = document.querySelector("#receiveName").value,
-        msgHistory = document.querySelector("#msgHistory"),
-        instantMsg = document.querySelector("#instantMsg").value;
-    if(!sendName && !receiveName) return;
-
-    // var mediaConstraints = {
-    //     audio: true, // We want an audio track
-    //     video: true // ...and we want a video track
-    // };
-
-    var remoteDesc = new RTCSessionDescription(data.content);
-    console.log("-----remoteDesc: ----:", remoteDesc);
-    pc.setRemoteDescription(remoteDesc)
-    // .then(function () {
-    //     return navigator.mediaDevices.getUserMedia(mediaConstraints);
-    // })
-    // .then(function(stream) {
-    //     localStream = stream;
-    //     document.getElementById("video").srcObject = localStream;
-
-    //     localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
-    // })
-    .then(function() {
-        pc.createAnswer();
-    })
-    .then(function(answer) {
-        return pc.setLocalDescription(answer);
-    })
-    .then(function() {
-        // var msg = {
-        //     name: myUsername,
-        //     target: targetUsername,
-        //     type: "video-answer",
-        //     sdp: myPeerConnection.localDescription
-        // };
-        // sendToServer(msg);
-        console.log("---成功设置invite的remoteSDP---");
-        let data = {
-            type: "offer-answer",
-            send: sendName,
-            receive: receiveName,
-            content: pc.localDescription
-        };
-        console.warn("---发送应答offer: ", JSON.stringify(data));
-        window.userws.send(JSON.stringify(data));
-    })
-    .catch(err => {console.warn("--应答offer发生错误: ", err)})
-}
-
-
-function invite() {
-    let sendName = document.querySelector("#sendName").value,
-        receiveName = document.querySelector("#receiveName").value,
-        msgHistory = document.querySelector("#msgHistory"),
-        instantMsg = document.querySelector("#instantMsg").value;
-    if(!sendName && !receiveName) return;
-
-    let pc = window.pc;
-    const offerOptions = { offerToReceiveVideo: 1, offerToReceiveAudio: 1};
-    pc.createOffer(offerOptions).then(gotDescription,noDescription );
-
-    function gotDescription(desc) {
-        console.log("---gotDescription: ", desc);
-        // begin = window.performance.now();
-        // candidates = [];
-        pc.setLocalDescription(desc).then(()=>{
-            console.log("--设置成功");
-            console.warn("--pc.localDescription: ", pc.localDescription);
-            console.log("---可以发送offer了");
-            let data = {
-                type: "offer",
-                send: sendName,
-                receive: receiveName,
-                content: pc.localDescription
+            const config = {
+                iceServers: [
+                    {
+                        urls: "stun:139.224.75.6:3478",
+                        username:"",
+                        credential:""
+                    },
+                    {
+                        urls: "turn:139.224.75.6:3478",
+                        username: "wsj",
+                        credential: "123456"
+                    }
+                ],
+                iceTransportPolicy:"all",
+                iceCandidatePoolSize:"0"
             };
-            console.warn("--发送offer: ", JSON.stringify(data));
-            window.userws.send(JSON.stringify(data));
-        });
-        
-        // window.userws.send(JSON.stringify({type: "offer", sdp: pc.localDescription}));
-        // let data = JSON.stringify({type, send: sendName, receive: receiveName, content: instantMsg});
+            // console.log("--config:", config)；
+            pc = new RTCPeerConnection(config);
 
-        // send("offer", JSON.stringify(pc.localDescription));
-        // window.userws.send();
+            let mediaConstraints = {audio: true, video: true};
 
-    }
+            navigator.mediaDevices.getUserMedia(mediaConstraints)
+            .then(function(localStream) {
+                // console.log("---获取本地媒体权限---");
+                let videoSelf = document.querySelector("#video-self");
+                videoSelf.srcObject = localStream;
+                localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+            })
+            .catch(handleGetUserMediaError);
 
-    function noDescription(error) {
-        console.log('Error creating offer: ', error);
-    }
+            function handleGetUserMediaError(e) {
+                switch(e.name) {
+                    case "NotFoundError":
+                        alert("Unable to open your call because no camera and/or microphone were found.");
+                        break;
+                    case "SecurityError":
+                        break;
+                    case "PermissionDeniedError":
+                        // Do nothing; this is the same as the user canceling the call.
+                        break;
+                    default:
+                        alert("Error opening your camera and/or microphone: " + e.message);
+                        break;
+                }
+                // closeVideoCall();
+            }
 
-}
+            pc.ontrack = media => {
+                console.log("----接收到远程的媒体流----", media);
+                document.getElementById("video").srcObject = media.streams[0];
+            }
 
 
-    
+            pc.onicecandidate = wapper => {
+                if(!wapper.candidate) return;
 
+                let msg = {
+                    type: "candidate",
+                    send: sendName,
+                    receive: receiveName,
+                    content: wapper.candidate
+                }
+                WS.send(JSON.stringify(msg));
+            }
 
+            pc.onnegotiationneeded = () => {
+                console.log("---协商连接事件----")
+                // console.warn("----WebRTC基础结构需要你重新启动会话协商过程onnegotiationneeded---");
+            }
 
+            pc.onicegatheringstatechange = () => {
+                //非必要实现功能 除非你有特别的需求需要监视候选者的状态
+                if (pc.iceGatheringState !== 'complete') return;
+                console.log("----onicecandidate获取结束 gatheringStateChange: ");
+            };
 
+            pc.onicecandidateerror = error => {
+                console.error("---获取候选者出错: ", error);
+            };
 
-</script>
+        }
+
+        /**
+         * @description 将接收到的候选者icecandidate添加到pc(peerConnection)中
+         * @param {Object} data icecandidate
+        */
+        function setRemoteICE(data) {
+            // console.log("---接收到candidate: ", data);
+            var candidate = new RTCIceCandidate(data.content);
+            pc.addIceCandidate(candidate)
+            .then(() => { console.log("---设置远程candidate成功--:") })
+            .catch(err => { console.error("----设置candidate出错:　", error) })
+        }
+
+        /**
+         * @description 将接收到的awseroffer的SDP设置到本地pc上
+         * @param {Object} data
+        */
+        function setRemoteSDP(data) {
+            const remoteDesc = new RTCSessionDescription(data.content);
+            pc.setRemoteDescription(remoteDesc)
+            .then(()=>{ console.log("---invite成功设置远程SDP"); });
+        }
+
+        /**
+         * @description 回复offer
+         * @param {Object} data
+        */
+        function answerOffer(data) {
+            let send = document.querySelector("#sendName").value,
+                receive = document.querySelector("#receiveName").value;
+            if(!send && !receive) return;
+
+            const remoteDesc = new RTCSessionDescription(data.content);
+            console.log("-----remoteDesc: ----:", remoteDesc);
+            pc.setRemoteDescription(remoteDesc)
+            .then(function() { pc.createAnswer() })
+            .then(function(answer) { return pc.setLocalDescription(answer) })
+            .then(function() {
+                // console.log("---成功设置invite的remoteSDP---");
+                let data = {
+                    type: "offer-answer",
+                    send,
+                    receive,
+                    content: pc.localDescription
+                };
+                console.warn("---发送应答offer: ", JSON.stringify(data));
+                WS.send(JSON.stringify(data));
+            })
+            .catch(err => { console.warn("--应答offer发生错误: ", err) })
+        }
+
+        /**
+         * @description 发送offer
+         * 
+        */
+        function invite() {
+            let send = document.querySelector("#sendName").value,
+                receive = document.querySelector("#receiveName").value;
+            if(!send && !receive) return;
+
+            let pc = window.pc;
+            const offerOptions = { offerToReceiveVideo: 1, offerToReceiveAudio: 1};
+            pc.createOffer(offerOptions)
+            .then(gotDescription,noDescription );
+
+            function gotDescription(desc) {
+                console.log("---gotDescription: ", desc);
+                pc.setLocalDescription(desc)
+                .then(() => {
+                    let data = {
+                        type: "offer",
+                        send,
+                        receive,
+                        content: pc.localDescription
+                    };
+                    console.warn("--设置本地offer成功，发送offer: ", JSON.stringify(data));
+                    window.userws.send(JSON.stringify(data));
+                });
+
+            }
+
+            function noDescription(error) {
+                console.log('Error creating offer: ', error);
+            }
+
+        }
+
+    </script>
 </body>
 </html>
