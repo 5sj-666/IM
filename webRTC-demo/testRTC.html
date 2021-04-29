@@ -15,31 +15,34 @@
             background-color: cyan;
         }
         .msg-container {
-            width: 300px;
+            width: 400px;
             height: 200px;
             background-color: #FFF;
+            overflow: scroll;
         }
     </style>
 </head>
 <body>
     <article class="container">
         <div>
-            <input id="sendName" type="text">
-            <button onclick="send('init')">请输入名称</button>
+            <input id="sender" type="text">
+            <!-- <button onclick="send('init')">请输入名称</button> -->
+            <button onclick="wsSend({type: 'init'})">请输入名称</button>
         </div>
         <div>
             <div id="msgHistory" class="msg-container"></div>
-            <input id="receiveName" placeholder="接收者名称" type="text">
+            <input id="recipient" placeholder="接收者名称" type="text">
             <input id="instantMsg" placeholder="内容" type="text">
-            <button onclick="send('instantMsg')">发送消息</button>
+            <!-- <button onclick="send('instantMsg')">发送消息</button> -->
+            <button onclick="wsSend({type: 'instantMsg', content: document.querySelector('#instantMsg').value})">发送消息</button>
         </div>
         <div>
-            <video width=400 height=300x style="background-color: green;" id="video-self" src="" autoplay>
+            <video id="video-self" width=200 height=150 style="background-color: green;" src="" autoplay>
                 你的浏览器不支持video
             </video>
-            <video width=400 height=300x style="background-color: orange;" id="video" src="" autoplay>
+            <video id="video"  width=200 height=150 style="background-color: orange;" src="" autoplay>
                 你的浏览器不支持video
-            </video>
+            </video><br/>
             <button onclick="initRTC()">初始化webRTC</button>
             <button onclick="invite()">发送RTCoffer</button>
         </div>
@@ -47,6 +50,26 @@
 
     <script>
         let WS = initWS();
+
+        /**
+         * @description 对websocket发送事件做封装
+         * @param {Object} data 数据结构: {type: String, content: String}
+        */
+        function wsSend(data) {
+            let sender = document.querySelector("#sender").value,
+                recipient = document.querySelector("#recipient").value,
+                msgHistory = document.querySelector("#msgHistory");
+
+            //特殊情况: 初始化(init)时候不需要接收者
+            if(!sender || (!recipient && data.type !== "init")) {
+                alert(`${sender ? '接收者' : '发送者'}不能为空！`);
+                return;
+            }
+
+            let letter = JSON.stringify({...data, sender, recipient});
+            msgHistory.innerText += `${letter}\n`
+            WS.send(letter);
+        }
 
         /**
          * @description initial websocket
@@ -64,67 +87,27 @@
                 console.log("---成功连接websocket---");
             }
 
-            WS.onmessage = function(evt) {
-                console.log("---onmessage--:", evt);
-                let data = JSON.parse(evt.data);
-                if(data.type === "offer") {
-                    answerOffer(data);
-                }else if(data.type === "offer-answer") {
-                    console.warn("offer-answer: ", data);
-                    setRemoteSDP(data);
-                }else if(data.type === "candidate") {
-                    setRemoteICE(data);
+            
+            WS.onmessage = envelope => {
+                const msgMapping = {
+                    offer: answerOffer,
+                    offerAnswer: setRemoteSDP,
+                    candidate: setRemoteICE,
                 }
+                msgHistory = document.querySelector("#msgHistory");
+                msgHistory.innerText += `${envelope.data}\n`;
+                let letter = JSON.parse(envelope.data);
+                
+                Reflect.has(msgMapping, letter.type) ? msgMapping[letter.type](letter) : "";
             }
-
-            WS.onclose = function() {
-                console.log("---已断开webSocket---");
-            }
-
-            WS.onerror = function(error) {
-                console.error(error);
-            }
-
+            WS.onclose = () => console.log("---已断开webSocket---");
+            WS.onerror = error => console.error("---websoket发生错误: ", error);
             return WS;
         }
-
-
-        /**
-         * @descript send func
-         * @param {String} type
-        */
-        function send(type) {
-            let sendName = document.querySelector("#sendName").value,
-                receiveName = document.querySelector("#receiveName").value,
-                msgHistory = document.querySelector("#msgHistory"),
-                instantMsg = document.querySelector("#instantMsg").value;
-            
-            let data = null;
-            if(type === "init") {
-                data = {type, id: sendName};
-            }else if(type === "instantMsg") {
-                try {
-                    data = {type, send: sendName, receive: receiveName, content: instantMsg};
-                    msgHistory.innerText += `${JSON.stringify(data)}\n `;
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-            WS.send(JSON.stringify(data));
-        }
-
 
         var pc = null;
 
         function initRTC() {
-
-            let sendName = document.querySelector("#sendName").value,
-                receiveName = document.querySelector("#receiveName").value,
-                msgHistory = document.querySelector("#msgHistory"),
-                instantMsg = document.querySelector("#instantMsg").value;
-
-            if(!sendName && !receiveName) return;
-
             const config = {
                 iceServers: [
                     {
@@ -179,15 +162,9 @@
 
 
             pc.onicecandidate = wapper => {
+                console.log("---获取到candidate: ", wapper.candidate);
                 if(!wapper.candidate) return;
-
-                let msg = {
-                    type: "candidate",
-                    send: sendName,
-                    receive: receiveName,
-                    content: wapper.candidate
-                }
-                WS.send(JSON.stringify(msg));
+                wsSend({type: "candidate", content: wapper.candidate});
             }
 
             pc.onnegotiationneeded = () => {
@@ -204,7 +181,6 @@
             pc.onicecandidateerror = error => {
                 console.error("---获取候选者出错: ", error);
             };
-
         }
 
         /**
@@ -216,7 +192,7 @@
             var candidate = new RTCIceCandidate(data.content);
             pc.addIceCandidate(candidate)
             .then(() => { console.log("---设置远程candidate成功--:") })
-            .catch(err => { console.error("----设置candidate出错:　", error) })
+            .catch(error => { console.error("----设置candidate出错:　", error) })
         }
 
         /**
@@ -234,25 +210,14 @@
          * @param {Object} data
         */
         function answerOffer(data) {
-            let send = document.querySelector("#sendName").value,
-                receive = document.querySelector("#receiveName").value;
-            if(!send && !receive) return;
-
             const remoteDesc = new RTCSessionDescription(data.content);
             console.log("-----remoteDesc: ----:", remoteDesc);
             pc.setRemoteDescription(remoteDesc)
             .then(function() { pc.createAnswer() })
             .then(function(answer) { return pc.setLocalDescription(answer) })
             .then(function() {
-                // console.log("---成功设置invite的remoteSDP---");
-                let data = {
-                    type: "offer-answer",
-                    send,
-                    receive,
-                    content: pc.localDescription
-                };
-                console.warn("---发送应答offer: ", JSON.stringify(data));
-                WS.send(JSON.stringify(data));
+                console.log("----发送应答offer-----");
+                wsSend({type:"offerAnswer", content: pc.localDescription});
             })
             .catch(err => { console.warn("--应答offer发生错误: ", err) })
         }
@@ -262,11 +227,6 @@
          * 
         */
         function invite() {
-            let send = document.querySelector("#sendName").value,
-                receive = document.querySelector("#receiveName").value;
-            if(!send && !receive) return;
-
-            let pc = window.pc;
             const offerOptions = { offerToReceiveVideo: 1, offerToReceiveAudio: 1};
             pc.createOffer(offerOptions)
             .then(gotDescription,noDescription );
@@ -275,16 +235,9 @@
                 console.log("---gotDescription: ", desc);
                 pc.setLocalDescription(desc)
                 .then(() => {
-                    let data = {
-                        type: "offer",
-                        send,
-                        receive,
-                        content: pc.localDescription
-                    };
-                    console.warn("--设置本地offer成功，发送offer: ", JSON.stringify(data));
-                    window.userws.send(JSON.stringify(data));
+                    console.warn("----本地准备就绪，准备发送offer----");
+                    wsSend({type:"offer", content: pc.localDescription});
                 });
-
             }
 
             function noDescription(error) {
