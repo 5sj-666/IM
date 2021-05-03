@@ -45,6 +45,7 @@
             </video><br/>
             <button onclick="initRTC()">初始化webRTC</button>
             <button onclick="invite()">发送RTCoffer</button>
+            <button onclick="closeRTC()">关闭webRTC</button>
         </div>
     </article>
 
@@ -157,7 +158,7 @@
 
             pc.ontrack = media => {
                 console.log("----接收到远程的媒体流----", media);
-                document.getElementById("video").srcObject = media.streams[0];
+                document.querySelector("#video").srcObject = media.streams[0];
             }
 
 
@@ -246,6 +247,38 @@
 
         }
 
+        function closeRTC() {
+            console.log("---关闭webRTC----");
+            var remoteVideo = document.querySelector("#video");
+            var localVideo = document.querySelector("#video-self");
+
+            if (pc) {
+                pc.ontrack = null;
+                pc.onremovetrack = null;
+                pc.onremovestream = null;
+                pc.onicecandidate = null;
+                pc.oniceconnectionstatechange = null;
+                pc.onsignalingstatechange = null;
+                pc.onicegatheringstatechange = null;
+                pc.onnegotiationneeded = null;
+
+                if (remoteVideo.srcObject) {
+                remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+                }
+
+                if (localVideo.srcObject) {
+                localVideo.srcObject.getTracks().forEach(track => track.stop());
+                }
+
+                pc.close();
+                pc = null;
+            }
+
+            remoteVideo.removeAttribute("src");
+            remoteVideo.removeAttribute("srcObject");
+            localVideo.removeAttribute("src");
+            remoteVideo.removeAttribute("srcObject");
+        }
     </script>
 </body>
 </html>
