@@ -17,6 +17,11 @@ export default defineComponent({
 </script>
 
 <style lang="stylus">
+:root {
+  --header-bg: rgb(237, 237, 237);
+}
+
+
 html, body, #app {
   margin: 0;
   padding: 0;
@@ -32,7 +37,7 @@ html {
 
 @media screen and (min-width: 375px) {
   html {
-    /* iPhone6的375px尺寸作为16px基准，414px正好18px大小, 600 20px */
+    /* 设计图是375px时候 1rem = 16px  iPhone6的375px尺寸作为16px基准，414px正好18px大小, 600 20px */
     font-size: calc(100% + 2 * (100vw - 375px) / 39);
     font-size: calc(16px + 2 * (100vw - 375px) / 39);
   }
