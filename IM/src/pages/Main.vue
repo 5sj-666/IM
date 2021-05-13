@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { reactive, watchEffect } from "vue";
+import { reactive, watchEffect, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 import SoSwiper from "../components/so-swiper";
@@ -48,6 +48,14 @@ export default {
     MainTab
   },
   setup() {
+    const Router = useRouter();
+
+    onMounted(()=>{
+      if(!localStorage.getItem('token')) 
+        Router.replace("/login")
+        // console.log("--onMounted token:", localStorage.getItem('token'));
+    })
+
     let activeIndex = reactive({
       index: 1
     });
@@ -101,7 +109,6 @@ export default {
       }
     ]);
 
-    const Router = useRouter();
     function toDialogue() {
       Router.push("/Dialogue");
     }

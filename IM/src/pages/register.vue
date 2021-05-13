@@ -2,7 +2,7 @@
     <article>
         <!-- <span>图标</span> -->
         <img @click="goBack" style="width: .96rem; height: .96rem" src="@/assets/icon/icon-close.png" alt="">
-        <div class="title">登录</div>
+        <div class="title">注册</div>
         <div class="user-input">
             <label for="">账号</label>
             <input id="account" type="text" v-model="account" placeholder="请填写账号">
@@ -12,10 +12,10 @@
             <input id="password" type="text" v-model="password" placeholder="请填写密码">
         </div>
         <div class="hint">
-            没有账号？<router-link to="/register">立即注册</router-link>
+            已有账号？<router-link to="/login">前去登录</router-link>
         </div>
-
-        <button :class='["btn-login", loginActive ? "btn-login_active" :""]' @click="commit(account, password)">登录</button>
+        
+        <button :class='["btn-login", loginActive ? "btn-login_active" :""]' @click="commit(account, password)">注册</button>
 
     </article>
 </template>
@@ -53,20 +53,15 @@ export default defineComponent({
          */
         async function commit(account, password) {
             console.log("---参数：", arguments );
-            // let res = await fetch(`/api/user/hasUser?id=${account}&pwd=${password}`);
-            // let result = await res.json();
-            // let result = await Request.get("/api/user/hasUser", {account, password});
-            let result = await Request.post("/api/user/hasUser", { data: {account, password}});
-            // let result = JSON.parse(res);
+            let result = await Request.post("/api/user/register", { data: {account, password}});
             // console.log(result);
             console.log("---fetch respond data: ", result);
 
             // console.log("--router:", Router);
             // 账号密码正确 则 将token存入本地并跳转到主页
-            if(result.ok) {
-                console.log("---登录成功");
-                localStorage.setItem('token', result.token);
-                Router.replace("/");
+            if(result.ok && result.msg === "注册成功") {
+                // localStorage.setItem('token', result.data);
+                Router.replace("/login");
             }
         }
 
