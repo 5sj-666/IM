@@ -1,9 +1,7 @@
+const {hasUserServ, addUserServ} = require("../service/userServ.js")
 const KoaRouter = require('koa-router');
-const { hasUser, addUser } = require('../model/user.js');
-var bodyParser = require('koa-bodyparser');
 
 const userCtrol = new KoaRouter({prefix: '/api/user'}); // 实例化路由
-const {hasUserServ, addUserServ} = require("../service/userServ.js")
 
 userCtrol.post("/hasUser", async (ctx, next) => {
     let data = ctx.request.body;
@@ -22,8 +20,3 @@ userCtrol.post('/register', async ctx=>{
 });
 
 module.exports = { userCtrol };
-
-
-
-
-      
