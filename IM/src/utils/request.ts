@@ -26,13 +26,14 @@ let Request:Object = {
         return res.json();
     },
 
-    async post(url:string, options:reqOptions):Promise<respond> {
+    async post(url:string, options:reqOptions = {}):Promise<respond> {
         console.log("Request post param: ", arguments);
 
         let res = await fetch(url, {
             body: JSON.stringify(options.data),
             headers:  {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                'token': localStorage.getItem('token') || "",
             },
             method: 'POST', 
         });

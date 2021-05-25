@@ -1,6 +1,10 @@
+// function resolve(dir){
+//   return path.join(__dirname, dir)
+// }
+
 module.exports = {
-    publicPath: './',
-    assetsDir: './',
+    // publicPath: './',
+    // assetsDir: './',
       //vue-cli3.0 里面的 vue.config.js做配置
     devServer: {
       proxy: {
@@ -14,5 +18,9 @@ module.exports = {
               }
           }
       }
-    }
+    },
+    // chainWebpack(config) {
+    //   config.resolve.alias
+    //       .set('components', resolve('src/components'))
+    // }
 }

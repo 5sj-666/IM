@@ -4,7 +4,8 @@
   "description": "koa project",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node ./src/index.js"
   },
   "keywords": [
     "IM"

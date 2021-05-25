@@ -5,7 +5,8 @@ async function friendListServ(account) {
     // return getFriendList("admin");
 
     console.log("---friendListServ: ", account);
-    return {ok: true, status: 200, data: getFriendList(account)};
+    // return {ok: true, status: 200, data: await getFriendList(account)};
+    return await getFriendList(account);
 
 }
 

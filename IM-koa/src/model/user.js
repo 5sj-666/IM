@@ -1,11 +1,11 @@
 //数据层
 const { query } = require('../utils/DB-access')
 
-let tableName = 'wechatuser';
+let tableName = 'user';
 
 async function hasUser (account, password) {
     console.log("--hasUser param:", arguments);
-    let sql = `SELECT * FROM ${tableName} where weChatId = '${account}' and password = '${password}'`;
+    let sql = `SELECT * FROM ${tableName} where account = '${account}' and password = '${password}'`;
     console.log("--hasUser sql:　", sql);
     let result = await query( sql );
     console.log( "查询结果: ", result);
@@ -16,7 +16,7 @@ async function addUser(account, password) {
     console.log("--registerUser param:", arguments);
     //表结构 weChatId weChatName imgURL password 
     try {
-        let sql = `insert into ${tableName} values ('${account}', '', '', '${password}', Null) `;
+        let sql = `insert into ${tableName} values ('${account}', '${password}', '', '',  Null) `;
         let result = await query( sql );
         console.log( "新增用户结果: ", JSON.stringify(result));
         if(result.affectedRows === 1) {

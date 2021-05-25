@@ -12,7 +12,7 @@
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
                <div class="message">消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容</div>
            </div>
-           <div class="msg-item other">
+           <div class="msg-item other" @click="goToProfile()">
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
                <div class="message">消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容</div>
            </div>
@@ -38,7 +38,12 @@ export default defineComponent({
             // console.log("---context: ", context);
             Router.go(-1);
         }
-        return {goBack}
+
+        function goToProfile() {
+            Router.push("/dialogue/profile");
+        }
+
+        return {goBack, goToProfile}
 
     }
 })

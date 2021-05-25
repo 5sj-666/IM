@@ -6,6 +6,7 @@ import Main from "@/pages/Main.vue";
 import NotFound from "@/pages/NotFound.vue"
 
 import Dialogue from "@/pages/Chats/Dialogue.vue"
+import Profile from "@/pages/Chats/Profile.vue"
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
     path: "/dialogue",
     name: "Dialogue",
     component: Dialogue
+  },
+  {
+    path: "/dialogue/profile",
+    name: "Profile",
+    component: Profile
   },
   {
     path: "/notFound",

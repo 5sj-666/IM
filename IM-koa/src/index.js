@@ -8,11 +8,17 @@ var bodyParser = require('koa-bodyparser');
 
 const { userCtrol } =  require("./control/userCtrol.js");
 
+const { friendCtrol } =  require("./control/friendCtrol.js");
+
+
 app.use(bodyParser());
+
 
 app.use(router.routes())//启动路由
 
 app.use(userCtrol.routes());
+
+app.use(friendCtrol.routes());
 
 app.use(async (ctx) => {
   ctx.set('Content-Type', 'application/json');
