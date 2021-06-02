@@ -5,11 +5,11 @@
         </header> -->
         <libre-header />
 
-
+        {{$route.params}}
         个人信息页面!!
 
-        <div class="profile-btn">发消息</div>
-        <div class="profile-btn">音视频通话</div>
+        <div class="profile-btn" @click="Router.push('/dialogue/'+$route.params.userId)">发消息</div>
+        <div class="profile-btn" @click="Router.push('/dialogue/videoCall/'+$route.params.userId)">音视频通话</div>
 
     </article>
 </template>
@@ -31,7 +31,7 @@ export default defineComponent({
         function goBack() {
             Router.go(-1);
         }
-        return { goBack }
+        return { goBack, Router }
     },
 })
 

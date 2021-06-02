@@ -7,6 +7,7 @@ import NotFound from "@/pages/NotFound.vue"
 
 import Dialogue from "@/pages/Chats/Dialogue.vue"
 import Profile from "@/pages/Chats/Profile.vue"
+import videoCall from "@/pages/Chats/VideoCall.vue"
 
 const routes = [
   {
@@ -39,14 +40,19 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../pages/About.vue")
   },
   {
-    path: "/dialogue",
+    path: "/dialogue/:userId",
     name: "Dialogue",
     component: Dialogue
   },
   {
-    path: "/dialogue/profile",
+    path: "/dialogue/profile/:userId", // /users/:username
     name: "Profile",
     component: Profile
+  },
+  {
+    path: "/dialogue/videoCall/:userId",
+    name: "VideoCall",
+    component: videoCall
   },
   {
     path: "/notFound",

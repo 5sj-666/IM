@@ -19,21 +19,105 @@
         </section>
         <footer>
             <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-voice.png" alt="">
-            <input type="text">
-            <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-grin.png" alt="">
-            <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-plus.png" alt="">
+            <input type="text" v-model="content">
+            <!-- <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-grin.png" alt="">
+            <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-plus.png" alt=""> -->
+            <button class="btn-send" @click.stop="send()">发送</button>
         </footer>
     </article>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useRouter } from "vue-router";
+import { defineComponent, reactive, ref } from 'vue';
+// import { defineComponent } from 'vue';
+import { useRouter, useRoute } from "vue-router";
+
+interface message {
+    sender: string,
+    recipient?: string,
+    type: string,
+    content: Object
+}
 
 export default defineComponent({
     name: 'DialoguePage',
     setup() {
         const Router = useRouter();
+        const Route = useRoute();
+        console.log( "---Route: ",  Route.params );
+        // const data = reactive([]);
+
+        let WS = initWS();
+        function initWS():any {
+            if(!Reflect.has(window, "WebSocket")) {
+                console.log("浏览器不支持websocket!!");
+                return;
+            }
+
+            let WS = new WebSocket("ws://127.0.1:3000");
+            // window.userws = WS;
+            WS.onopen = function() {
+                console.log("---成功连接websocket---");
+            };
+            
+            WS.onmessage = envelope => {
+                console.log("--envelope", envelope);
+
+                
+
+                // const msgMapping = {
+                //     offer: answerOffer,
+                //     offerAnswer: setRemoteSDP,
+                //     candidate: setRemoteICE,
+                // }
+                // msgHistory = document.querySelector("#msgHistory");
+                // msgHistory.innerText += `${envelope.data}\n`;
+                // let letter = JSON.parse(envelope.data);
+                
+                // Reflect.has(msgMapping, letter.type) ? msgMapping[letter.type](letter) : "";
+            };
+            WS.onclose = () => console.log("---已断开webSocket---");
+            WS.onerror = error => console.error("---websoket发生错误: ", error);
+            return WS;
+        }
+
+        /**
+         * @description 对websocket发送事件做封装
+         * @param {Object} data 数据结构: {type: String, content: String}
+        */
+       function wsSend(data:message) {
+            // const letter:message = {
+            //     sender: '',
+            //     recipient: '',
+            //     type: '',
+            //     content:'',
+            // }
+            const letter = JSON.stringify(data);
+            console.log("letter: ", letter);
+            WS.send(letter);
+        }
+        // function wsSend(data) {
+        //     let sender = document.querySelector("#sender").value,
+        //         recipient = document.querySelector("#recipient").value,
+        //         msgHistory = document.querySelector("#msgHistory");
+
+        //     //特殊情况: 初始化(init)时候不需要接收者
+        //     if(!sender || (!recipient && data.type !== "init")) {
+        //         alert(`${sender ? '接收者' : '发送者'}不能为空！`);
+        //         return;
+        //     }
+
+        //     let letter = JSON.stringify({...data, sender, recipient});
+        //     msgHistory.innerText += `${letter}\n`
+        //     WS.send(letter);
+        // }
+
+        var sender = localStorage.getItem("token");
+        var recipient = Route.params.userId;
+
+        var content = ref("");
+
+
         function goBack() {
             // console.log("---context: ", context);
             Router.go(-1);
@@ -43,7 +127,13 @@ export default defineComponent({
             Router.push("/dialogue/profile");
         }
 
-        return {goBack, goToProfile}
+        function send() {
+            console.log("---send event---", content.value);
+            wsSend({sender: sender+"",recipient: recipient+"",type: "message", content: {value: content.value} })
+            content.value = "";
+        }
+
+        return {goBack, goToProfile, send, content}
 
     }
 })
@@ -148,5 +238,8 @@ export default defineComponent({
         grid-template-columns: 2rem auto 2rem 2rem;
         align-items: center;
         background-color: rgb(237, 237, 237);
+    }
+    .btn-send {
+        grid-column: 3 / 5;
     }
 </style>

@@ -37,7 +37,7 @@ import Discover from "./Main/Discover";
 import Me from "./Main/Me";
 import MainTab from "../components/main-tab";
 
-import Request from "@/utils/request"
+// import Request from "@/utils/request"
 
 export default {
   name: "Main",
@@ -58,14 +58,14 @@ export default {
         // console.log("--onMounted token:", localStorage.getItem('token'));
 
 
-        getFriendList();
+        // getFriendList();
     })
 
-    async function getFriendList() {
-      console.log("---getFriendList");
-      let res = await Request.post("/api/friend/getFriendList");
-      console.log("---getFriendList: ", res);
-    }
+    // async function getFriendList() {
+    //   console.log("---getFriendList");
+    //   let res = await Request.post("/api/friend/getFriendList");
+    //   console.log("---getFriendList: ", res);
+    // }
 
     let activeIndex = reactive({
       index: 1
