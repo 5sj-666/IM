@@ -3,6 +3,7 @@ import App from './App.vue'
 
 import { createRouter, createWebHistory } from "vue-router";
 import routes from "./router";
+import store from "./store"
 import './registerServiceWorker';
 import '@/utils/ws'
 
@@ -62,4 +63,5 @@ const router = createRouter({history: createWebHistory(), routes: routes});
 
 createApp(App)
     .use(router)
+    .use(store)
     .mount('#app');
