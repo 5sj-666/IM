@@ -1,7 +1,7 @@
 // import { createApp } from 'vue'
 import { createStore } from 'vuex'
 
-import wsStore from "./wsStore"
+import wsStore from "./wsStore.js"
 
 // 创建一个新的 store 实例
 const store = createStore({

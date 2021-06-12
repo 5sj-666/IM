@@ -1,12 +1,6 @@
 <template>
     <article class="dialogue">
-        <header>
-            <!-- <span @click="goBack">图标</span> -->
-            <img @click="goBack" style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-back.png" alt="">
-            <div>名称</div>
-            <!-- <span>图标</span> -->
-            <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-ellipsis.png" alt="">
-        </header>
+        <li-header :title="Route.params.userId"/>
         <section class="msg-content">
            <!-- <div class="msg-item self">
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
@@ -17,10 +11,10 @@
                <div class="message">消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容</div>
            </div> -->
            <div 
-                v-for="(item, index) in msgList" 
-                :key="index" 
-                class="msg-item other" 
-                :class="item.sender && item.sender.length > 100 ? 'self': ''" 
+                v-for="(item, index) in msgLis.t" 
+                :key="index"
+                class="msg-item" 
+                :class="item.sender && item.sender.length > 100 ? 'self': 'other'" 
                 @click="goToProfile()" >
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
                <div class="message">{{item.content}}</div>
@@ -41,8 +35,9 @@ import { defineComponent, reactive, ref, computed } from 'vue';
 // import { defineComponent } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
+import LibreHeader from '../../components/libre-header.vue';
 
-    interface message {
+    interface Message {
         sender: string,
         recipient?: string,
         type: string,
@@ -51,6 +46,9 @@ import { useStore } from "vuex";
 
 export default defineComponent({
     name: 'DialoguePage',
+    components: {
+        LiHeader: LibreHeader
+    },
     setup() {
         const Router = useRouter();
         const Route = useRoute();
@@ -58,7 +56,7 @@ export default defineComponent({
         const store = useStore();
         console.log("---store.state: ", store);
         // store.dispatch('wsStore/initWS');
-        store.dispatch('wsStore/initWS');
+        // store.dispatch('wsStore/initWS');
 
         // console.log()
         // const data = reactive([]);
@@ -138,7 +136,7 @@ export default defineComponent({
         // var msgList = ref(new Array());
         var msgList = computed(() => {
                 // console.warn("----msgList store: ", store);
-                return store.state.wsStore.msgHistory.filter(msg => msg.sender === recipient || msg.recipient === recipient);
+                return store.state.wsStore.msgHistory.filter((msg:Message) => msg.sender === recipient || msg.recipient === recipient);
             }
         );
 
@@ -169,7 +167,7 @@ export default defineComponent({
             content.value = "";
         }
 
-        return {goBack, goToProfile, send, content, msgList};
+        return {goBack, goToProfile, send, content, msgList, Route};
 
     }
 })
@@ -246,6 +244,7 @@ export default defineComponent({
         min-height: 100%;
         background: greenyellow;
         border-radius: .5rem;
+        line-height: 2rem;
         word-break: break-all;
     }
     .message::before {

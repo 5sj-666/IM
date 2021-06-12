@@ -1,7 +1,12 @@
 <template>
     <header class="libre-header">
-        <img @click="goBack" style="width: 1.4rem; height: 1.4rem" src="../assets/icon/icon-back.png" alt="" />
-        <span>标题</span>
+        <img 
+            class="icon-goback"
+            src="@/assets/icon/icon-back.png" 
+            @click="goBack" 
+            alt="返回图标" 
+        />
+        <span>{{props.title}}</span>
         <span>图标</span>
     </header>
 </template>
@@ -10,13 +15,17 @@ import {useRouter} from "vue-router"
 
 export default {
     name: "LibreHeader",
-    setup() {
+    props: {
+        title: String
+    },
+    setup(props) {
         const Router = useRouter();
+        // console.log("---libreHeader: props: ", props.title);
 
         function goBack() {
             Router.go(-1);
         }
-        return { goBack }
+        return { goBack, props}
     },
 }
 </script>
@@ -27,6 +36,11 @@ export default {
         grid-template-columns: 3rem auto 3rem;
         align-items: center;
         background-color: var(--header-bg, #FFF);
+    }
+
+    .icon-goback {
+        width: 1.4rem;
+        height: 1.4rem
     }
 
 </style>
