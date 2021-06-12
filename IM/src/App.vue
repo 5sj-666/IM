@@ -1,6 +1,17 @@
 <template>
   <!-- <main-page></main-page> -->
-  <router-view />
+
+<!-- 
+  <keep-alive include="Main">
+    <router-view />
+  </keep-alive>
+  <router-view /> -->
+   <router-view v-slot="{ Component }">
+      <keep-alive :include="['Main']">
+          <component :is="Component" />
+      </keep-alive>
+  </router-view>
+
 </template>
 
 <script lang="ts">

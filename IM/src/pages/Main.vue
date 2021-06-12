@@ -27,8 +27,9 @@
 </template>
 
 <script>
-import { reactive, watchEffect, onMounted } from "vue";
+import { reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 import SoSwiper from "../components/so-swiper";
 import Chats from "./Main/Chats";
@@ -50,16 +51,32 @@ export default {
     MainTab
   },
   setup() {
-    const Router = useRouter();
+    const Router = useRouter(),
+          store = useStore();
+    
 
     onMounted(()=>{
       if(!localStorage.getItem('token')) 
         Router.replace("/login")
         // console.log("--onMounted token:", localStorage.getItem('token'));
-
-
+        console.log("---Main onMounted!!");
         // getFriendList();
+
+        // 在此初始化websocket连接
+        store.dispatch('wsStore/initWS', {Router: Router})
+
+    });
+
+    onActivated(()=> {
+      console.log("---MAIN onActivated");
+    });
+    onDeactivated(()=> {
+      console.log("---MAIN onDeactivated");
     })
+
+    onBeforeUnmount(() =>{
+      console.log("---MAIN onBeforeUnmount");
+    });
 
     // async function getFriendList() {
     //   console.log("---getFriendList");

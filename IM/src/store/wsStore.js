@@ -1,6 +1,3 @@
-// import { createApp } from 'vue'
-import { createStore } from 'vuex'
-
 const SET_WS = 'SET_WS';
 const SET_MSGHISTORY = "SET_MSGHISTORY";
 
@@ -34,7 +31,7 @@ const store = {
     state () {
       return {
         WS: {},
-        url: "ws://127.0.1:3000",
+        // url: "ws://127.0.1:3000",
 
         msgHistory: [],
       }
@@ -51,13 +48,14 @@ const store = {
       }
     },
     actions: {
-      initWS({ commit, state }) {
+      initWS({ commit, state }, payload) {
         if(!Reflect.has(window, "WebSocket")) {
             console.log("浏览器不支持websocket!!");
             return;
         }
         // commit(SET_WS, new WebSocket("ws://127.0.1:3000"))
         let WS = new WebSocket("ws://127.0.1:3000");
+        // let WS = new WebSocket("ws://47.103.151.107:80");
 
         WS.onopen = function() {
           console.log("---成功连接websocket---");
@@ -75,6 +73,19 @@ const store = {
           if(msg.type === "feedBack") {
             //todo 
           }else {
+            //如果接收到的是 视频邀请信息， 则直接打开视频会话组件
+            if(msg.type === "videoInvate") {
+
+              console.log("---接收到视频邀请");
+              // Router.push({path: '', query: {}});
+              // console.log("---store ws: initWs payload: ", payload);
+              payload.Router.push({
+                path: `/dialogue/videoCall/${msg.sender}`,
+                query: {type: "answer"}
+              });
+
+
+            }
             commit(SET_MSGHISTORY, msg);
           }
         }

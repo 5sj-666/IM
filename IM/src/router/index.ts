@@ -13,7 +13,10 @@ const routes = [
   {
     path: "/",
     name: "Main",
-    component: Main
+    component: Main,
+    meta: { 
+      keepAlive: true
+    }
   },
   {
     path: "/login",
