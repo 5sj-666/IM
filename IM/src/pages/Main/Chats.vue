@@ -1,7 +1,7 @@
 <template>
   <article class="charts-container">
-    <!-- <div>Chats</div> -->
-    <div class="chat-cell">
+    <div>Chats</div>
+    <!-- <div class="chat-cell">
       <div class="chat-cell-avatar">
         <img src="../../assets/img/avatar.jpg" alt />
       </div>
@@ -10,7 +10,7 @@
         <div class="chat-cell-content">contentcontentcontentcontentcontentcontentcontentcontent</div>
       </div>
       <div class="chat-cell-time">早上8:58</div>
-    </div>
+    </div> -->
   </article>
 </template>
 

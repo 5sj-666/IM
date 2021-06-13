@@ -27,8 +27,9 @@
 </template>
 
 <script>
-import { reactive, watchEffect } from "vue";
+import { reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 import SoSwiper from "../components/so-swiper";
 import Chats from "./Main/Chats";
@@ -36,6 +37,8 @@ import Contacts from "./Main/Contacts";
 import Discover from "./Main/Discover";
 import Me from "./Main/Me";
 import MainTab from "../components/main-tab";
+
+// import Request from "@/utils/request"
 
 export default {
   name: "Main",
@@ -48,6 +51,39 @@ export default {
     MainTab
   },
   setup() {
+    const Router = useRouter(),
+          store = useStore();
+    
+
+    onMounted(()=>{
+      if(!localStorage.getItem('token')) 
+        Router.replace("/login")
+        // console.log("--onMounted token:", localStorage.getItem('token'));
+        console.log("---Main onMounted!!");
+        // getFriendList();
+
+        // 在此初始化websocket连接
+        store.dispatch('wsStore/initWS', {Router: Router})
+
+    });
+
+    onActivated(()=> {
+      console.log("---MAIN onActivated");
+    });
+    onDeactivated(()=> {
+      console.log("---MAIN onDeactivated");
+    })
+
+    onBeforeUnmount(() =>{
+      console.log("---MAIN onBeforeUnmount");
+    });
+
+    // async function getFriendList() {
+    //   console.log("---getFriendList");
+    //   let res = await Request.post("/api/friend/getFriendList");
+    //   console.log("---getFriendList: ", res);
+    // }
+
     let activeIndex = reactive({
       index: 1
     });
@@ -101,7 +137,6 @@ export default {
       }
     ]);
 
-    const Router = useRouter();
     function toDialogue() {
       Router.push("/Dialogue");
     }
