@@ -6,6 +6,15 @@ const RTC = {
     mediaInvite,
     setRemoteSDP,
     answerOffer,
+    setRemoteICE,
+
+    getLocalMedia,
+
+    ontrack,
+    onicecandidate,
+    onnegotiationneeded,
+    onicegatheringstatechange,
+    onicecandidateerror,
 }
 
 /**
@@ -71,6 +80,99 @@ function answerOffer(state, data) {
     .catch(err => { console.warn("--应答offer发生错误: ", err) })
 }
 
+/**
+ * @description 将接收到的候选者icecandidate添加到pc(peerConnection)中
+ * @param {Object} data icecandidate
+ */
+function setRemoteICE(state, msg) {
+    // console.log("---接收到candidate: ", data);
+    var candidate = new RTCIceCandidate(msg.content);
+    state.RTC.addIceCandidate(candidate)
+    .then(() => { console.log("---设置远程candidate成功--:") })
+    .catch(error => { console.error("----设置candidate出错:　", error) })
+}
+
+function getLocalMedia(pc) {
+    let mediaConstraints = {audio: true, video: true};
+
+    navigator.mediaDevices.getUserMedia(mediaConstraints)
+    .then(function(localStream) {
+        console.log("---获取本地媒体权限---");
+        // let videoSelf = document.querySelector("#video-self");
+        // videoSelf.srcObject = localStream;
+        console.warn("RTCinit ->　videoSelf", document.querySelector("#selfVideo"));
+
+        document.querySelector("#selfVideo").srcObject = localStream;
+        console.warn("---获取到本地视频流");
+        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+    })
+    .catch(handleGetUserMediaError);
+
+    function handleGetUserMediaError(e) {
+        switch(e.name) {
+            case "NotFoundError":
+                alert("Unable to open your call because no camera and/or microphone were found.");
+                break;
+            case "SecurityError":
+                break;
+            case "PermissionDeniedError":
+                // Do nothing; this is the same as the user canceling the call.
+                break;
+            default:
+                alert("Error opening your camera and/or microphone: " + e.message);
+                break;
+        }
+        // closeVideoCall();
+    }
+
+}
+
+
+function ontrack(media) {
+    console.warn("----接收到远程的媒体流----", media);
+    // document.getElementById("video").srcObject = media.streams[0];
+    document.querySelector("#friendVideo").srcObject = media.streams[0];
+}
+  
+
+
+/**
+ * @description 但接收到icecandidate时，将其发送给对方
+ * @param {object} state  store/wsStore.state
+ * @param {} wrapper 
+ * @returns  
+ */
+function onicecandidate(state, payload, wrapper) {
+    console.warn("---utils RTC: 获取到candidate: ", wrapper.candidate);
+    if(!wrapper.candidate) return;
+    // wsSend({type: "candidate", content: wrapper.candidate});
+
+    let letter = {
+        sender: localStorage.getItem("token"),
+        recipient: payload.recipient,
+        type: "candidate",
+        content: wrapper.candidate
+    }
+    
+
+    state.WS.send(JSON.stringify(letter));
+}
+
+
+function onnegotiationneeded() {
+    console.warn("---协商连接事件----")
+    // console.warn("----WebRTC基础结构需要你重新启动会话协商过程onnegotiationneeded---");
+}
+
+function onicegatheringstatechange(pc) {
+    //非必要实现功能 除非你有特别的需求需要监视候选者的状态
+    if (pc.iceGatheringState !== 'complete') return;
+    console.warn("----onicecandidate获取结束 gatheringStateChange: ");
+}
+
+function onicecandidateerror() {
+    console.error("---获取候选者出错: ", error);
+}
 
 
 
@@ -78,3 +180,17 @@ function answerOffer(state, data) {
 
 
 export default RTC;
+
+export {
+    mediaInvite,
+    setRemoteSDP,
+    answerOffer,
+
+    getLocalMedia,
+
+    ontrack,
+    onicecandidate,
+    onnegotiationneeded,
+    onicegatheringstatechange,
+    onicecandidateerror,
+}
