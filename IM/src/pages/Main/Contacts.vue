@@ -31,9 +31,13 @@
         @click="Router.push('/dialogue/profile/'+item.friend)"
     >
       <!-- <template v-slot:default> -->
-          <img
+          <!-- <img
             style="width: 2.34rem;height: 2.34rem;border-radius:0.17rem 0.17rem;"
             :src="'http://localhost:3000/avatar/'+item.avatar"
+          /> -->
+          <img
+            style="width: 2.34rem;height: 2.34rem;border-radius:0.17rem 0.17rem;"
+            :src="'process.env.VUE_APP_AVATAR_URL/avatar/'+item.avatar"
           />
         <!-- </template> -->
     </so-cell>
@@ -69,7 +73,7 @@
 
 <script>
 import SoCell from "@/components/so-cell.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref} from "vue";
 
 import {useRouter} from 'vue-router'
 
@@ -118,6 +122,8 @@ export default {
     SoCell
   },
   setup() {
+    // console.log("---contact process.env.VUE_APP_AVATAR_URL: ", process.env.VUE_APP_AVATAR_URL);
+
     const Router = useRouter();
 
     const systemContacts = [

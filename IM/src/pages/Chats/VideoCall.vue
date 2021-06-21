@@ -1,9 +1,11 @@
 <template>
     <article class="video-call">
         <!-- 视频通话页面 -->
-        <video src="@/assets/video/video-mobile.mp4" autoplay muted loop>
-            <!-- 浏览器不支持video -->
-        </video>
+        <!-- <video src="@/assets/video/video-mobile.mp4" autoplay muted loop ref="selfVideo"></video>
+        <video class="friend-video" src="@/assets/video/video-mobile.mp4" autoplay muted loop ref="friendVideo" ></video> -->
+        <video id="selfVideo" src="" autoplay muted loop ref="selfVideo"></video>
+        <video id="friendVideo" class="friend-video" src="" autoplay muted loop ref="friendVideo" ></video>
+
         <!-- <div class="goBack()">返回</div> -->
         <section class="floating-invite" v-if="status === 'invate'">
             <div class="invite-header">
@@ -28,7 +30,7 @@
                 <img class="invate-avatar" src="@/assets/img/avatar.jpg" alt="">
             </div>
             <div class="invite-footer">
-                <button class="btn-voice_invite">接听</button>
+                <button class="btn-voice_invite"  @click="videoAnswer()">接听</button>
                 <button class="btn-cancel" @click="goBack()">挂断</button>
             </div>
         </section>
@@ -59,29 +61,67 @@
 <script>
 import { ref, onMounted } from "vue";
 import {useRouter, useRoute} from "vue-router";
+import { useStore } from "vuex";
 
 export default {
     name:"VideoCall",
     setup() {
        // status: ""; //"call"、"answer"、"videoing"
-        const Router = useRouter();
-        const Route = useRoute();
+        const Router = useRouter(),
+              Route = useRoute(),
+              Store = useStore();
         console.log( "-VideoCall Pagae Route: ",  Route.query );
+
+        const selfVideo = ref();
+        const friendVideo = ref();
 
          // status = ["invate", 'answer', "doing"]
         let status = ref("invate");
 
         onMounted(() => {
+
+            console.log("--videoCall selfVideo: ", selfVideo);
+
+
+
             status.value = Route.query.type;
+            //
+            try {
+                Store.dispatch("wsStore/initRTC", {
+                    selfVideo,
+                    friendVideo,
+                    recipient: Route.params.userId,
+                });
+            } catch (error) {
+                console.error(error);
+            }
+
+
         })
 
         function goBack() {
             Router.go(-1);
         }
 
+        function videoAnswer() {
+            
+            let letter = {
+                // sender: localStorage.getItem("token"),
+                recipient: Route.params.userId,
+                type: "videoAnswer",
+                content: "receive",
+            }
+
+            Store.dispatch("wsStore/wsSend", letter);
+
+            //Store.dispatch("wsStore/wsSend", letter);
+
+
+            // store.dispatch("wsStore/wsSend", letter);
+        }
        
 
-        return {goBack, status}
+        return {goBack, status, videoAnswer, selfVideo, friendVideo}
         // return {status};
     }
 }
@@ -94,9 +134,19 @@ export default {
         color: #FFF;
         background-color: #000;
     }
-    .video-call video {
+    video {
         width: 100%;
         height: 100%;
+        background: cyan;
+    }
+    .friend-video {
+        position: fixed;
+        right: 0;
+        top: 30%;
+        width: 30%;
+        height: 40%;
+        background: orange;
+
     }
     .floating-invite, .floating-answer {
         position: absolute;
