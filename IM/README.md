@@ -22,3 +22,7 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+## 在非HTTPS和localhost环境下  navigator.mediaDevices属性为undefined问题:
+see (https://www.cnblogs.com/Wayou/p/using_MediaDevices_getUserMedia_wihtout_https.html)

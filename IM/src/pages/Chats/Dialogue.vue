@@ -11,7 +11,7 @@
                <div class="message">消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容</div>
            </div> -->
            <div 
-                v-for="(item, index) in msgLis.t" 
+                v-for="(item, index) in msgList" 
                 :key="index"
                 class="msg-item" 
                 :class="item.sender && item.sender.length > 100 ? 'self': 'other'" 
