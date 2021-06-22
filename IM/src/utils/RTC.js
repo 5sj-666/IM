@@ -21,7 +21,8 @@ const RTC = {
  * 视频邀请函数
  * @param {*} state 
  */
-function mediaInvite(state) {
+function mediaInvite(context) {
+    let { state, dispatch } = context;
     console.warn("---mediaInvite state: ", state);
     const offerOptions = { offerToReceiveVideo: 1, offerToReceiveAudio: 1};
     state.RTC.createOffer(offerOptions)
@@ -33,12 +34,13 @@ function mediaInvite(state) {
         .then(() => {
             console.warn("----本地准备就绪，准备发送offer----");
             let letter = {
-              sender: localStorage.getItem("token"),
+            //   sender: localStorage.getItem("token"),
               recipient: state.mediaRecipient,
               type:"offer", 
               content: state.RTC.localDescription
             }
-            state.WS.send(JSON.stringify(letter));
+            // state.WS.send(JSON.stringify(letter));
+            dispatch("wsSend", letter)
         });
     }
 
@@ -51,7 +53,8 @@ function mediaInvite(state) {
  * @description 将接收到的awseroffer的SDP设置到本地pc上
  * @param {Object} data
  */
-function setRemoteSDP(state, data) {
+function setRemoteSDP(context, data) {
+    let { state } = context;
     const remoteDesc = new RTCSessionDescription(data.content);
     state.RTC.setRemoteDescription(remoteDesc)
     .then(()=>{ console.log("---invite成功设置远程SDP"); });
@@ -61,7 +64,8 @@ function setRemoteSDP(state, data) {
  * @description 回复offer
  * @param {Object} data
  */
-function answerOffer(state, data) {
+function answerOffer(context, data) {
+    let { state, dispatch } = context;
     const remoteDesc = new RTCSessionDescription(data.content);
     console.warn("-----回复offer remoteDesc: ----:", remoteDesc);
     state.RTC.setRemoteDescription(remoteDesc)
@@ -70,12 +74,13 @@ function answerOffer(state, data) {
     .then(function() {
         console.log("----发送应答offer-----");
         let letter = {
-          sender: localStorage.getItem("token"),
+        //   sender: localStorage.getItem("token"),
           recipient: state.mediaRecipient,
           type:"offerAnswer", 
           content: state.RTC.localDescription
         }
-        state.WS.send(JSON.stringify(letter));
+        // state.WS.send(JSON.stringify(letter));
+        dispatch("wsSend", letter)
     })
     .catch(err => { console.warn("--应答offer发生错误: ", err) })
 }
@@ -84,7 +89,8 @@ function answerOffer(state, data) {
  * @description 将接收到的候选者icecandidate添加到pc(peerConnection)中
  * @param {Object} data icecandidate
  */
-function setRemoteICE(state, msg) {
+function setRemoteICE(context, msg) {
+    let { state } = context;
     // console.log("---接收到candidate: ", data);
     var candidate = new RTCIceCandidate(msg.content);
     state.RTC.addIceCandidate(candidate)
@@ -142,20 +148,21 @@ function ontrack(media) {
  * @param {} wrapper 
  * @returns  
  */
-function onicecandidate(state, payload, wrapper) {
+function onicecandidate(context, payload, wrapper) {
+    let {state, dispatch} = context;
     console.warn("---utils RTC: 获取到candidate: ", wrapper.candidate);
     if(!wrapper.candidate) return;
     // wsSend({type: "candidate", content: wrapper.candidate});
 
     let letter = {
-        sender: localStorage.getItem("token"),
+        // sender: localStorage.getItem("token"),
         recipient: payload.recipient,
         type: "candidate",
         content: wrapper.candidate
     }
     
-
-    state.WS.send(JSON.stringify(letter));
+    dispatch("wsSend", letter);
+    // state.WS.send(JSON.stringify(letter));
 }
 
 

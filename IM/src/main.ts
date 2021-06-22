@@ -5,7 +5,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import routes from "./router";
 import store from "./store"
 import './registerServiceWorker';
-import '@/utils/ws'
 
 // import image form "@/assets/logo.png"
 
