@@ -30,7 +30,8 @@ const store = {
 
     },
     actions: {
-      initWS({ commit, state }, payload) {
+      initWS(context, payload) {
+        let { commit, state, dispatch } = context;
         console.log("----initWS state: ", state);
         let pc = state.RTC;
         // let pc = state.RTC;
@@ -38,19 +39,18 @@ const store = {
             console.log("浏览器不支持websocket!!");
             return;
         }
-        // commit(SET_WS, new WebSocket("ws://127.0.1:3000"))
-        // let WS = new WebSocket("ws://127.0.1:3000");
-        // let WS = new WebSocket("ws://47.103.151.107:443");
+
         console.log("---WEBSOCKET_URL process.env.WEBSOCKET_URL", process.env);
         let WS = new WebSocket(process.env.VUE_APP_WEBSOCKET_URL);
 
         WS.onopen = function() {
           console.log("---成功连接websocket---");
-          let data = {
-            sender: localStorage.getItem("token"), 
-            type: "init"
-          }
-          WS.send(JSON.stringify(data));
+          // let data = {
+          //   sender: localStorage.getItem("token"), 
+          //   type: "init"
+          // }
+          // WS.send(JSON.stringify(data));
+          dispatch("wsSend", {type: "init"});
         };
 
         WS.onmessage = envelope => {
@@ -68,7 +68,7 @@ const store = {
           }
           
           if(Reflect.has(msgMapping, msg.type)) {
-            msgMapping[msg.type](state, msg);
+            msgMapping[msg.type](context, msg);
           }else {
             //如果接收到的是 视频邀请信息， 则直接打开视频会话组件
             if(msg.type === "videoInvate") {
@@ -89,11 +89,14 @@ const store = {
 
         commit(SET_WS, WS)
       },
+
       wsSend({ state, commit } , letter) {
         console.log("---wsSend: ", letter);
         letter.sender = localStorage.getItem("token");
-        commit(SET_MSGHISTORY, letter);
+
         state.WS.send(JSON.stringify(letter));
+        //将数据存入本地聊天记录中
+        commit(SET_MSGHISTORY, letter);
         // console.log("--wsSend state:", state.WS)
 
       },
@@ -103,12 +106,11 @@ const store = {
        * @param {*} param0 
        * @param {object} payload  localVideo， friendVideo, recipient
        */
-      initRTC({ commit , state }, payload) {
+      initRTC(context, payload) {
+        let {state} = context;
         state.mediaRecipient = payload.recipient;
-
         // console.log("---初始化webRTC", window, navigator);
         console.log("---payload: ", payload);
-        // payload.localVideo.value.srcObject = "@/assets/video/video-mobile.mp4";
 
         let pc = {};
         const config = {
@@ -128,16 +130,12 @@ const store = {
           iceCandidatePoolSize:"0"
         };
         pc = new RTCPeerConnection(config);
-
         utilRTC.getLocalMedia(pc);
         pc.ontrack = utilRTC.ontrack;
-
-        pc.onicecandidate = utilRTC.onicecandidate.bind(this, state, payload)
-
+        pc.onicecandidate = utilRTC.onicecandidate.bind(this, context, payload)
         pc.onnegotiationneeded = utilRTC.onnegotiationneeded;
         pc.onicegatheringstatechange = utilRTC.onicegatheringstatechange.bind(this, pc);
         pc.onicecandidateerror = utilRTC.onicecandidateerror;
-
 
         state.RTC = pc;
       }
