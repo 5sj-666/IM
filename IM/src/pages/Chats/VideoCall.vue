@@ -3,8 +3,8 @@
         <!-- 视频通话页面 -->
         <!-- <video src="@/assets/video/video-mobile.mp4" autoplay muted loop ref="selfVideo"></video>
         <video class="friend-video" src="@/assets/video/video-mobile.mp4" autoplay muted loop ref="friendVideo" ></video> -->
-        <video id="selfVideo" src="" autoplay muted loop ref="selfVideo"></video>
-        <video id="friendVideo" class="friend-video" src="" autoplay muted loop ref="friendVideo" ></video>
+        <video id="local_video" src="" autoplay muted loop ref="selfVideo"></video>
+        <video id="receive_video" class="friend-video" src="" autoplay muted loop ref="friendVideo" ></video>
 
         <!-- <div class="goBack()">返回</div> -->
         <section class="floating-invite" v-if="status === 'invate'">
@@ -31,7 +31,7 @@
             </div>
             <div class="invite-footer">
                 <button class="btn-voice_invite"  @click="videoAnswer()">接听</button>
-                <button class="btn-cancel" @click="goBack()">挂断</button>
+                <button class="btn-hangup" @click="hangup()">挂断</button>
             </div>
         </section>
 
@@ -48,7 +48,7 @@
             </div>
             <div class="invite-footer">
                 <button class="btn-voice_invite"></button>
-                <button class="btn-cancel" @click="goBack()">挂断</button>
+                <button class="btn-hangup" @click="hangup()">挂断</button>
             </div>
         </section>
 
@@ -119,9 +119,13 @@ export default {
 
             // store.dispatch("wsStore/wsSend", letter);
         }
-       
 
-        return {goBack, status, videoAnswer, selfVideo, friendVideo}
+        function hangup() {
+            console.log("---videoCall hang up----");
+            Store.dispatch("wsStore/mediaHangUp");
+        }
+       
+        return {goBack, status, videoAnswer, selfVideo, friendVideo, hangup}
         // return {status};
     }
 }
@@ -235,7 +239,7 @@ export default {
         border-radius: 50% 50%;
         outline: none;
     }
-    .btn-cancel {
+    .btn-hangup {
         /* grid-column: ; */
         grid-area: hangup;
         width: 4rem;

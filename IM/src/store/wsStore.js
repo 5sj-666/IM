@@ -1,3 +1,4 @@
+import RTC from "@/utils/RTC";
 import utilRTC from "@/utils/RTC";
 console.log("---utilRTC: ", utilRTC);
 
@@ -12,7 +13,7 @@ const store = {
         WS: {},
         msgHistory: [],
         
-        RTC: {},
+        PC: {},
         mediaRecipient: "",
       }
     },
@@ -33,7 +34,7 @@ const store = {
       initWS(context, payload) {
         let { commit, state, dispatch } = context;
         console.log("----initWS state: ", state);
-        let pc = state.RTC;
+        let pc = state.PC;
         // let pc = state.RTC;
         if(!Reflect.has(window, "WebSocket")) {
             console.log("浏览器不支持websocket!!");
@@ -64,6 +65,7 @@ const store = {
             offer: utilRTC.answerOffer,
             offerAnswer: utilRTC.setRemoteSDP,
             candidate: utilRTC.setRemoteICE,
+            mediaHangUP: utilRTC.mediaHangUP,
             feedBack: ()=>{}
           }
           
@@ -137,8 +139,20 @@ const store = {
         pc.onicegatheringstatechange = utilRTC.onicegatheringstatechange.bind(this, pc);
         pc.onicecandidateerror = utilRTC.onicecandidateerror;
 
-        state.RTC = pc;
-      }
+        state.PC = pc;
+      },
+
+      mediaHangUp(context) {
+        console.log("----wsStore mediaHangup: ");
+        let {dispatch} = context;
+        let letter = {
+          recipient: context.state.mediaRecipient,
+          type: "mediaHangUP",
+        };
+        dispatch("wsSend", letter);
+        RTC.closeVideoCall(context.state.PC);
+        // RTC.closeVideoCall();
+      },
 
   
     }
