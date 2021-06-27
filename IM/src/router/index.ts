@@ -15,18 +15,25 @@ const routes = [
     name: "Main",
     component: Main,
     meta: { 
-      keepAlive: true
+      keepAlive: true,
+      rank: 1
     }
   },
   {
     path: "/login",
     name: "Login",
     component: Login,
+    meta: {
+      rank: 0,
+    }
   },
   {
     path: "/register",
     name: "Register",
     component: register,
+    meta: {
+      rank: 1,
+    }
   },
   {
     path: "/Home",
@@ -45,17 +52,26 @@ const routes = [
   {
     path: "/dialogue/:userId",
     name: "Dialogue",
-    component: Dialogue
+    component: Dialogue,
+    meta: {
+      rank: 3,
+    }
   },
   {
     path: "/dialogue/profile/:userId", // /users/:username
     name: "Profile",
-    component: Profile
+    component: Profile,
+    meta: {
+      rank: 2,
+    }
   },
   {
     path: "/dialogue/videoCall/:userId",
     name: "VideoCall",
-    component: videoCall
+    component: videoCall,
+    meta: {
+      rank: 5,
+    }
   },
   {
     path: "/notFound",
