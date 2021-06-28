@@ -6,7 +6,7 @@
     <router-view />
   </keep-alive>
   <router-view /> -->
-   <router-view v-slot="{ Component }">
+  <router-view v-slot="{ Component }">
     <transition :name="transitionName" mode="default">
       <keep-alive :include="['Main']">
           <component :is="Component" />
@@ -50,7 +50,7 @@ export default defineComponent({
 :root {
   --header-bg: rgb(237, 237, 237);
 
-  --transition-time: .3s;
+  --transition-time: .2s;
 }
 
 
@@ -118,84 +118,86 @@ html {
          deep -> shallow动画：原组件从左到右滑动出去，新组件保持不动
  */
 .slide-deep-enter-active {
-  position: relative;
+  position: absolute !important;
   left: 100%;
-  top: -100%;
+  top: 0;
   z-index: 100;
   transition: all var(--transition-time) linear;
 }
 .silde-deep-enter-from {
-  position: relative;
+  position: absolute !important;
   left: 100%;
-  top: -100%;
+  top: 0;
   z-index: 100;
 }
 .slide-deep-enter-to {
-  transform: translate(-100%, 0);
+  position: absolute !important;
+  left: 0;
+  top: 0;
   z-index: 100;
 }
 
 .slide-deep-leave-active {
-  position: relative;
+  position: absolute !important;
   left: 0;
   top: 0;
-  z-index: 90;
+  z-index: -1;
   transition: all var(--transition-time) ease-out;
 }
 .silde-deep-leave-from {
-  position: relative;
+  position: absolute !important;
   left: 0;
   top: 0;
-  z-index: 90;
+  z-index: -1;
 }
 .slide-deep-leave-to {
-  position: relative;
+  position: absolute !important;
   left: 0;
   top: 0;
-  z-index: 90;
-  opacity: 0;
+  z-index: -1;
 }
+
+
+
 
 
 
 .slide-shallow-leave-active {
-  position: relative;
+  position: absolute;
   left: 0;
   top: 0;
   z-index: 100;
   transition: all var(--transition-time) ease-in;
 }
 .slide-shallow-leave-from {
-  position: relative;
+  position: absolute;
   left: 0;
   top: 0;
   z-index: 100;
 }
 .slide-shallow-leave-to {
-  position: relative;
+  position: absolute;
   left: 100%;
-  top: 0;
   z-index: 100;
-  opacity: 0;
 }
 
 .slide-shallow-enter-active {
-  position: relative;
+  position: absolute;
   left: 0%;
-  top: -100%;
+  top: 0;
   z-index: 90;
   transition: all var(--transition-time) ease-in;
 }
 .slide-shallow-enter-from {
-  position: relative;
+  position: absolute;
   left: 0;
-  top: -100%;
+  top: 0;
   z-index: 90;
 }
 .slide-shallow-enter-to {
-  position: relative;
+  position: absolute;
   left: 0;
-  top: -100%;
+  top: 0;
   z-index: 90;
 }
 
