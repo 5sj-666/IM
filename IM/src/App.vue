@@ -1,11 +1,4 @@
 <template>
-  <!-- <main-page></main-page> -->
-
-<!-- 
-  <keep-alive include="Main">
-    <router-view />
-  </keep-alive>
-  <router-view /> -->
   <router-view v-slot="{ Component }">
     <transition :name="transitionName" mode="default">
       <keep-alive :include="['Main']">
@@ -13,12 +6,10 @@
       </keep-alive>
     </transition>
   </router-view>
-
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-// import mainPage from './pages/Main.vue'
 
 
 export default defineComponent({

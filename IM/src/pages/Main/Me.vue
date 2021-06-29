@@ -30,6 +30,8 @@
 import SoProfile from "@/components/so-profile.vue";
 import SoCell from "@/components/so-cell.vue";
 
+import {useRouter} from "vue-router";
+
 export default {
   components: {
     SoProfile,
@@ -50,6 +52,13 @@ export default {
       }
       // document.documentElement.webkitRequestFullscreen();
     };
+
+    const Router =  useRouter();
+    const loginOut = () => {
+      console.log("---登出---");
+      localStorage.setItem('token', '');
+      Router.replace('/login');
+    }
 
     const avatarUrl = require("../../assets/img/avatar.jpg");
 
@@ -100,14 +109,20 @@ export default {
           icon: require("../../assets/icon/me-setting.png"),
           name: "切换全屏",
           event: launchFullScreen
-        }
+        },
+        {
+          icon: require("../../assets/icon/me-setting.png"),
+          name: "退出登录",
+          event: loginOut
+        },
       ]
     ];
 
     return {
       launchFullScreen,
       cellList,
-      avatarUrl
+      avatarUrl,
+      loginOut
     };
   }
 };
