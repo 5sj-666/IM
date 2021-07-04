@@ -44,6 +44,9 @@ export default defineComponent({
   --transition-time: .2s;
 }
 
+:root[data-theme="dark"] {
+  --header-bg: rgb(33, 33, 33);
+}
 
 html, body, #app {
   margin: 0;

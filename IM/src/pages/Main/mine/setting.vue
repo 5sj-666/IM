@@ -58,6 +58,10 @@ export default {
                 icon: require("@/assets/icon/me-setting.png"),
                 name: "language: english",
             },
+            {
+                icon: require("@/assets/icon/me-setting.png"),
+                name: "黑暗模式",
+            },
         ];
 
         function cellsEvent(name) {
@@ -66,7 +70,8 @@ export default {
                 "切换全屏": launchFullScreen,
                 "退出登录": loginOut,
                 "语言: 中文": changeLang.bind(this, "zhCN"),
-                "language: english": changeLang.bind(this,"en")
+                "language: english": changeLang.bind(this,"en"),
+                "黑暗模式": changeTheme("dark"),
             }
             Reflect.has(eventMapping, name) ? eventMapping[name]() : "";
         }
@@ -92,6 +97,11 @@ export default {
 
         function changeLang(lang) {
             Store.commit("SET_LANG", {lang});
+        }
+
+        function changeTheme(type) {
+            console.log("---changeTheme: ", type);
+            document.documentElement.dataset.theme = "dark";
         }
 
         return {
