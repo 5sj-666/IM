@@ -9,6 +9,8 @@ import Dialogue from "@/pages/Chats/Dialogue.vue"
 import Profile from "@/pages/Chats/Profile.vue"
 import videoCall from "@/pages/Chats/VideoCall.vue"
 
+import Setting from "@/pages/Main/mine/setting.vue"
+
 const routes = [
   {
     path: "/",
@@ -39,6 +41,14 @@ const routes = [
     path: "/Home",
     name: "Home",
     component: Home
+  },
+  {
+    path: "/setting",
+    name: "Setting",
+    component: Setting,
+    meta: {
+      rank: 5
+    }
   },
   {
     path: "/about",
