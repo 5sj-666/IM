@@ -38,6 +38,8 @@ import Discover from "./Main/Discover";
 import Me from "./Main/Me";
 import MainTab from "../components/main-tab";
 
+import useI18n from "@/local/index"
+
 // import Request from "@/utils/request"
 
 export default {
@@ -52,8 +54,8 @@ export default {
   },
   setup() {
     const Router = useRouter(),
-          store = useStore();
-    
+          Store = useStore(),
+          { t } = useI18n();
 
     onMounted(()=>{
       if(!localStorage.getItem('token')) 
@@ -63,7 +65,7 @@ export default {
         // getFriendList();
 
         // 在此初始化websocket连接
-        store.dispatch('wsStore/initWS', {Router: Router})
+        Store.dispatch('wsStore/initWS', {Router: Router});
 
     });
 
@@ -112,25 +114,25 @@ export default {
 
     let tabList = reactive([
       {
-        name: "微信",
+        name: t('app.main.chats'),
         icon: "CHATS",
         iconColor: "#000",
         iconBg: "#f00"
       },
       {
-        name: "通讯录",
+        name: t('app.main.contact'),
         icon: "CONTACTS",
         iconColor: "#000",
         iconBg: "#000"
       },
       {
-        name: "发现",
+        name: t('app.main.discover'),
         icon: "DISCOVER",
         iconColor: "#00f",
         iconBg: "#f00"
       },
       {
-        name: "我",
+        name: t('app.main.mine'),
         icon: "ME",
         iconColor: "#000",
         iconBg: "#f00"
@@ -147,7 +149,6 @@ export default {
       tabList,
       activeIndex,
       changeTab,
-
       toDialogue,
     };
   }

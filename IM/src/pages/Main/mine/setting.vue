@@ -1,0 +1,110 @@
+<template>
+    <article class="setting-page">
+        <ki-header title="设置"/>
+        <!-- <div
+            class="border-line_top border-line_bottom"
+            style="margin-top:0.5rem"
+            v-for="(cells, indexs) in cellList"
+            :key="indexs"
+        > -->
+        <!-- <div @click="proxyEvent()"> -->
+            <so-cell
+                v-for="(cell, index) in cells"
+                :key="index"
+                :name="cell.name"
+                :isLast="index == cells.length - 1 ? true : false"
+                @click="cellsEvent(cell.name)"
+            >
+                <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" />
+            </so-cell>
+        <!-- </div> -->
+            
+        <!-- </div> -->
+    </article>
+</template>
+<script>
+import kiHeader from "@/components/ki-header.vue";
+import SoCell from "@/components/so-cell.vue";
+import {reactive} from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
+
+export default {
+    name: "setting",
+    components: {
+        kiHeader,
+        SoCell
+    },
+    setup() {
+        const Router =  useRouter();
+        const Store = useStore();
+
+        let cells = reactive([]);
+        cells = [
+            {
+                icon: require("@/assets/icon/me-setting.png"),
+                name: "切换全屏",
+            },
+            {
+                icon: require("@/assets/icon/me-setting.png"),
+                name: "退出登录",
+            },
+            {
+                icon: require("@/assets/icon/me-setting.png"),
+                name: "语言: 中文",
+            },
+            {
+                icon: require("@/assets/icon/me-setting.png"),
+                name: "language: english",
+            },
+        ];
+
+        function cellsEvent(name) {
+            console.log("--proxyEvent: ", name);
+            const eventMapping = {
+                "切换全屏": launchFullScreen,
+                "退出登录": loginOut,
+                "语言: 中文": changeLang.bind(this, "zhCN"),
+                "language: english": changeLang.bind(this,"en")
+            }
+            Reflect.has(eventMapping, name) ? eventMapping[name]() : "";
+        }
+
+        function launchFullScreen() {
+            const element = document.documentElement;
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+        }
+
+        function loginOut() {
+            console.log("---登出---");
+            localStorage.setItem('token', '');
+            Router.replace('/login');
+        }
+
+        function changeLang(lang) {
+            Store.commit("SET_LANG", {lang});
+        }
+
+        return {
+            cells,
+            cellsEvent
+        }
+    },
+}
+</script>
+<style scoped>
+    .setting-page {
+        width: 100%;
+        height: 100%;
+    }
+
+</style>

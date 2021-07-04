@@ -22,6 +22,8 @@
       </so-cell>
     </div>
 
+    <!-- <div>国际化 {{t('aowu.test.btnContent')}}</div> -->
+
     <!-- <button style="margin-top: 2rem;" @click="launchFullScreen()">开启全屏</button> -->
   </article>
 </template>
@@ -30,34 +32,49 @@
 import SoProfile from "@/components/so-profile.vue";
 import SoCell from "@/components/so-cell.vue";
 
+// import kiHeader from "@/components/ki-header.vue"
+
+//use表示这个是一个复用（composition约定如此）
+// import useI18n from "@/local/index.js"
+
+// console.log("fanyi函数",t('aowu.test.btnContent'));
+
 import {useRouter} from "vue-router";
 
 export default {
   components: {
     SoProfile,
-    SoCell
+    SoCell,
+    // kiHeader
   },
   setup() {
-    const launchFullScreen = () => {
-      // console.log("切换全屏");
-      const element = document.documentElement;
-      if (element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-      } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-      } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-      }
-      // document.documentElement.webkitRequestFullscreen();
-    };
-
     const Router =  useRouter();
-    const loginOut = () => {
-      console.log("---登出---");
-      localStorage.setItem('token', '');
-      Router.replace('/login');
+    // const { t } = useI18n;
+
+    // const launchFullScreen = () => {
+    //   // console.log("切换全屏");
+    //   const element = document.documentElement;
+    //   if (element.requestFullscreen) {
+    //     element.requestFullscreen();
+    //   } else if (element.mozRequestFullScreen) {
+    //     element.mozRequestFullScreen();
+    //   } else if (element.webkitRequestFullscreen) {
+    //     element.webkitRequestFullscreen();
+    //   } else if (element.msRequestFullscreen) {
+    //     element.msRequestFullscreen();
+    //   }
+    //   // document.documentElement.webkitRequestFullscreen();
+    // };
+
+    // function t = t;
+
+    // const loginOut = () => {
+    //   console.log("---登出---");
+    //   localStorage.setItem('token', '');
+    //   Router.replace('/login');
+    // }
+    const goSetting = () => {
+      Router.push('/setting');
     }
 
     const avatarUrl = require("../../assets/img/avatar.jpg");
@@ -96,33 +113,35 @@ export default {
         {
           icon: require("../../assets/icon/me-setting.png"),
           name: "设置",
-          event: ""
+          event: goSetting
         }
       ],
-      [
-        // {
-        //   icon: require("../../assets/icon/me-setting.png"),
-        //   name: "切换语言",
-        //   event: ""
-        // },
-        {
-          icon: require("../../assets/icon/me-setting.png"),
-          name: "切换全屏",
-          event: launchFullScreen
-        },
-        {
-          icon: require("../../assets/icon/me-setting.png"),
-          name: "退出登录",
-          event: loginOut
-        },
-      ]
+      // [
+      //   // {
+      //   //   icon: require("../../assets/icon/me-setting.png"),
+      //   //   name: "切换语言",
+      //   //   event: ""
+      //   // },
+      //   {
+      //     icon: require("../../assets/icon/me-setting.png"),
+      //     name: "切换全屏",
+      //     event: launchFullScreen
+      //   },
+      //   {
+      //     icon: require("../../assets/icon/me-setting.png"),
+      //     name: "退出登录",
+      //     event: loginOut
+      //   },
+      // ]
     ];
 
     return {
-      launchFullScreen,
+      // launchFullScreen,
       cellList,
       avatarUrl,
-      loginOut
+      // loginOut,
+      goSetting
+      // t
     };
   }
 };
@@ -135,11 +154,14 @@ export default {
 // $me-container-color = #ededed;
 .me-container {
   box-sizing: border-box;
+  padding-bottom: 3rem;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
   width: 100%;
   height: 100%;
+  max-height: 100%;
   background-color: $me-container-color;
+  overflow: scroll;
 }
 </style>
