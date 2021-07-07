@@ -9,29 +9,46 @@ import Dialogue from "@/pages/Chats/Dialogue.vue"
 import Profile from "@/pages/Chats/Profile.vue"
 import videoCall from "@/pages/Chats/VideoCall.vue"
 
+import Setting from "@/pages/Main/mine/setting.vue"
+
 const routes = [
   {
     path: "/",
     name: "Main",
     component: Main,
     meta: { 
-      keepAlive: true
+      keepAlive: true,
+      rank: 1
     }
   },
   {
     path: "/login",
     name: "Login",
     component: Login,
+    meta: {
+      rank: 0,
+    }
   },
   {
     path: "/register",
     name: "Register",
     component: register,
+    meta: {
+      rank: 1,
+    }
   },
   {
     path: "/Home",
     name: "Home",
     component: Home
+  },
+  {
+    path: "/setting",
+    name: "Setting",
+    component: Setting,
+    meta: {
+      rank: 5
+    }
   },
   {
     path: "/about",
@@ -45,17 +62,26 @@ const routes = [
   {
     path: "/dialogue/:userId",
     name: "Dialogue",
-    component: Dialogue
+    component: Dialogue,
+    meta: {
+      rank: 3,
+    }
   },
   {
     path: "/dialogue/profile/:userId", // /users/:username
     name: "Profile",
-    component: Profile
+    component: Profile,
+    meta: {
+      rank: 2,
+    }
   },
   {
     path: "/dialogue/videoCall/:userId",
     name: "VideoCall",
-    component: videoCall
+    component: videoCall,
+    meta: {
+      rank: 5,
+    }
   },
   {
     path: "/notFound",

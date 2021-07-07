@@ -1,39 +1,20 @@
+import RTC from "@/utils/RTC";
+import utilRTC from "@/utils/RTC";
+console.log("---utilRTC: ", utilRTC);
+
+
 const SET_WS = 'SET_WS';
 const SET_MSGHISTORY = "SET_MSGHISTORY";
 
-// 创建一个新的 store 实例
-// const store = createStore({
-//   // namespaced: true,
-//   state () {
-//     return {
-//       WS: {}
-//     }
-//   },
-//   getters: {},
-//   mutations: {
-//     [SET_WS](state, payload) {
-//       state.WS = payload.WSInstace;
-//       console.log('--初始化WS:', state.WS);
-//     }
-//   },
-//   actions: {
-//     // // initWS(context) {
-//     initWS({ commit }) {
-//       const WSInstace = new WebSocket("ws://127.0.1:3000");
-//       console.log("---WSInstace: ", WSInstace);
-//       commit(SET_WS, {WSInstace}) 
-//     }
-
-//   }
-// })
 const store = {
     namespaced: true,
     state () {
       return {
         WS: {},
-        // url: "ws://127.0.1:3000",
-
         msgHistory: [],
+        
+        PC: {},
+        mediaRecipient: "",
       }
     },
     getters: {},
@@ -45,33 +26,51 @@ const store = {
       [SET_MSGHISTORY](state, msg) {
         state.msgHistory.push(msg);
         // console.warn("--SET_MSGHISTORY", state.msgHistory);
-      }
+      },
+
+
     },
     actions: {
-      initWS({ commit, state }, payload) {
+      initWS(context, payload) {
+        let { commit, state, dispatch } = context;
+        console.log("----initWS state: ", state);
+        let pc = state.PC;
+        // let pc = state.RTC;
         if(!Reflect.has(window, "WebSocket")) {
             console.log("浏览器不支持websocket!!");
             return;
         }
-        // commit(SET_WS, new WebSocket("ws://127.0.1:3000"))
-        let WS = new WebSocket("ws://127.0.1:3000");
-        // let WS = new WebSocket("ws://47.103.151.107:80");
+
+        console.log("---WEBSOCKET_URL process.env.WEBSOCKET_URL", process.env);
+        let WS = new WebSocket(process.env.VUE_APP_WEBSOCKET_URL);
 
         WS.onopen = function() {
           console.log("---成功连接websocket---");
-          let data = {
-            sender: localStorage.getItem("token"), 
-            type: "init"
-          }
-          WS.send(JSON.stringify(data));
+          // let data = {
+          //   sender: localStorage.getItem("token"), 
+          //   type: "init"
+          // }
+          // WS.send(JSON.stringify(data));
+          dispatch("wsSend", {type: "init"});
         };
 
         WS.onmessage = envelope => {
           console.log("--onmessage envelope", envelope);
           // state.msgHistory.push(JSON.parse(envelope.data));
           const msg = JSON.parse(envelope.data); //feedBack
-          if(msg.type === "feedBack") {
-            //todo 
+
+          //不需要写入记录里的消息类型
+          const msgMapping = {
+            videoAnswer: utilRTC.mediaInvite,
+            offer: utilRTC.answerOffer,
+            offerAnswer: utilRTC.setRemoteSDP,
+            candidate: utilRTC.setRemoteICE,
+            mediaHangUP: utilRTC.mediaHangUP,
+            feedBack: ()=>{}
+          }
+          
+          if(Reflect.has(msgMapping, msg.type)) {
+            msgMapping[msg.type](context, msg);
           }else {
             //如果接收到的是 视频邀请信息， 则直接打开视频会话组件
             if(msg.type === "videoInvate") {
@@ -84,58 +83,77 @@ const store = {
                 query: {type: "answer"}
               });
 
-
             }
+
             commit(SET_MSGHISTORY, msg);
           }
         }
 
-    //         WS.onmessage = envelope => {
-    //             console.log("--envelope", envelope);
-
-                
-
-    //             // const msgMapping = {
-    //             //     offer: answerOffer,
-    //             //     offerAnswer: setRemoteSDP,
-    //             //     candidate: setRemoteICE,
-    //             // }
-    //             // msgHistory = document.querySelector("#msgHistory");
-    //             // msgHistory.innerText += `${envelope.data}\n`;
-    //             // let letter = JSON.parse(envelope.data);
-                
-    //             // Reflect.has(msgMapping, letter.type) ? msgMapping[letter.type](letter) : "";
-    //         };
-    //         WS.onclose = () => console.log("---已断开webSocket---");
-    //         WS.onerror = error => console.error("---websoket发生错误: ", error);
-    //         return WS;
-    //     }
-
-
-
-
         commit(SET_WS, WS)
       },
+
       wsSend({ state, commit } , letter) {
         console.log("---wsSend: ", letter);
-        commit(SET_MSGHISTORY, letter);
+        letter.sender = localStorage.getItem("token");
+
         state.WS.send(JSON.stringify(letter));
+        //将数据存入本地聊天记录中
+        commit(SET_MSGHISTORY, letter);
         // console.log("--wsSend state:", state.WS)
 
-      //    function wsSend(data:message) {
-      //         // const letter:message = {
-      //         //     sender: '',
-      //         //     recipient: '',
-      //         //     type: '',
-      //         //     content:'',
-      //         // }
-      //         const letter = JSON.stringify(data);
-      //         console.log("letter: ", letter);
-      //         WS.send(letter);
-      //     }
+      },
 
-      }
-      
+      /**
+       * 初始化webRTC
+       * @param {*} param0 
+       * @param {object} payload  localVideo， friendVideo, recipient
+       */
+      initRTC(context, payload) {
+        let {state} = context;
+        state.mediaRecipient = payload.recipient;
+        // console.log("---初始化webRTC", window, navigator);
+        console.log("---payload: ", payload);
+
+        let pc = {};
+        const config = {
+          iceServers: [
+              {
+                  urls: "stun:139.224.75.6:3478",
+                  username:"",
+                  credential:""
+              },
+              {
+                  urls: "turn:139.224.75.6:3478",
+                  username: "wsj",
+                  credential: "123456"
+              }
+          ],
+          iceTransportPolicy:"all",
+          iceCandidatePoolSize:"0"
+        };
+        pc = new RTCPeerConnection(config);
+        utilRTC.getLocalMedia(pc);
+        pc.ontrack = utilRTC.ontrack;
+        pc.onicecandidate = utilRTC.onicecandidate.bind(this, context, payload)
+        pc.onnegotiationneeded = utilRTC.onnegotiationneeded;
+        pc.onicegatheringstatechange = utilRTC.onicegatheringstatechange.bind(this, pc);
+        pc.onicecandidateerror = utilRTC.onicecandidateerror;
+
+        state.PC = pc;
+      },
+
+      mediaHangUp(context) {
+        console.log("----wsStore mediaHangup: ");
+        let {dispatch} = context;
+        let letter = {
+          recipient: context.state.mediaRecipient,
+          type: "mediaHangUP",
+        };
+        dispatch("wsSend", letter);
+        RTC.closeVideoCall(context.state.PC);
+        // RTC.closeVideoCall();
+      },
+
   
     }
   }

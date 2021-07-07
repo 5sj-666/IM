@@ -3,7 +3,7 @@
     <!-- <div>Contacts</div> -->
 
     <section class="border-line_top border-line_bottom">
-      <so-cell
+      <ki-cell
         v-for="(item, index) in systemContacts"
         :key="index"
         :name="item.name"
@@ -17,59 +17,31 @@
             :src="item.avatar"
           />
         </template>
-      </so-cell>
+      </ki-cell>
     </section>
 
     <!-- {{contactsList}} -->
 
 
-    <so-cell
+    <ki-cell
         v-for="item in contactsList"
         :key="'contact' + item.id"
         :name="item.friend"
         iconWidth="4.3"
         @click="Router.push('/dialogue/profile/'+item.friend)"
     >
-      <!-- <template v-slot:default> -->
-          <img
-            style="width: 2.34rem;height: 2.34rem;border-radius:0.17rem 0.17rem;"
-            :src="'http://localhost:3000/avatar/'+item.avatar"
-          />
-        <!-- </template> -->
-    </so-cell>
+      <img
+        style="width: 2.34rem;height: 2.34rem;border-radius:0.17rem 0.17rem;"
+        :src="'process.env.VUE_APP_AVATAR_URL/avatar/'+item.avatar"
+      />
+    </ki-cell>
 
-
-
-
-    <!-- <section
-      class="border-line_top border-line_bottom"
-      v-for="(contactorArr, index) in contactsList"
-      :key="index"
-    >
-      <div class="contacts-letter">{{ contactorArr.letter }}</div>
-      <so-cell
-        v-for="(item, index) in contactorArr.contacts"
-        :key="index"
-        :name="item.name"
-        :showNextIcon="item.showNextIcon"
-        iconWidth="4.3"
-        :isLast="index == contactorArr.length - 1 ? true : false"
-        @click="Router.push('/dialogue/profile/'+item.name)"
-      >
-        <template v-slot:default>
-          <img
-            style="width: 2.34rem;height: 2.34rem;border-radius:0.17rem 0.17rem;"
-            :src="item.avatar"
-          />
-        </template>
-      </so-cell>
-    </section> -->
   </article>
 </template>
 
 <script>
-import SoCell from "@/components/so-cell.vue";
-import { onMounted, ref } from "vue";
+import kiCell from "@/components/ki-cell.vue";
+import { onMounted, ref} from "vue";
 
 import {useRouter} from 'vue-router'
 
@@ -115,9 +87,11 @@ import Request from "@/utils/request"
 export default {
   name: "Contacts",
   components: {
-    SoCell
+    kiCell
   },
   setup() {
+    // console.log("---contact process.env.VUE_APP_AVATAR_URL: ", process.env.VUE_APP_AVATAR_URL);
+
     const Router = useRouter();
 
     const systemContacts = [
