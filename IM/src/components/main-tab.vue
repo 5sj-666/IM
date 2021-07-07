@@ -161,7 +161,7 @@ export default {
 
 .main-tab {
   box-sizing: border-box;
-  position: fixed;
+  position: absolute;
   left: 0;
   bottom: 0;
   display: flex;

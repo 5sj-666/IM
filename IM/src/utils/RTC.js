@@ -7,6 +7,7 @@ const RTC = {
     setRemoteSDP,
     answerOffer,
     setRemoteICE,
+    mediaHangUP, 
 
     getLocalMedia,
 
@@ -15,30 +16,34 @@ const RTC = {
     onnegotiationneeded,
     onicegatheringstatechange,
     onicecandidateerror,
+    closeVideoCall
 }
 
 /**
  * 视频邀请函数
  * @param {*} state 
  */
-function mediaInvite(state) {
+function mediaInvite(context) {
+    let { state, dispatch } = context;
+    let PC = state.PC;
     console.warn("---mediaInvite state: ", state);
     const offerOptions = { offerToReceiveVideo: 1, offerToReceiveAudio: 1};
-    state.RTC.createOffer(offerOptions)
+    state.PC.createOffer(offerOptions)
     .then(gotDescription,noDescription );
 
     function gotDescription(desc) {
         console.log("---gotDescription: ", desc);
-        state.RTC.setLocalDescription(desc)
+        state.PC.setLocalDescription(desc)
         .then(() => {
             console.warn("----本地准备就绪，准备发送offer----");
             let letter = {
-              sender: localStorage.getItem("token"),
+            //   sender: localStorage.getItem("token"),
               recipient: state.mediaRecipient,
               type:"offer", 
-              content: state.RTC.localDescription
+              content: state.PC.localDescription
             }
-            state.WS.send(JSON.stringify(letter));
+            // state.WS.send(JSON.stringify(letter));
+            dispatch("wsSend", letter)
         });
     }
 
@@ -51,9 +56,10 @@ function mediaInvite(state) {
  * @description 将接收到的awseroffer的SDP设置到本地pc上
  * @param {Object} data
  */
-function setRemoteSDP(state, data) {
+function setRemoteSDP(context, data) {
+    let { state } = context;
     const remoteDesc = new RTCSessionDescription(data.content);
-    state.RTC.setRemoteDescription(remoteDesc)
+    state.PC.setRemoteDescription(remoteDesc)
     .then(()=>{ console.log("---invite成功设置远程SDP"); });
 }
 
@@ -61,21 +67,23 @@ function setRemoteSDP(state, data) {
  * @description 回复offer
  * @param {Object} data
  */
-function answerOffer(state, data) {
+function answerOffer(context, data) {
+    let { state, dispatch } = context;
     const remoteDesc = new RTCSessionDescription(data.content);
     console.warn("-----回复offer remoteDesc: ----:", remoteDesc);
-    state.RTC.setRemoteDescription(remoteDesc)
-    .then(function() { state.RTC.createAnswer() })
-    .then(function(answer) { return state.RTC.setLocalDescription(answer) })
+    state.PC.setRemoteDescription(remoteDesc)
+    .then(function() { state.PC.createAnswer() })
+    .then(function(answer) { return state.PC.setLocalDescription(answer) })
     .then(function() {
         console.log("----发送应答offer-----");
         let letter = {
-          sender: localStorage.getItem("token"),
+        //   sender: localStorage.getItem("token"),
           recipient: state.mediaRecipient,
           type:"offerAnswer", 
-          content: state.RTC.localDescription
+          content: state.PC.localDescription
         }
-        state.WS.send(JSON.stringify(letter));
+        // state.WS.send(JSON.stringify(letter));
+        dispatch("wsSend", letter)
     })
     .catch(err => { console.warn("--应答offer发生错误: ", err) })
 }
@@ -84,12 +92,21 @@ function answerOffer(state, data) {
  * @description 将接收到的候选者icecandidate添加到pc(peerConnection)中
  * @param {Object} data icecandidate
  */
-function setRemoteICE(state, msg) {
+function setRemoteICE(context, msg) {
+    let { state } = context;
     // console.log("---接收到candidate: ", data);
     var candidate = new RTCIceCandidate(msg.content);
-    state.RTC.addIceCandidate(candidate)
+    state.PC.addIceCandidate(candidate)
     .then(() => { console.log("---设置远程candidate成功--:") })
     .catch(error => { console.error("----设置candidate出错:　", error) })
+}
+
+/**
+ * @description 接收到挂断消息
+ */
+function mediaHangUP(context) {
+    let PC = context.state.PC;
+    closeVideoCall(PC);
 }
 
 function getLocalMedia(pc) {
@@ -100,9 +117,9 @@ function getLocalMedia(pc) {
         console.log("---获取本地媒体权限---");
         // let videoSelf = document.querySelector("#video-self");
         // videoSelf.srcObject = localStream;
-        console.warn("RTCinit ->　videoSelf", document.querySelector("#selfVideo"));
+        console.warn("RTCinit ->　videoSelf", document.querySelector("#local_video"));
 
-        document.querySelector("#selfVideo").srcObject = localStream;
+        document.querySelector("#local_video").srcObject = localStream;
         console.warn("---获取到本地视频流");
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
     })
@@ -131,7 +148,7 @@ function getLocalMedia(pc) {
 function ontrack(media) {
     console.warn("----接收到远程的媒体流----", media);
     // document.getElementById("video").srcObject = media.streams[0];
-    document.querySelector("#friendVideo").srcObject = media.streams[0];
+    document.querySelector("#receive_video").srcObject = media.streams[0];
 }
   
 
@@ -142,20 +159,21 @@ function ontrack(media) {
  * @param {} wrapper 
  * @returns  
  */
-function onicecandidate(state, payload, wrapper) {
+function onicecandidate(context, payload, wrapper) {
+    let {state, dispatch} = context;
     console.warn("---utils RTC: 获取到candidate: ", wrapper.candidate);
     if(!wrapper.candidate) return;
     // wsSend({type: "candidate", content: wrapper.candidate});
 
     let letter = {
-        sender: localStorage.getItem("token"),
+        // sender: localStorage.getItem("token"),
         recipient: payload.recipient,
         type: "candidate",
         content: wrapper.candidate
     }
     
-
-    state.WS.send(JSON.stringify(letter));
+    dispatch("wsSend", letter);
+    // state.WS.send(JSON.stringify(letter));
 }
 
 
@@ -173,6 +191,47 @@ function onicegatheringstatechange(pc) {
 function onicecandidateerror() {
     console.error("---获取候选者出错: ", error);
 }
+
+/**
+ * @description 关闭视频通话
+ * @param {Object} pc -> peerConnection(对等连接) : wsStore.state.PC
+ * @returns void
+ */
+function closeVideoCall(pc) {
+    console.warn("----utils RTC closeVideoCall function----");
+    var remoteVideo = document.querySelector("#receive_video");
+    var localVideo = document.querySelector("#local_video");
+
+    if (pc) {
+      pc.ontrack = null;
+      pc.onremovetrack = null;
+      pc.onremovestream = null;
+      pc.onicecandidate = null;
+      pc.oniceconnectionstatechange = null;
+      pc.onsignalingstatechange = null;
+      pc.onicegatheringstatechange = null;
+      pc.onnegotiationneeded = null;
+  
+      if (remoteVideo.srcObject) {
+        remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+      }
+  
+      if (localVideo.srcObject) {
+        localVideo.srcObject.getTracks().forEach(track => track.stop());
+      }
+  
+      pc.close();
+      pc = null;
+    }
+  
+    remoteVideo.removeAttribute("src");
+    remoteVideo.removeAttribute("srcObject");
+    localVideo.removeAttribute("src");
+    localVideo.removeAttribute("srcObject");
+  
+    // document.getElementById("hangup-button").disabled = true;
+    // targetUsername = null;
+  }
 
 
 
@@ -193,4 +252,5 @@ export {
     onnegotiationneeded,
     onicegatheringstatechange,
     onicecandidateerror,
+    closeVideoCall
 }
