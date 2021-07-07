@@ -1,6 +1,6 @@
 <template>
     <article class="dialogue">
-        <li-header :title="Route.params.userId"/>
+        <ki-header :title="Route.params.userId"/>
         <section class="msg-content">
            <!-- <div class="msg-item self">
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
@@ -35,7 +35,7 @@ import { defineComponent, reactive, ref, computed } from 'vue';
 // import { defineComponent } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
-import LibreHeader from '../../components/libre-header.vue';
+import KiHeader from '../../components/ki-header.vue';
 
     interface Message {
         sender: string,
@@ -47,7 +47,7 @@ import LibreHeader from '../../components/libre-header.vue';
 export default defineComponent({
     name: 'DialoguePage',
     components: {
-        LiHeader: LibreHeader
+        KiHeader
     },
     setup() {
         const Router = useRouter();

@@ -1,9 +1,8 @@
 <template>
   <article class="me-container">
-    <so-profile name="Natural" id="Greenschick"></so-profile>
+    <ki-profile name="Natural" id="Greenschick"></ki-profile>
 
     <!-- <img width="50" height="50" src="../../assets/icon/me-img.png" /> -->
-    <!-- <so-cell></so-cell> -->
 
     <div
       class="border-line_top border-line_bottom"
@@ -11,7 +10,7 @@
       v-for="(cells, indexs) in cellList"
       :key="indexs"
     >
-      <so-cell
+      <ki-cell
         v-for="(cell, index) in cells"
         :key="index"
         :name="cell.name"
@@ -19,7 +18,7 @@
         @click="cell.event"
       >
         <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" />
-      </so-cell>
+      </ki-cell>
     </div>
 
     <!-- <div>国际化 {{t('aowu.test.btnContent')}}</div> -->
@@ -29,8 +28,8 @@
 </template>
 
 <script>
-import SoProfile from "@/components/so-profile.vue";
-import SoCell from "@/components/so-cell.vue";
+import KiProfile from "@/components/ki-profile.vue";
+import KiCell from "@/components/ki-cell.vue";
 
 // import kiHeader from "@/components/ki-header.vue"
 
@@ -43,36 +42,15 @@ import {useRouter} from "vue-router";
 
 export default {
   components: {
-    SoProfile,
-    SoCell,
+    KiProfile,
+    KiCell,
     // kiHeader
   },
   setup() {
     const Router =  useRouter();
     // const { t } = useI18n;
 
-    // const launchFullScreen = () => {
-    //   // console.log("切换全屏");
-    //   const element = document.documentElement;
-    //   if (element.requestFullscreen) {
-    //     element.requestFullscreen();
-    //   } else if (element.mozRequestFullScreen) {
-    //     element.mozRequestFullScreen();
-    //   } else if (element.webkitRequestFullscreen) {
-    //     element.webkitRequestFullscreen();
-    //   } else if (element.msRequestFullscreen) {
-    //     element.msRequestFullscreen();
-    //   }
-    //   // document.documentElement.webkitRequestFullscreen();
-    // };
 
-    // function t = t;
-
-    // const loginOut = () => {
-    //   console.log("---登出---");
-    //   localStorage.setItem('token', '');
-    //   Router.replace('/login');
-    // }
     const goSetting = () => {
       Router.push('/setting');
     }
@@ -116,30 +94,11 @@ export default {
           event: goSetting
         }
       ],
-      // [
-      //   // {
-      //   //   icon: require("../../assets/icon/me-setting.png"),
-      //   //   name: "切换语言",
-      //   //   event: ""
-      //   // },
-      //   {
-      //     icon: require("../../assets/icon/me-setting.png"),
-      //     name: "切换全屏",
-      //     event: launchFullScreen
-      //   },
-      //   {
-      //     icon: require("../../assets/icon/me-setting.png"),
-      //     name: "退出登录",
-      //     event: loginOut
-      //   },
-      // ]
     ];
 
     return {
-      // launchFullScreen,
       cellList,
       avatarUrl,
-      // loginOut,
       goSetting
       // t
     };
