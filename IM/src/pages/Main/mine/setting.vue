@@ -1,30 +1,21 @@
 <template>
     <article class="setting-page">
         <ki-header title="设置"/>
-        <!-- <div
-            class="border-line_top border-line_bottom"
-            style="margin-top:0.5rem"
-            v-for="(cells, indexs) in cellList"
-            :key="indexs"
-        > -->
-        <!-- <div @click="proxyEvent()"> -->
-            <so-cell
-                v-for="(cell, index) in cells"
-                :key="index"
-                :name="cell.name"
-                :isLast="index == cells.length - 1 ? true : false"
-                @click="cellsEvent(cell.name)"
-            >
-                <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" />
-            </so-cell>
-        <!-- </div> -->
-            
-        <!-- </div> -->
+        <ki-cell
+            v-for="(cell, index) in cells"
+            :key="index"
+            :name="cell.name"
+            :isLast="index == cells.length - 1 ? true : false"
+            :showNextIcon="false"
+            @click="cellsEvent(cell.name)"
+        >
+            <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" />
+        </ki-cell>
     </article>
 </template>
 <script>
 import kiHeader from "@/components/ki-header.vue";
-import SoCell from "@/components/so-cell.vue";
+import KiCell from "@/components/ki-cell.vue";
 import {reactive} from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -34,7 +25,7 @@ export default {
     name: "setting",
     components: {
         kiHeader,
-        SoCell
+        KiCell
     },
     setup() {
         const Router =  useRouter();
@@ -115,6 +106,7 @@ export default {
     .setting-page {
         width: 100%;
         height: 100%;
+        background: orange;
     }
 
 </style>

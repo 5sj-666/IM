@@ -7,7 +7,7 @@
         <div>添加</div>
       </div>
     </header>
-    <so-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)">
+    <ki-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)">
       <template v-slot:firstItem>
         <Chats @click="toDialogue"></Chats>
       </template>
@@ -20,7 +20,7 @@
       <template v-slot:fourthItem>
         <Me></Me>
       </template>
-    </so-swiper>
+    </ki-swiper>
 
     <main-tab :tabList="tabList" :swipeParam="swipeParam" @changeTab="changeTab($event,index)"></main-tab>
   </article>
@@ -31,7 +31,7 @@ import { reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeU
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
-import SoSwiper from "../components/so-swiper";
+import KiSwiper from "../components/ki-swiper";
 import Chats from "./Main/Chats";
 import Contacts from "./Main/Contacts";
 import Discover from "./Main/Discover";
@@ -45,7 +45,7 @@ import useI18n from "@/local/index"
 export default {
   name: "Main",
   components: {
-    SoSwiper,
+    KiSwiper,
     Chats,
     Contacts,
     Discover,

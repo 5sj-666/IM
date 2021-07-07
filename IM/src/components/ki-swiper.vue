@@ -22,7 +22,7 @@ import Hammer from "hammerjs";
 import { onMounted, watchEffect, nextTick } from "vue";
 
 export default {
-  name: "so-swiper",
+  name: "kiSwiper",
   props: {
     activeIndex: {
       type: Number,
@@ -117,7 +117,7 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .swiper-container {
   box-sizing: border-box;
   position: relative;
@@ -126,8 +126,8 @@ export default {
   width: 100%;
   height: 100%;
   will-change: transform;
-
-  .swiper-item {
+}
+.swiper-container .swiper-item {
     box-sizing: border-box;
     position: absolute;
     top: 0;
@@ -137,6 +137,5 @@ export default {
     background-color: cyan;
     transition: all .0s ease-out;
     will-change: transform;
-  }
 }
 </style>

@@ -3,7 +3,7 @@
         <!-- <header>
             <img @click="goBack()" style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-back.png" alt="返回图标">
         </header> -->
-        <li-header :title="Route.params.userId"/>
+        <ki-header :title="Route.params.userId"/>
 
         {{$route.params}}
         个人信息页面!!
@@ -20,13 +20,13 @@ import { defineComponent, onMounted } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 
-import LibreHeader from '@/components/libre-header';
+import KiHeader from '@/components/ki-header';
 
 
 export default defineComponent({
     name: "ProfilePage",
     components: {
-        LiHeader:LibreHeader
+        KiHeader
     },
     
     setup() {

@@ -7,7 +7,7 @@
       :style="{ marginTop: index == '0' ? 0 : 0.5 + 'rem' }"
       :key="index"
     >
-      <so-cell
+      <ki-cell
         v-for="(item, index) in discoverArr"
         :key="index"
         :name="item.name"
@@ -21,19 +21,19 @@
         <template v-if="!!item.adImg" v-slot:SoAdImg>
           <img :src="item.adImg" style="width:1.8rem;height:1.8rem" alt />
         </template>
-      </so-cell>
+      </ki-cell>
     </section>
   </article>
 </template>
 
 <script>
-import SoCell from "@/components/so-cell.vue";
+import KiCell from "@/components/ki-cell.vue";
 
 import { reactive } from "vue";
 
 export default {
   components: {
-    SoCell
+    KiCell
   },
   setup() {
     const discoverList = reactive([
