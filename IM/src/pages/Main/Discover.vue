@@ -30,47 +30,49 @@
 import KiCell from "@/components/ki-cell.vue";
 
 import { reactive } from "vue";
+import useI18n from "@/local/index"
 
 export default {
   components: {
     KiCell
   },
   setup() {
+    const {t} = useI18n();
     const discoverList = reactive([
       [
         {
-          name: "朋友圈",
+          name: t("App.Main.Discover.moments"),
           icon: require("../../assets/icon/discover-pinwheel.jpg"),
           event: ""
         }
       ],
       [
         {
-          name: "扫一扫",
+          name: t("App.Main.Discover.scan"),
           icon: require("../../assets/icon/discover-shot.jpg"),
           event: ""
         }
       ],
       [
         {
-          name: "看一看",
+          name: t("App.Main.Discover.topStories"),
           icon: require("../../assets/icon/discover-flower.jpg"),
           event: ""
         },
         {
-          name: "搜一搜",
+          name: t("App.Main.Discover.search"),
           icon: require("../../assets/icon/discover-bloom.jpg"),
           event: ""
         }
       ],
       [
         {
-          name: "购物",
+          name: t("App.Main.Discover.liveStreams"),
           icon: require("../../assets/icon/discover-handbag.jpg"),
           event: ""
         },
         {
-          name: "游戏",
+          name: t("App.Main.Discover.games"),
           icon: require("../../assets/icon/discover-diamond.jpg"),
           event: "",
           adTitle: "欢迎回家，勇士",
@@ -79,7 +81,7 @@ export default {
       ],
       [
         {
-          name: "小程序",
+          name: t("App.Main.Discover.miniPrograms"),
           icon: require("../../assets/icon/discover-S.jpg"),
           event: ""
         }

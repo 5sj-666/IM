@@ -34,7 +34,7 @@ import KiCell from "@/components/ki-cell.vue";
 // import kiHeader from "@/components/ki-header.vue"
 
 //use表示这个是一个复用（composition约定如此）
-// import useI18n from "@/local/index.js"
+import useI18n from "@/local/index"
 
 // console.log("fanyi函数",t('aowu.test.btnContent'));
 
@@ -47,8 +47,8 @@ export default {
     // kiHeader
   },
   setup() {
-    const Router =  useRouter();
-    // const { t } = useI18n;
+    const Router =  useRouter(),
+          { t } = useI18n();
 
 
     const goSetting = () => {
@@ -61,36 +61,36 @@ export default {
       [
         {
           icon: require("../../assets/icon/me-pay.png"),
-          name: "支付",
+          name: t("App.Main.Me.pay"),
           event: ""
         }
       ],
       [
         {
           icon: require("../../assets/icon/me-collection.png"),
-          name: "收藏",
+          name: t("App.Main.Me.favorites"),
           event: ""
         },
         {
           icon: require("../../assets/icon/me-photo.png"),
-          name: "相册",
+          name: t("App.Main.Me.myPosts"),
           event: ""
         },
         {
           icon: require("../../assets/icon/me-cards.png"),
-          name: "卡包",
+          name: t("App.Main.Me.cards"),
           event: ""
         },
         {
           icon: require("../../assets/icon/me-smile.png"),
-          name: "表情",
+          name: t("App.Main.Me.stickerGallery"),
           event: ""
         }
       ],
       [
         {
           icon: require("../../assets/icon/me-setting.png"),
-          name: "设置",
+          name: t("App.Main.Me.setting"),
           event: goSetting
         }
       ],

@@ -114,25 +114,25 @@ export default {
 
     let tabList = reactive([
       {
-        name: t('app.main.chats'),
+        name: t('App.Main.chats'),
         icon: "CHATS",
         iconColor: "#000",
         iconBg: "#f00"
       },
       {
-        name: t('app.main.contact'),
+        name: t('App.Main.contact'),
         icon: "CONTACTS",
         iconColor: "#000",
         iconBg: "#000"
       },
       {
-        name: t('app.main.discover'),
+        name: t('App.Main.discover'),
         icon: "DISCOVER",
         iconColor: "#00f",
         iconBg: "#f00"
       },
       {
-        name: t('app.main.mine'),
+        name: t('App.Main.mine'),
         icon: "ME",
         iconColor: "#000",
         iconBg: "#f00"

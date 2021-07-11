@@ -38,42 +38,12 @@ import zhCN from './lang/zh-CN'
 import { useStore } from 'vuex';
 import { computed, watch, reactive } from 'vue';
 
-// export const t = function (path, options) {
-
-//     // const slang = Store.state.lang;
-//     console.log("---t store lang:", Store);
-//     var lang = zhCN;
-//     // console.log("----t翻译函数:", path);
-// //   let value = i18nHandler.apply(this, arguments);
-// //   if (value !== null && value !== undefined) return value;
-//     var value = "";
-//     const array = path.split('.');
-//     let current = lang;
-//     // console.log("currenlang:", current, "--array", array);
-
-//     for (let i = 0, j = array.length; i < j; i++) {
-//         const property = array[i];
-//         // console.log("---property:", property, "--current[property]: ", current[property], "---current: ", current);
-//         value = current[property];
-//         // console.log("--value: ", value);
-//         // if (i === j - 1) return format(value, options);
-//         if (i === j - 1) return value;
-//         if (!value) return '';
-//         current = value;
-//     }
-//     return '';
-// };
-
 export default function() {
   const Store = useStore();
 
   function t(path, options) {
-     // const slang = Store.state.lang;
     console.log("---t store lang:", Store.state.lang);
 
-
-
-    // var lang = zhCN;
     var lang = reactive(Store.state.lang === "en" ? {...en} : {...zhCN});
     // console.log("---lang: ", lang);
 
@@ -106,17 +76,13 @@ export default function() {
       current = value;
     }
   }
+
+  /**
+   * @description 获取语言的js文件
+   */
+  function getLangFile() {
+    return lang;
+  }
  
-  return {t};
+  return {t, getLangFile};
 }
-
-// export const use = function (l) {
-//   lang = l || lang;
-// };
-
-// export const i18n = function (fn) {
-//   i18nHandler = fn || i18nHandler;
-// };
-
-// export default { use, t, i18n };
-// export default { use, t };

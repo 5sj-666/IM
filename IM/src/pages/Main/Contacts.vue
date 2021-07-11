@@ -44,7 +44,7 @@ import kiCell from "@/components/ki-cell.vue";
 import { onMounted, ref} from "vue";
 
 import {useRouter} from 'vue-router'
-
+import useI18n from "@/local/index"
 import Request from "@/utils/request"
 
 
@@ -93,28 +93,35 @@ export default {
     // console.log("---contact process.env.VUE_APP_AVATAR_URL: ", process.env.VUE_APP_AVATAR_URL);
 
     const Router = useRouter();
+    const  { t } = useI18n();
 
     const systemContacts = [
       {
-        name: "新的朋友",
+        name: t("App.Main.Contacts.newFriends"),
         avatar: require("../../assets/icon/contacts-add-friend.jpg"),
         event: "",
         showNextIcon: false
       },
       {
-        name: "群聊",
+        name: t("App.Main.Contacts.chatsOnlyFriends"),
+        avatar: require("../../assets/icon/contacts-add-friend.jpg"),
+        event: "",
+        showNextIcon: false
+      },
+      {
+        name: t("App.Main.Contacts.groupChat"),
         avatar: require("../../assets/icon/contacts-double-people.jpg"),
         event: "",
         showNextIcon: false
       },
       {
-        name: "标签",
+        name: t("App.Main.Contacts.tags"),
         avatar: require("../../assets/icon/contacts-tag.jpg"),
         event: "",
         showNextIcon: false
       },
       {
-        name: "公众号",
+        name: t("App.Main.Contacts.officialAccounts"),
         avatar: require("../../assets/icon/contacts-person.jpg"),
         event: "",
         showNextIcon: false
