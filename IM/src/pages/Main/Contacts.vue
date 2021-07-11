@@ -174,32 +174,29 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../../css/common.styl';
-@import '../../css/variable.styl';
-
-// $contacts-container-bg = #ededed;
-$contacts-letter-color = #818181;
-
-.contacts-container {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 100%;
-  height: 100%;
-  background-color: $contacts-container-bg;
+<style scoped>
+  .contacts-container {
+    --contacts-container-bg: #ededed;
+    --contacts-letter-color: #818181;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    background-color: var(--contacts-container-bg);
+  }
 
   .contacts-letter {
-    box-sizng: border-box;
+    box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     text-indent: 0.93rem;
     height: 1.9rem;
     width: 100%;
-    color: $contacts-letter-color;
+    color: var(--contacts-letter-color);
     font-size: 0.54rem;
   }
-}
+
 </style>

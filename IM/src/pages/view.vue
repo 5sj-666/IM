@@ -14,10 +14,10 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="styl">
-    article {
-        width: 100%;
-        height: 100vh;
-        background-color: cyan;
-    }
+<style scoped>
+  article {
+      width: 100%;
+      height: 100vh;
+      background-color: cyan;
+  }
 </style>

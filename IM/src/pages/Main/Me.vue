@@ -4,7 +4,7 @@
 
     <!-- <img width="50" height="50" src="../../assets/icon/me-img.png" /> -->
 
-    <div
+   <div
       class="border-line_top border-line_bottom"
       style="margin-top:0.5rem"
       v-for="(cells, indexs) in cellList"
@@ -106,12 +106,10 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../../css/common.styl';
-@import '../../css/variable.styl';
+<style scoped>
 
-// $me-container-color = #ededed;
 .me-container {
+  --me-container-color: #ededed;
   box-sizing: border-box;
   padding-bottom: 3rem;
   display: flex;
@@ -120,7 +118,7 @@ export default {
   width: 100%;
   height: 100%;
   max-height: 100%;
-  background-color: $me-container-color;
-  overflow: scroll;
+  background-color: var(--me-container-color);
+  /* overflow: scroll; */
 }
 </style>

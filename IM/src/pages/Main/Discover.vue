@@ -93,18 +93,15 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../../css/common.styl';
-@import '../../css/variable.styl';
-
-// $discover-container-color = #ededed;
-.discover-container {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 100%;
-  height: 100%;
-  background-color: #ededed;
-}
+<style scoped>
+  .discover-container {
+    --discover-container-color: #ededed;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    background-color: var(--discover-container-color);
+  }
 </style>

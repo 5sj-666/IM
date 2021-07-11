@@ -155,29 +155,22 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../css/variable.styl';
+<style scoped>
 
-// // 主色调
-// $main-bg_primary = #fff;
-// $main-color_primary = #ededed;
-// // header颜色
-// $main-head-color = #000;
-// $main-head-bg = #ededed;
-// // tab颜色
-// $main-tab-color = #000;
-// $main-tab-bg = #f7f7f7;
-// $main-tab-border_color = #d6d6d6;
-.main-container {
-  box-sizing: border-box;
-  position: relative;
-  // padding-top: 3rem;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: $main-background_primary;
-  overflow: hidden;
-  user-select: none;
+  .main-container {
+    --main-bg_primary: #FFF;
+    --main-head-bg: #ededed;
+    --main-head-color: #000;
+
+    box-sizing: border-box;
+    position: relative;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--main-bg_primary);
+    overflow: hidden;
+    user-select: none;
+  }
 
   .main-head {
     position: absolute;
@@ -188,25 +181,24 @@ export default {
     align-items: center;
     width: 100%;
     height: 3rem;
-    background-color: $main-head-bg;
+    background-color: var(--main-head-bg);
     font-size: 0.95rem;
     z-index: 10;
-
-    .main-head-title {
-      margin: 0;
-      padding: 0 0.85rem;
-      color: $main-head-color;
-    }
-
-    .main-head-imgs {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-
-      div {
-        margin: 0 0.85rem;
-      }
-    }
   }
-}
+  .main-head-title {
+    margin: 0;
+    padding: 0 0.85rem;
+    color: var(--main-head-color);
+  }
+
+  .main-head-imgs {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  div {
+    margin: 0 0.85rem;
+  }
+
 </style>

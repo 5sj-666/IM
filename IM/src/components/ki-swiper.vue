@@ -70,6 +70,7 @@ export default {
 
       hammer.on("panend", function(e) {
         switch (true) {
+          //到了边界之后不做位移处理
           case (activeIndex <= 0 && e.deltaX > 0) ||
             (activeIndex >= 3 && e.deltaX < 0):
             break;
