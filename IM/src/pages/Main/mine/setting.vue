@@ -1,6 +1,6 @@
 <template>
     <article class="setting-page">
-        <ki-header title="设置"/>
+        <ki-header title="设置"></ki-header>
         <ki-cell
             v-for="(cell, index) in cells"
             :key="index"

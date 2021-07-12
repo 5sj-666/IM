@@ -1,13 +1,10 @@
 <template>
     <header class="ki-header">
-        <img 
-            class="ki-goback"
-            src="@/assets/icon/icon-back.png" 
-            @click="goBack" 
-            alt="返回图标" 
-        />
+        <img class="ki-goback" src="@/assets/icon/icon-back.png" @click="goBack" v-if="iconBack" alt="返回图标" />
+        <span v-else></span>
         <span>{{props.title}}</span>
-        <span>图标</span>
+        <!-- <span>图标</span> -->
+        <slot name="icons"></slot>
     </header>
 </template>
 <script>
@@ -16,7 +13,14 @@ import {useRouter} from "vue-router"
 export default {
     name: "kiHeader", //kiteHeader
     props: {
-        title: String
+        title: {
+            type: String,
+            degfault: "",
+        },
+        iconBack: {
+            type: Boolean,
+            default: true,
+        },
     },
     setup(props) {
         const Router = useRouter();

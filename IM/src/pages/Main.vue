@@ -1,15 +1,17 @@
 <template>
   <article class="main-container">
-    <header class="main-head">
+    <!-- <header class="main-head">
       <div class="main-head-title">发现</div>
       <div class="main-head-imgs">
         <div>放大镜</div>
         <div>添加</div>
       </div>
-    </header>
+    </header> -->
+    <ki-header :title="headerTitle" :iconBack="false"></ki-header>
     <ki-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)">
       <template v-slot:firstItem>
-        <Chats @click="toDialogue"></Chats>
+        <!-- <Chats @click="toDialogue"></Chats> -->
+        <Chats></Chats>
       </template>
       <template v-slot:secondItem>
         <Contacts></Contacts>
@@ -27,9 +29,11 @@
 </template>
 
 <script>
-import { reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount } from "vue";
+import { computed, reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import useI18n from "@/local/index"
+
 
 import KiSwiper from "../components/ki-swiper";
 import Chats from "./Main/Chats";
@@ -37,14 +41,15 @@ import Contacts from "./Main/Contacts";
 import Discover from "./Main/Discover";
 import Me from "./Main/Me";
 import MainTab from "../components/main-tab";
+import kiHeader from "@/components/ki-header.vue";
 
-import useI18n from "@/local/index"
 
 // import Request from "@/utils/request"
 
 export default {
   name: "Main",
   components: {
+    kiHeader,
     KiSwiper,
     Chats,
     Contacts,
@@ -143,7 +148,18 @@ export default {
       Router.push("/Dialogue");
     }
 
+
+    let headerTitle = computed(()=>{
+      let fieldMap = {
+        0: "微信",
+        1: "通讯录",
+        2: "发现"
+      }
+      return swipeParam.progress === 0 && Reflect.has(fieldMap, swipeParam.activeIndex) ? fieldMap[swipeParam.activeIndex] : "";
+    })
+
     return {
+      headerTitle,
       swipeParam,
       swipeEvent,
       tabList,
@@ -159,11 +175,10 @@ export default {
 
   .main-container {
     --main-bg_primary: #FFF;
-    --main-head-bg: #ededed;
+    /* --main-head-bg: #ededed; */
     --main-head-color: #000;
 
     box-sizing: border-box;
-    position: relative;
     position: relative;
     width: 100%;
     height: 100%;
@@ -172,7 +187,7 @@ export default {
     user-select: none;
   }
 
-  .main-head {
+  /* .main-head {
     position: absolute;
     left: 0;
     top: 0;
@@ -184,7 +199,7 @@ export default {
     background-color: var(--main-head-bg);
     font-size: 0.95rem;
     z-index: 10;
-  }
+  } */
   .main-head-title {
     margin: 0;
     padding: 0 0.85rem;

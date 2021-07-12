@@ -36,28 +36,31 @@ import zhCN from './lang/zh-CN'
 // };
 
 import { useStore } from 'vuex';
-import { computed, watch, reactive } from 'vue';
+import { watch, reactive } from 'vue';
 
 export default function() {
   const Store = useStore();
 
-  function t(path, options) {
-    console.log("---t store lang:", Store.state.lang);
+  var lang = reactive(Store.state.lang === "en" ? {...en} : {...zhCN});
+  //需要优化  目前无法实现实时更换语言功能(需要刷新页面)
+  watch(()=>Store.state.lang, (newValue, oldValue) => { //直接监听
+    // console.log("Store.state.lang改变了", newValue);
+    if(newValue === "en") {
+      lang = {...en};
+    }else{
+      lang = {...zhCN};
+    }
+    console.log("---local:　改变获取的lang：", lang);
+  });
 
-    var lang = reactive(Store.state.lang === "en" ? {...en} : {...zhCN});
+  function t(path, options) {
+    // console.log("---t store lang:", Store.state.lang);
+
+    // var lang = reactive(Store.state.lang === "en" ? {...en} : {...zhCN});
     // console.log("---lang: ", lang);
 
 
-    //需要优化  目前无法实现实时更换语言功能(需要刷新页面)
-    watch(()=>Store.state.lang, (newValue, oldValue) => { //直接监听
-      // console.log("Store.state.lang改变了", newValue);
-      if(newValue === "en") {
-        lang = {...en};
-      }else{
-        lang = {...zhCN};
-      }
-      console.log("---local:　改变获取的lang：", lang);
-    });
+    
 
 
     var value = "";
@@ -80,9 +83,9 @@ export default function() {
   /**
    * @description 获取语言的js文件
    */
-  function getLangFile() {
-    return lang;
+  function getLangObj(path="") {
+    return path ? t(path) : lang;
   }
  
-  return {t, getLangFile};
+  return {t, getLangObj};
 }

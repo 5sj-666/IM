@@ -156,10 +156,14 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../css/variable.styl';
+<style scoped>
 
 .main-tab {
+  --main-tab-color: #000;
+  /* --main-tab-bg = #f7f7f7; */
+  --main-tab-bg: #FFF;
+
+  --main-tab-border_color: #d6d6d6;
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -169,33 +173,34 @@ export default {
   flex-direction: row;
   width: 100%;
   height: 3.26rem;
-  color: $main-tab-color;
+  color: var(--main-tab-color);
   font-size: 0.65rem;
-  background: $main-tab-bg;
+  background: var(--main-tab-bg);
   z-index: 10;
-
-  &:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    border-top: 1px solid $main-tab-border_color;
-    z-index: 100;
-    transform-origin: 0 0;
-    transform: scale(1, 0.25);
-  }
-
-  .main-tab-item {
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    flex-grow: 1;
-    min-width: 0;
-    height: 100%;
-    transform: translateZ(0);
-  }
 }
+
+.main-tab:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  border-top: 1px solid --main-tab-border_color;
+  z-index: 100;
+  transform-origin: 0 0;
+  transform: scale(1, 0.25);
+}
+
+.main-tab-item {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+  height: 100%;
+  transform: translateZ(0);
+}
+
 </style>

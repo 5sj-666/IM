@@ -132,7 +132,7 @@ export default {
     box-sizing: border-box;
     position: absolute;
     top: 0;
-    padding-top: 3rem;
+    /* padding-top: 3rem; */
     width: 100%;
     height: 100%;
     background-color: cyan;
