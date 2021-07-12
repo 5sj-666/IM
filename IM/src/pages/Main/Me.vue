@@ -15,6 +15,7 @@
         :key="index"
         :name="cell.name"
         :isLast="index == cells.length - 1 ? true : false"
+        :disable="cell.disable"
         @click="cell.event"
       >
         <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" />
@@ -62,36 +63,36 @@ export default {
         {
           icon: require("../../assets/icon/me-pay.png"),
           name: t("App.Main.Me.pay"),
-          event: ""
+          disable: true
         }
       ],
       [
         {
           icon: require("../../assets/icon/me-collection.png"),
           name: t("App.Main.Me.favorites"),
-          event: ""
+          disable: true
         },
         {
           icon: require("../../assets/icon/me-photo.png"),
           name: t("App.Main.Me.myPosts"),
-          event: ""
+          disable: true
         },
         {
           icon: require("../../assets/icon/me-cards.png"),
           name: t("App.Main.Me.cards"),
-          event: ""
+          disable: true
         },
         {
           icon: require("../../assets/icon/me-smile.png"),
           name: t("App.Main.Me.stickerGallery"),
-          event: ""
+          disable: true
         }
       ],
       [
         {
           icon: require("../../assets/icon/me-setting.png"),
           name: t("App.Main.Me.setting"),
-          event: goSetting
+          event: goSetting,
         }
       ],
     ];

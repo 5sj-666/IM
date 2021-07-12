@@ -1,6 +1,6 @@
 <template>
   <section class="ki-cell">
-    <div class="ki-cell-img_container" :style="{ width: iconWidth + 'rem'}">
+    <div class="ki-cell-img_container" :style="{ width: iconWidth + 'rem', filter: disable ? 'grayscale(100%)' : ''}">
       <slot>
         <img class="ki-cell-img_default" src="../assets/icon/me-smile.png" alt="default" />
       </slot>
@@ -46,6 +46,11 @@ export default {
       type: Boolean,
       default: false,
       description: "为最后一个元素时，是否需要下边框"
+    },
+    disable: {
+      type: Boolean,
+      default: false,
+      description: "置灰并不可操作"
     }
   }
 };

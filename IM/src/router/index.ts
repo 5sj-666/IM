@@ -1,6 +1,6 @@
 // import { createRouter, createWebHistory } from "vue-router";
 import Login from "@/pages/login.vue";
-import register from "@/pages/register.vue";
+import Register from "@/pages/Register.vue";
 import Home from "@/pages/Home.vue";
 import Main from "@/pages/Main.vue";
 import NotFound from "@/pages/NotFound.vue"
@@ -9,7 +9,7 @@ import Dialogue from "@/pages/Chats/Dialogue.vue"
 import Profile from "@/pages/Chats/Profile.vue"
 import videoCall from "@/pages/Chats/VideoCall.vue"
 
-import Setting from "@/pages/Main/mine/setting.vue"
+import Setting from "@/pages/Main/Mine/Setting.vue"
 
 const routes = [
   {
@@ -32,7 +32,7 @@ const routes = [
   {
     path: "/register",
     name: "Register",
-    component: register,
+    component: Register,
     meta: {
       rank: 1,
     }

@@ -13,6 +13,7 @@
         :name="item.name"
         :adTitle="item.adTitle"
         :isLast="index == discoverArr.length - 1 ? true : false"
+        :disable="true"
       >
         <template v-slot:default>
           <img style="width: 1.6rem;height: 1.6rem;" :src="item.icon" />
@@ -43,38 +44,32 @@ export default {
         {
           name: t("App.Main.Discover.moments"),
           icon: require("../../assets/icon/discover-pinwheel.jpg"),
-          event: ""
         }
       ],
       [
         {
           name: t("App.Main.Discover.scan"),
           icon: require("../../assets/icon/discover-shot.jpg"),
-          event: ""
         }
       ],
       [
         {
           name: t("App.Main.Discover.topStories"),
           icon: require("../../assets/icon/discover-flower.jpg"),
-          event: ""
         },
         {
           name: t("App.Main.Discover.search"),
           icon: require("../../assets/icon/discover-bloom.jpg"),
-          event: ""
         }
       ],
       [
         {
           name: t("App.Main.Discover.liveStreams"),
           icon: require("../../assets/icon/discover-handbag.jpg"),
-          event: ""
         },
         {
           name: t("App.Main.Discover.games"),
           icon: require("../../assets/icon/discover-diamond.jpg"),
-          event: "",
           adTitle: "欢迎回家，勇士",
           adImg: require("../../assets/icon/me-ad.png")
         }
@@ -83,7 +78,6 @@ export default {
         {
           name: t("App.Main.Discover.miniPrograms"),
           icon: require("../../assets/icon/discover-S.jpg"),
-          event: ""
         }
       ]
     ]);
