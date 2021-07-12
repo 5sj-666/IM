@@ -196,4 +196,43 @@ html {
 }
 
 
+.border-line_top{
+  position:relative;  
+}
+.border-line_top:before{
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  border-top: 1px solid #cdcdcd;
+  z-index: 6;
+  transform-origin:0% 0%;
+  transform: scale(1, .25);
+}
+.border-line_bottom{
+  position:relative;  
+}
+.border-line_bottom:after{
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-bottom: 1px solid #cdcdcd;
+  z-index: 6;
+  transform-origin: 0% 100%;
+  transform: scale(1, .25);
+}
+
+.so-icon-QR_code {
+  background-image: url('./assets/icon/icon-QR_code.png');
+}
+
+.so-icon-arrow_right {
+  background-image: url('./assets/icon/icon-arrow_right.png');
+}
+
+
+
 </style>
