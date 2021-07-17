@@ -35,6 +35,9 @@ export default {
 </script>
 <style scoped>
     .ki-header {
+        position: absolute;
+        left: 0;
+        top: 0;
         display: grid;
         grid-template-rows: 1fr;
         grid-template-columns: 3rem auto 3rem;
@@ -42,6 +45,7 @@ export default {
         width: 100%;
         height: 3.26rem;
         background-color: var(--header-bg, #FFF);
+        z-index: 10;
     }
 
     .ki-goback {

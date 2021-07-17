@@ -7,7 +7,8 @@
         <div>添加</div>
       </div>
     </header> -->
-    <ki-header :title="headerTitle" :iconBack="false"></ki-header>
+    <ki-header id="main-header" :title="headerTitle" :iconBack="false"></ki-header>
+    <div class="fake-header"></div>
     <ki-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)">
       <template v-slot:firstItem>
         <!-- <Chats @click="toDialogue"></Chats> -->
@@ -114,7 +115,52 @@ export default {
       swipeParam.progress = param.progress;
       swipeParam.activeIndex = param.activeIndex;
       swipeParam.step = param.step;
-      // console.log("aaaa", param, swipeParam);
+      console.log("aaaa", param, swipeParam);
+
+
+      //判断对header的位移
+      /**
+       * 
+       * activeIndex === 2:  progress < 0; 即向右滑动，此时header应该向左滑动
+       *    没有滑过去， activeIndex === 2 位置保持0
+       *    滑过去，activeIndex === 3 位置-100%
+       * 
+       * activeIndex === 3: progress > 0; 即向左滑动，此时header应该向右滑动
+       *    没有滑过去， activeIndex === 3 位置保持-100%
+       *    滑过去，activeIndex === 2 位置0
+       * 
+       * 其他情况： 保持不变
+       * 
+       */
+      const header = document.querySelector("#main-header");
+
+      if(param.activeIndex === 2) {
+        if(param.progress < 0) {
+          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * param.progress);
+          header.style.transform = `translateX(${window.screen.width * param.progress}px)`;
+          header.style.transition = "all .0s ease-out";
+        }
+        if(param.step == "panend") {
+          console.warn("---执行panend");
+          header.style.transform = `translateX(0%)`;
+          header.style.transition = `all ${.25}s ease-out` ;
+        }
+      }else if(param.activeIndex === 3) {
+        if(param.progress > 0) {
+          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * param.progress);
+          // header.style.left = "-100%";
+          header.style.transform = `translateX(${window.screen.width * (param.progress - 1)}px)`;
+          header.style.transition = "all .0s ease-out";
+        }
+        if(param.step === "panend") {
+          console.warn("---执行panend");
+          // header.style.left = "-100%";
+          header.style.transform = `translateX(-100%)`;
+          header.style.transition = `all ${.25}s ease-out` ;
+        }
+      }
+
+
     }
 
     let tabList = reactive([
@@ -179,12 +225,25 @@ export default {
     --main-head-color: #000;
 
     box-sizing: border-box;
+    padding-top: 3rem;
     position: relative;
     width: 100%;
     height: 100%;
     background: var(--main-bg_primary);
     overflow: hidden;
     user-select: none;
+  }
+
+  .main-container .fake-header{
+    box-sizing: border-box;
+    margin: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 3rem;
+    background: #FFF;
+    z-index: 9;
   }
 
   /* .main-head {

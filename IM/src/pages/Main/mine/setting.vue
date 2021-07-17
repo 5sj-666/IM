@@ -3,13 +3,14 @@
         <ki-header title="设置"></ki-header>
         <ki-cell
             v-for="(cell, index) in cells"
+            :iconWidth="1"
             :key="index"
             :name="cell.name"
             :isLast="index == cells.length - 1 ? true : false"
             :showNextIcon="false"
             @click="cellsEvent(cell.name)"
         >
-            <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" />
+            <!-- <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" /> -->
         </ki-cell>
     </article>
 </template>

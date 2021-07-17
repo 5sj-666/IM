@@ -1,8 +1,8 @@
 <template>
-  <section class="ki-cell">
-    <div class="ki-cell-img_container" :style="{ width: iconWidth + 'rem', filter: disable ? 'grayscale(100%)' : ''}">
+  <section class="ki-cell" :style="{filter: disable ? 'grayscale(100%)' : ''}">
+    <div class="ki-cell-img_container" :style="{ width: iconWidth + 'rem'}">
       <slot>
-        <img class="ki-cell-img_default" src="../assets/icon/me-smile.png" alt="default" />
+        <!-- <img class="ki-cell-img_default" src="../assets/icon/me-smile.png" alt="default" /> -->
       </slot>
     </div>
     <div class="ki-cell-content" :class="{'border-line_bottom': !isLast }">

@@ -90,12 +90,7 @@ export default defineComponent({
         background-color: var(--profile_bg);
     }
 
-    .profile-page header {
-        width: 100%;
-        height: 3.26rem;
 
-        background-color: var(--profile-header_color);
-    }
 
     .profile-btn {
         display: flex;
