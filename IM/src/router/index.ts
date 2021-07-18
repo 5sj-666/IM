@@ -1,7 +1,6 @@
 // import { createRouter, createWebHistory } from "vue-router";
 import Login from "@/pages/login.vue";
 import Register from "@/pages/Register.vue";
-import Home from "@/pages/Home.vue";
 import Main from "@/pages/Main.vue";
 import NotFound from "@/pages/NotFound.vue"
 
@@ -36,11 +35,6 @@ const routes = [
     meta: {
       rank: 1,
     }
-  },
-  {
-    path: "/Home",
-    name: "Home",
-    component: Home
   },
   {
     path: "/setting",

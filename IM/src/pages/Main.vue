@@ -1,14 +1,7 @@
 <template>
   <article class="main-container">
-    <!-- <header class="main-head">
-      <div class="main-head-title">发现</div>
-      <div class="main-head-imgs">
-        <div>放大镜</div>
-        <div>添加</div>
-      </div>
-    </header> -->
-    <ki-header id="main-header" :title="headerTitle" :iconBack="false"></ki-header>
-    <div class="fake-header"></div>
+    <ki-header id="main-header" :title="headerTitle" :iconBack="false" style="position: absolute"></ki-header>
+    <div class="header_fake"></div>
     <ki-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)">
       <template v-slot:firstItem>
         <!-- <Chats @click="toDialogue"></Chats> -->
@@ -220,59 +213,31 @@ export default {
 <style scoped>
 
   .main-container {
-    --main-bg_primary: #FFF;
-    /* --main-head-bg: #ededed; */
-    --main-head-color: #000;
+    /* --Main-bg: #FFF;
+    --Main-header_fake-color: #FFF;
+    --Main-color: #000;
+    */
 
     box-sizing: border-box;
     padding-top: 3rem;
     position: relative;
     width: 100%;
     height: 100%;
-    background: var(--main-bg_primary);
+    background: var(--Main-bg);
     overflow: hidden;
     user-select: none;
   }
 
-  .main-container .fake-header{
+  .main-container .header_fake{
     box-sizing: border-box;
     margin: 0;
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
-    height: 3rem;
-    background: #FFF;
+    height: 3.26rem;
+    background: var(--Main-header_fake-bg, #000);
     z-index: 9;
-  }
-
-  /* .main-head {
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 3rem;
-    background-color: var(--main-head-bg);
-    font-size: 0.95rem;
-    z-index: 10;
-  } */
-  .main-head-title {
-    margin: 0;
-    padding: 0 0.85rem;
-    color: var(--main-head-color);
-  }
-
-  .main-head-imgs {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-  }
-
-  div {
-    margin: 0 0.85rem;
   }
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <article class="charts-container">
+  <article class="charts-page">
     <div>Chats</div>
     <!-- <div class="chat-cell">
       <div class="chat-cell-avatar">
@@ -24,8 +24,8 @@ export default {
 <style scoped>
 
 
-.charts-container {
-  --charts-container-bg: #ededed;
+.charts-page {
+  /* --Charts-bg: #ededed; */
   --chat-cell-bg: #fff;
   --chat-cell-title-color: #0f0f0f;
   --chat-cell-title-bg: transparent;
@@ -41,7 +41,7 @@ export default {
   justify-content: flex-start;
   width: 100%;
   height: 100%;
-  background-color: var(--charts-container-bg);
+  background-color: var(--charts-bg);
 }
 
 .chat-cell {

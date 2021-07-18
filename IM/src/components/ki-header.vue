@@ -35,7 +35,9 @@ export default {
 </script>
 <style scoped>
     .ki-header {
-        position: absolute;
+        /* --ki-header-color: #1b1b1b;
+        --ki-header-bg: #ededed */
+        position: sticky;
         left: 0;
         top: 0;
         display: grid;
@@ -44,7 +46,8 @@ export default {
         align-items: center;
         width: 100%;
         height: 3.26rem;
-        background-color: var(--header-bg, #FFF);
+        color: var(--ki-header-color, #1b1b1b);
+        background-color: var(--ki-header-bg, #FFF);
         z-index: 10;
     }
 

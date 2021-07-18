@@ -1,5 +1,5 @@
 <template>
-  <article class="contacts-container">
+  <article class="contacts-page">
     <!-- <div>Contacts</div> -->
 
     <section class="border-line_top border-line_bottom">
@@ -183,18 +183,19 @@ export default {
 
 <style scoped>
   .contacts-container {
-    --contacts-container-bg: #ededed;
-    --contacts-letter-color: #818181;
+    --Contacts-bg: #ededed;
+    /* --contacts-letter-color: #818181; */
+
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     width: 100%;
     height: 100%;
-    background-color: var(--contacts-container-bg);
+    background-color: var(-Contacts-bg);
   }
 
-  .contacts-letter {
+  /* .contacts-letter {
     box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
@@ -204,6 +205,6 @@ export default {
     width: 100%;
     color: var(--contacts-letter-color);
     font-size: 0.54rem;
-  }
+  } */
 
 </style>

@@ -159,11 +159,11 @@ export default {
 <style scoped>
 
 .main-tab {
-  --main-tab-color: #000;
-  /* --main-tab-bg = #f7f7f7; */
-  --main-tab-bg: #FFF;
+  /* --main-tab-color: #000;
+  --main-tab-bg: #f7f7f7;
+  --main-tab-border_color: #d6d6d6; */
 
-  --main-tab-border_color: #d6d6d6;
+
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -173,9 +173,9 @@ export default {
   flex-direction: row;
   width: 100%;
   height: 3.26rem;
-  color: var(--main-tab-color);
+  color: var(--main-tab-color, #000);
   font-size: 0.65rem;
-  background: var(--main-tab-bg);
+  background: var(--main-tab-bg),  #f7f7f7;
   z-index: 10;
 }
 
@@ -185,7 +185,7 @@ export default {
   left: 0;
   top: 0;
   width: 100%;
-  border-top: 1px solid --main-tab-border_color;
+  border-top: 1px solid var(--main-tab-border_color, #d6d6d6);
   z-index: 100;
   transform-origin: 0 0;
   transform: scale(1, 0.25);

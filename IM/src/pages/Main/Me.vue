@@ -1,5 +1,5 @@
 <template>
-  <article class="me-container">
+  <article class="me-page">
     <ki-profile name="Natural" id="Greenschick"></ki-profile>
 
     <!-- <img width="50" height="50" src="../../assets/icon/me-img.png" /> -->
@@ -109,8 +109,9 @@ export default {
 
 <style scoped>
 
-.me-container {
-  --me-container-color: #ededed;
+.me-page {
+  /* --Me-bg: #ededed; */
+  
   box-sizing: border-box;
   padding-bottom: 3rem;
   display: flex;
@@ -119,7 +120,7 @@ export default {
   width: 100%;
   height: 100%;
   max-height: 100%;
-  background-color: var(--me-container-color);
+  background-color: var(--Me-bg, #ededed);
   /* overflow: scroll; */
 }
 </style>

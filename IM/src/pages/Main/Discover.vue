@@ -91,13 +91,14 @@ export default {
 
 <style scoped>
   .discover-container {
-    --discover-container-color: #ededed;
+    /* --Discover-bg: #ededed; */
+    
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     width: 100%;
     height: 100%;
-    background-color: var(--discover-container-color);
+    background-color: var(--Discover-bg, #ededed);
   }
 </style>

@@ -3,7 +3,7 @@
         <ki-header title="设置"></ki-header>
         <ki-cell
             v-for="(cell, index) in cells"
-            :iconWidth="1"
+            iconWidth="1"
             :key="index"
             :name="cell.name"
             :isLast="index == cells.length - 1 ? true : false"
@@ -63,7 +63,7 @@ export default {
                 "退出登录": loginOut,
                 "语言: 中文": changeLang.bind(this, "zhCN"),
                 "language: english": changeLang.bind(this,"en"),
-                "黑暗模式": changeTheme("dark"),
+                "黑暗模式": changeTheme.bind(this, "dark"),
             }
             Reflect.has(eventMapping, name) ? eventMapping[name]() : "";
         }
@@ -88,11 +88,12 @@ export default {
         }
 
         function changeLang(lang) {
+            console.log("---Setting changLang event: ");
             Store.commit("SET_LANG", {lang});
         }
 
         function changeTheme(type) {
-            console.log("---changeTheme: ", type);
+            console.log("---Setting changeTheme: ", type);
             document.documentElement.dataset.theme = "dark";
         }
 
@@ -105,9 +106,11 @@ export default {
 </script>
 <style scoped>
     .setting-page {
+        /* --Setting-bg: orange; */
         width: 100%;
         height: 100%;
-        background: orange;
+        /* background: orange; */
+        background-color: var(--Setting-bg, #ededed);
     }
 
 </style>

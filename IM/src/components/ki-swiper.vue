@@ -135,7 +135,7 @@ export default {
     /* padding-top: 3rem; */
     width: 100%;
     height: 100%;
-    background-color: cyan;
+    /* background-color: cyan; */
     transition: all .0s ease-out;
     will-change: transform;
 }
