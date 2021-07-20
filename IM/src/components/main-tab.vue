@@ -175,7 +175,7 @@ export default {
   height: 3.26rem;
   color: var(--main-tab-color, #000);
   font-size: 0.65rem;
-  background: var(--main-tab-bg),  #f7f7f7;
+  background-color: var(--main-tab-bg, #f7f7f7);
   z-index: 10;
 }
 

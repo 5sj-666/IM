@@ -87,7 +87,7 @@ export default defineComponent({
 
   /* --- main-tab Component --- */
   --main-tab-color: var(--Main-color_primary);
-  --main-tab-bg: var(--Main-header_fake-bg);
+  --main-tab-bg: #f7f7f7;
   --main-tab-border_color: var(--Main-color_secondary); 
 
   /* --- Setting Component --- */
@@ -105,6 +105,8 @@ export default defineComponent({
   --Main-bg: #111;
   --Main-header_fake-bg: #191919;
 
+  /* --- main-tab Component --- */
+  --main-tab-bg: #1f1f1f;
 }
 
 html, body, #app {

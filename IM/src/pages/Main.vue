@@ -151,6 +151,10 @@ export default {
           header.style.transform = `translateX(-100%)`;
           header.style.transition = `all ${.25}s ease-out` ;
         }
+      }else {
+         console.warn("---执行panend");
+          header.style.transform = `translateX(0%)`;
+          header.style.transition = `all 0s ease-out` ;
       }
 
 
@@ -189,12 +193,15 @@ export default {
 
 
     let headerTitle = computed(()=>{
+      // const header = document.querySelector("#main-header");
+      // // && header.style.transform == `translateX(0%)`
+      // console.log("--header: ", header);
       let fieldMap = {
         0: "微信",
         1: "通讯录",
         2: "发现"
       }
-      return swipeParam.progress === 0 && Reflect.has(fieldMap, swipeParam.activeIndex) ? fieldMap[swipeParam.activeIndex] : "";
+      return Reflect.has(fieldMap, swipeParam.activeIndex) ? fieldMap[swipeParam.activeIndex] : "";
     })
 
     return {
