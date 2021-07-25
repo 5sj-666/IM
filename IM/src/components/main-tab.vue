@@ -1,20 +1,81 @@
 <template>
   <footer class="main-tab">
-    <div
-      class="main-tab-item"
-      v-for="(tab,index) in tabList"
-      :key="index"
-      @click="changeTab(index)"
-    >
-      <svg-cell :color="tab.iconColor" :bgcolor="tab.iconBg" :type="tab.icon"></svg-cell>
-      {{tab.name}}
+    <!-- <div class="main-tab-item" @click="changeTab(0)">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="0 0 100 100">
+        <path d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z" fill="#f7f7f7" stroke="rgb(0,0,0)" style="stroke-width: 6;" />
+      </svg>
+      微信
+    </div> -->
+    <div class="main-tab-item" @click="changeTab(0)">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="-2 -2 102 102">
+        <!-- <path :class="['svg-color', 'svg-lweave']" d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z"  :style="{strokeWidth: 6, fill: svgLeave.fill}" /> -->
+        <!-- <path class="svg-color svg-leave" d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z"  :style="{strokeWidth: 6}" /> -->
+        <path :class="['svg-color', swiperIndex === 0 ? 'svg-leave' : '', swiperIndex === 1 && swiperProgress > 0 ? 'svg-enter' : '']" d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z"  :style="{strokeWidth: 6}" />
+      </svg>
+      微信
     </div>
+    
+    <div class="main-tab-item" @click="changeTab(1)">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="-2 2 117 100">
+        <path d="M4 98
+              L 98 98
+              Q 100 94, 94 90
+              L 65 70
+              Q 54 62, 60 55
+              C 68 48, 70 45, 70 25
+              C 68 -5, 32 -5, 30 25
+              C 30 45, 32 48,  40 55
+              Q 46 62, 35 70
+              L 6 90
+              Q 0 94, 2 98
+              Z" 
+              :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]" style="stroke-width: 6;" stroke-linecap="round"
+        />
+        <line :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]"  x1="80" y1="35" x2="120" y2="35" stroke-width="6" />
+        <line :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]"  x1="90" y1="52.5" x2="120" y2="52.5" stroke-width="6" />
+        <line :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]"  x1="100" y1="70" x2="120" y2="70" stroke-width="6" />
+      </svg>
+      联系人
+    </div>
+
+    <div class="main-tab-item" @click="changeTab(2)">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="0 0 100 100" >
+        <circle :class="['svg-color', swiperIndex === 2 ?  'svg-leave' : '', (swiperIndex === 3 && swiperProgress > 0) || (swiperIndex === 1 && swiperProgress < 0) ? 'svg-enter' : '' ]" cx="50" cy="50" r="46.5" stroke-width="6"  />
+        <polygon :class="['svg-color', swiperIndex === 2 ?  'svg-leave_inset' : '', (swiperIndex === 3 && swiperProgress > 0) || (swiperIndex === 1 && swiperProgress < 0) ? 'svg-enter_inset' : '' ]" points="25,75 40,40 75,25 60,60" style="stroke-width:4;"/>
+      </svg>
+      发现
+    </div>
+
+    <div class="main-tab-item" @click="changeTab(3)">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="-2 -2 103 103" >
+        <path d="M4 98
+              L 98 98
+              Q 100 94, 94 90
+              L 65 70
+              Q 54 62, 60 55
+              C 68 48, 70 45, 70 25
+              C 68 -5, 32 -5, 30 25
+              C 30 45, 32 48,  40 55
+              Q 46 62, 35 70
+              L 6 90
+              Q 0 94, 2 98
+              Z
+          "
+          :class="['svg-color', swiperIndex === 3 ?  'svg-leave' : '', swiperIndex === 2 && swiperProgress < 0 ? 'svg-enter' : '' ]" 
+          style="stroke-width: 6;" stroke-linecap="round"
+        />
+      </svg>
+      我
+    </div>
+
   </footer>
 </template>
 
 <script>
-import SvgCell from "./svg-cell.vue";
-import { watchEffect } from "vue";
+// import SvgCell from "./svg-cell.vue";
+import { reactive, ref } from "vue";
+// import mitt from "mitt";
+import EventBus from "@/utils/eventBus.js"
 
 /**
  * @description 计算一个颜色值转换到另一个颜色过程中,不同阶段(progress)对应的不同颜色
@@ -39,118 +100,75 @@ function rgbComputed(startRGB, endRGB, percent) {
   return RGB;
 }
 
-function colorComputed(swipeParam, tabList) {
-  if (swipeParam.step === "panmove") {
-    if (
-      (swipeParam.activeIndex <= 0 && swipeParam.progress > 0) ||
-      (swipeParam.activeIndex >= 3 && swipeParam.progress < 0)
-    ) {
-      // console.log("main tab , 不执行阶段");
-    } else {
-      /**
-       * color: #000 -> #21a469( 0->100% 100%->0% )
-       * bg: #f7f7f7 -> #09c162( 0->50% 100%->50%)
-       */
-      let progress = swipeParam.progress;
-      if (swipeParam.progress < 0) {
-        tabList[swipeParam.activeIndex].iconColor = rgbComputed(
-          [33, 164, 105],
-          [0, 0, 0],
-          Math.abs(progress)
-        );
-        tabList[swipeParam.activeIndex + 1].iconColor = rgbComputed(
-          [0, 0, 0],
-          [33, 164, 105],
-          Math.abs(progress)
-        );
 
-        switch (true) {
-          case progress > -0.5:
-            tabList[swipeParam.activeIndex].iconBg = rgbComputed(
-              [9, 193, 49],
-              [247, 247, 247],
-              Math.abs(progress) * 2
-            );
-            tabList[swipeParam.activeIndex + 1].iconBg = "#f7f7f7";
-            break;
-          case progress < -0.5 && progress > -1:
-            tabList[swipeParam.activeIndex].iconBg = "#f7f7f7";
-            tabList[swipeParam.activeIndex + 1].iconBg = rgbComputed(
-              [247, 247, 247],
-              [9, 193, 49],
-              Math.abs(progress + 0.5) * 2
-            );
-            break;
-        }
-      } else if (swipeParam.progress > 0) {
-        tabList[swipeParam.activeIndex].iconColor = rgbComputed(
-          [33, 164, 105],
-          [0, 0, 0],
-          progress
-        );
-        tabList[swipeParam.activeIndex - 1].iconColor = rgbComputed(
-          [0, 0, 0],
-          [33, 164, 105],
-          progress
-        );
-        switch (true) {
-          case progress < 0.5:
-            (tabList[swipeParam.activeIndex].iconBg = rgbComputed(
-              [9, 193, 49],
-              [247, 247, 247],
-              progress * 2
-            )),
-              (tabList[swipeParam.activeIndex - 1].iconBg = "#f7f7f7");
-            break;
-          case progress > 0.5 && progress < 1:
-            tabList[swipeParam.activeIndex].iconBg = "#f7f7f7";
-            tabList[swipeParam.activeIndex - 1].iconBg = rgbComputed(
-              [247, 247, 247],
-              [9, 193, 49],
-              (progress - 0.5) * 2
-            );
-        }
-      }
-    }
-
-    //
-  } else if (swipeParam.step === "panend") {
-    // console.warn("main tab panend!!");
-    for (let tab of tabList) {
-      tab.iconColor = "#000";
-      tab.iconBg = "#f7f7f7";
-      // console.log("tab.iconColor:", tab.iconColor);
-    }
-    tabList[swipeParam.activeIndex].iconColor = "#21a469";
-    tabList[swipeParam.activeIndex].iconBg = "#09c162";
-    // console.warn(" colorComputed tabList", tabList);
-  }
-}
 
 export default {
   name: "MainTab",
   components: {
-    SvgCell
+    // SvgCell
   },
   props: {
-    tabList: {},
-    swipeParam: {}
+    // tabList: {},
+    // swipeParam: {},
   },
   setup(props, ctx) {
+
+    let swiperIndex = ref(1);
+    let swiperProgress = ref(0);
+
+    EventBus.on('swipeEvent',  payload => {
+      swiperIndex.value = payload.activeIndex;
+      swiperProgress.value = payload.progress;
+
+      getColor(payload.activeIndex, payload.progress, payload.step);
+      console.warn("---main-tab EventBus:  swipeEvent", payload)
+    });
+
+
+
     function changeTab(index) {
       // console.log("main-tab changeTab:", index);
       ctx.emit("changeTab", index);
     }
 
-    watchEffect(
-      () => {
-        colorComputed(props.swipeParam, props.tabList);
-        return props.swipeParam;
-      } // 返回值的getter函数
-    );
+    /**
+     * @description 根据index和progress计算 svg图标的颜色，这里只需要两个颜色 进入和出去两个页面的图标颜色
+     * 
+     * index这个序号的svg一定是离开的图标，而progress为正的话，表示向右滑动， 为负表示向左滑动
+     * 
+     */
+    function getColor(index, progress) {
+
+      progress = Math.abs(progress);
+
+      let dom = document.querySelector('.main-tab').style;
+      try {
+        /*
+          选中状态的图标： 滑动时候时候为离开(.svg-leave)状态：stroke: [33, 164, 105] -> [0, 0, 0]; fill: [33, 164, 105] -> [247, 247, 247]; stoke_inset:  [247, 247, 247]-> [0, 0, 0]
+          要滑向的图标为 进入状态（.svg-enter）: stroke: [0, 0, 0] -> [33, 164, 105]; fill: [247, 247, 247] -> [33, 164, 105]; stroke_inset: [0, 0, 0] -> [247, 247, 247]
+        */
+        // console.log("---修改css变量");
+        dom.setProperty( '--svg-leave_fill', rgbComputed( [33, 164, 105], [247, 247, 247], progress) );
+        dom.setProperty( '--svg-leave_stroke', rgbComputed( [33, 164, 105] , [0, 0, 0], progress) );
+        dom.setProperty( '--svg-leave_stroke_inset', rgbComputed( [247, 247, 247], [0, 0, 0], progress) );
+
+        dom.setProperty( '--svg-enter_fill', rgbComputed( [247, 247, 247], [33, 164, 105], progress) );
+        dom.setProperty( '--svg-enter_stroke', rgbComputed( [0, 0, 0] , [33, 164, 105], progress) );
+        dom.setProperty( '--svg-enter_stroke_inset', rgbComputed( [0, 0, 0] , [247, 247, 247], progress) );
+      } catch (error) {
+         console.error("---修改css变量 error:", error);
+      }
+
+
+
+
+    }
 
     return {
-      changeTab
+      changeTab,
+
+      swiperIndex,
+      swiperProgress,
     };
   }
 };
@@ -158,10 +176,19 @@ export default {
 
 <style scoped>
 
+
 .main-tab {
   /* --main-tab-color: #000;
   --main-tab-bg: #f7f7f7;
   --main-tab-border_color: #d6d6d6; */
+
+  --svg-leave_fill: rgb(33, 164, 105);
+  --svg-leave_stroke: rgb(33, 164, 105);
+  --svg-leave_stroke_inset: rgb(247, 247, 247);
+
+  --svg-enter_fill: rgb(247, 247, 247);
+  --svg-enter_stroke: rgb(0, 0, 0);
+  --svg-enter_stroke_inset: rgb(0, 0, 0);
 
 
   box-sizing: border-box;
@@ -177,6 +204,28 @@ export default {
   font-size: 0.65rem;
   background-color: var(--main-tab-bg, #f7f7f7);
   z-index: 10;
+}
+
+
+.svg-color {
+  fill: var(--svg-fill);
+  stroke: var(--svg-stroke);
+}
+
+.svg-enter {
+  fill: var(--svg-enter_fill);
+  stroke: var(--svg-enter_stroke);
+}
+.svg-leave {
+  fill: var(--svg-leave_fill);
+  stroke: var(--svg-leave_stroke);
+}
+
+.svg-enter_inset {
+  stroke: var(--svg-enter_stroke_inset);
+}
+.svg-leave_inset {
+  stroke: var(--svg-leave_stroke_inset);
 }
 
 .main-tab:after {

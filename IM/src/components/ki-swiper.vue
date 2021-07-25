@@ -17,6 +17,8 @@
 
 <script>
 import Hammer from "hammerjs";
+// import mitt from "mitt";
+import EventBus from "@/utils/eventBus.js"
 
 // import { onMounted, computed, watchEffect } from "vue";
 import { onMounted, watchEffect, nextTick } from "vue";
@@ -31,7 +33,7 @@ export default {
   },
   setup(props, ctx) {
     // let x = new setupComponent();
-    console.log("window ", window);
+    // console.log("window ", window);
     onMounted(() => {
       // console.log("VNodeProps:");
       BindPanEvent();
@@ -111,6 +113,13 @@ export default {
         activeIndex: activeIndex,
         step: step
       });
+
+      EventBus.emit('swipeEvent', {
+        progress: progress,
+        activeIndex: activeIndex,
+        step: step
+      });
+
     }
 
     return {};

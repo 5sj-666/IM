@@ -18,12 +18,14 @@
       </template>
     </ki-swiper>
 
-    <main-tab :tabList="tabList" :swipeParam="swipeParam" @changeTab="changeTab($event,index)"></main-tab>
+    <!-- <main-tab :tabList="tabList" :swipeParam="swipeParam" @changeTab="changeTab($event,index)"></main-tab> -->
+    <main-tab></main-tab>
+
   </article>
 </template>
 
 <script>
-import { computed, reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount, ref } from "vue";
+import { computed, reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import useI18n from "@/local/index"
@@ -134,7 +136,7 @@ export default {
           header.style.transition = "all .0s ease-out";
         }
         if(param.step == "panend") {
-          console.warn("---执行panend");
+          // console.warn("---执行panend");
           header.style.transform = `translateX(0%)`;
           header.style.transition = `all ${.25}s ease-out` ;
         }
@@ -146,13 +148,13 @@ export default {
           header.style.transition = "all .0s ease-out";
         }
         if(param.step === "panend") {
-          console.warn("---执行panend");
+          // console.warn("---执行panend");
           // header.style.left = "-100%";
           header.style.transform = `translateX(-100%)`;
           header.style.transition = `all ${.25}s ease-out` ;
         }
       }else {
-         console.warn("---执行panend");
+        //  console.warn("---执行panend");
           header.style.transform = `translateX(0%)`;
           header.style.transition = `all 0s ease-out` ;
       }

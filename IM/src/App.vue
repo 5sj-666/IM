@@ -94,6 +94,10 @@ export default defineComponent({
   --Setting-bg: var(--Main-bg);
 
 
+  /* main-tab */
+  --svg-fill: #f7f7f7;
+  --svg-stroke: #000;
+
 
 }
 
@@ -107,6 +111,10 @@ export default defineComponent({
 
   /* --- main-tab Component --- */
   --main-tab-bg: #1f1f1f;
+    /* main-tab */
+  --svg-fill: #1f1f1f;
+  --svg-stroke: #d7d7d7;
+
 }
 
 html, body, #app {
