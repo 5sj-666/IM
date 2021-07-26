@@ -103,6 +103,7 @@ export default {
          */
         function changeTheme(type) {
             console.log("---Setting changeTheme: ", type);
+            localStorage.setItem("theme", type);
             document.documentElement.dataset.theme = type;
         }
 

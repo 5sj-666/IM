@@ -124,6 +124,10 @@ html, body, #app {
   height: 100%;
 }
 
+/* #app {
+  transition: color 3s linear;
+} */
+
 /* *@rem+vw布局  动态改变font-size的值
  */
 html {

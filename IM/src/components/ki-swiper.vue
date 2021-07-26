@@ -32,6 +32,29 @@ export default {
     }
   },
   setup(props, ctx) {
+
+    EventBus.on("clickTab", param => {
+      console.log("---ki-swiper: changeTab param: ", param);
+      // activeIndex = param.tab;
+      slideTo(param.tab, 0);
+
+      activeIndex = param.tab;
+
+      // ctx.emit("swipeEvent", {
+      //   progress: 0,
+      //   activeIndex: param.tab,
+      //   step: 'panEnd'
+      // });
+
+
+      EventBus.emit('swipeEvent', {
+        progress: 0,
+        activeIndex: param.tab,
+        step: 'panEnd'
+      });
+
+    })
+
     // let x = new setupComponent();
     // console.log("window ", window);
     onMounted(() => {

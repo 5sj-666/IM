@@ -2,7 +2,8 @@
   <article class="main-container">
     <ki-header id="main-header" :title="headerTitle" :iconBack="false" style="position: absolute"></ki-header>
     <div class="header_fake"></div>
-    <ki-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)">
+    <!-- <ki-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)"> -->
+    <ki-swiper :activeIndex="activeIndex.index">
       <template v-slot:firstItem>
         <!-- <Chats @click="toDialogue"></Chats> -->
         <Chats></Chats>
@@ -25,10 +26,11 @@
 </template>
 
 <script>
-import { computed, reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount } from "vue";
+import { computed, reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import useI18n from "@/local/index"
+import useI18n from "@/local/index";
+import EventBus from "@/utils/eventBus"
 
 
 import KiSwiper from "../components/ki-swiper";
@@ -58,6 +60,8 @@ export default {
           Store = useStore(),
           { t } = useI18n();
 
+    let headerTitle  = ref("通讯录");
+
     onMounted(()=>{
       if(!localStorage.getItem('token')) 
         Router.replace("/login")
@@ -81,20 +85,9 @@ export default {
       console.log("---MAIN onBeforeUnmount");
     });
 
-    // async function getFriendList() {
-    //   console.log("---getFriendList");
-    //   let res = await Request.post("/api/friend/getFriendList");
-    //   console.log("---getFriendList: ", res);
-    // }
-
     let activeIndex = reactive({
       index: 1
     });
-
-    function changeTab(index) {
-      // console.log("main changeTab:", index);
-      activeIndex.index = index;
-    }
 
     watchEffect(() => {
       // console.log("mian 1111");
@@ -106,14 +99,30 @@ export default {
       activeIndex: 0,
       step: "panend"
     });
-    function swipeEvent(param) {
-      swipeParam.progress = param.progress;
-      swipeParam.activeIndex = param.activeIndex;
-      swipeParam.step = param.step;
-      console.log("aaaa", param, swipeParam);
 
+    let fieldMap = {
+      0: "微信",
+      1: "通讯录",
+      2: "发现"
+    }
 
-      //判断对header的位移
+    EventBus.on('swipeEvent', param => {
+      try {
+        // console.log("---Main param: ", param);
+        slideHeader(param.activeIndex, param.progress, param.step);
+        headerTitle.value = fieldMap[param.activeIndex];
+      } catch (error) {
+        console.error("---Main EventBus: ", error);
+      }
+   
+    });
+
+    /**
+     * @description 判断标题名称和是否需要坐位移
+     * @params {number|string} index 当前tab位置
+     */
+    function slideHeader(index, progress, step) {
+       //判断对header的位移
       /**
        * 
        * activeIndex === 2:  progress < 0; 即向右滑动，此时header应该向左滑动
@@ -129,25 +138,25 @@ export default {
        */
       const header = document.querySelector("#main-header");
 
-      if(param.activeIndex === 2) {
-        if(param.progress < 0) {
-          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * param.progress);
-          header.style.transform = `translateX(${window.screen.width * param.progress}px)`;
+      if(index === 2) { //param
+        if(progress < 0) {
+          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * progress);
+          header.style.transform = `translateX(${window.screen.width * progress}px)`;
           header.style.transition = "all .0s ease-out";
         }
-        if(param.step == "panend") {
+        if(step == "panend") {
           // console.warn("---执行panend");
           header.style.transform = `translateX(0%)`;
           header.style.transition = `all ${.25}s ease-out` ;
         }
-      }else if(param.activeIndex === 3) {
-        if(param.progress > 0) {
-          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * param.progress);
+      }else if(index === 3) {
+        if(progress > 0) {
+          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * progress);
           // header.style.left = "-100%";
-          header.style.transform = `translateX(${window.screen.width * (param.progress - 1)}px)`;
+          header.style.transform = `translateX(${window.screen.width * (progress - 1)}px)`;
           header.style.transition = "all .0s ease-out";
         }
-        if(param.step === "panend") {
+        if(step === "panend") {
           // console.warn("---执行panend");
           // header.style.left = "-100%";
           header.style.transform = `translateX(-100%)`;
@@ -158,8 +167,6 @@ export default {
           header.style.transform = `translateX(0%)`;
           header.style.transition = `all 0s ease-out` ;
       }
-
-
     }
 
     let tabList = reactive([
@@ -193,26 +200,13 @@ export default {
       Router.push("/Dialogue");
     }
 
-
-    let headerTitle = computed(()=>{
-      // const header = document.querySelector("#main-header");
-      // // && header.style.transform == `translateX(0%)`
-      // console.log("--header: ", header);
-      let fieldMap = {
-        0: "微信",
-        1: "通讯录",
-        2: "发现"
-      }
-      return Reflect.has(fieldMap, swipeParam.activeIndex) ? fieldMap[swipeParam.activeIndex] : "";
-    })
-
     return {
       headerTitle,
       swipeParam,
-      swipeEvent,
+      // swipeEvent,
       tabList,
       activeIndex,
-      changeTab,
+      // changeTab,
       toDialogue,
     };
   }
