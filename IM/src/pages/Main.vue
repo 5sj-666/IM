@@ -101,9 +101,9 @@ export default {
     });
 
     let fieldMap = {
-      0: "微信",
-      1: "通讯录",
-      2: "发现"
+      0: t('App.Main.chats'),
+      1: t('App.Main.contact'),
+      2: t('App.Main.discover')
     }
 
     EventBus.on('swipeEvent', param => {
@@ -169,32 +169,32 @@ export default {
       }
     }
 
-    let tabList = reactive([
-      {
-        name: t('App.Main.chats'),
-        icon: "CHATS",
-        iconColor: "#000",
-        iconBg: "#f00"
-      },
-      {
-        name: t('App.Main.contact'),
-        icon: "CONTACTS",
-        iconColor: "#000",
-        iconBg: "#000"
-      },
-      {
-        name: t('App.Main.discover'),
-        icon: "DISCOVER",
-        iconColor: "#00f",
-        iconBg: "#f00"
-      },
-      {
-        name: t('App.Main.mine'),
-        icon: "ME",
-        iconColor: "#000",
-        iconBg: "#f00"
-      }
-    ]);
+    // let tabList = reactive([
+    //   {
+    //     name: t('App.Main.chats'),
+    //     icon: "CHATS",
+    //     iconColor: "#000",
+    //     iconBg: "#f00"
+    //   },
+    //   {
+    //     name: t('App.Main.contact'),
+    //     icon: "CONTACTS",
+    //     iconColor: "#000",
+    //     iconBg: "#000"
+    //   },
+    //   {
+    //     name: t('App.Main.discover'),
+    //     icon: "DISCOVER",
+    //     iconColor: "#00f",
+    //     iconBg: "#f00"
+    //   },
+    //   {
+    //     name: t('App.Main.mine'),
+    //     icon: "ME",
+    //     iconColor: "#000",
+    //     iconBg: "#f00"
+    //   }
+    // ]);
 
     function toDialogue() {
       Router.push("/Dialogue");
@@ -204,7 +204,7 @@ export default {
       headerTitle,
       swipeParam,
       // swipeEvent,
-      tabList,
+      // tabList,
       activeIndex,
       // changeTab,
       toDialogue,

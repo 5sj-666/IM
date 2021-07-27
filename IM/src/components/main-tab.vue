@@ -1,41 +1,34 @@
 <template>
   <footer class="main-tab">
-    <!-- <div class="main-tab-item" @click="changeTab(0)">
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="0 0 100 100">
-        <path d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z" fill="#f7f7f7" stroke="rgb(0,0,0)" style="stroke-width: 6;" />
-      </svg>
-      微信
-    </div> -->
     <div class="main-tab-item" @click="clickTab(0)">
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="-2 -2 102 102">
-        <!-- <path :class="['svg-color', 'svg-lweave']" d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z"  :style="{strokeWidth: 6, fill: svgLeave.fill}" /> -->
-        <!-- <path class="svg-color svg-leave" d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z"  :style="{strokeWidth: 6}" /> -->
         <path :class="['svg-color', swiperIndex === 0 ? 'svg-leave' : '', swiperIndex === 1 && swiperProgress > 0 ? 'svg-enter' : '']" d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z" />
       </svg>
-      微信
+      {{t('App.Main.chats')}}
     </div>
     
     <div class="main-tab-item" @click="clickTab(1)">
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="-2 2 117 100">
-        <path d="M4 98
-              L 98 98
-              Q 100 94, 94 90
-              L 65 70
-              Q 54 62, 60 55
-              C 68 48, 70 45, 70 25
-              C 68 -5, 32 -5, 30 25
-              C 30 45, 32 48,  40 55
-              Q 46 62, 35 70
-              L 6 90
-              Q 0 94, 2 98
-              Z" 
-              :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]" stroke-linecap="round"
-        />
-        <line :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]"  x1="80" y1="35" x2="120" y2="35" />
-        <line :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]"  x1="90" y1="52.5" x2="120" y2="52.5" />
-        <line :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]"  x1="100" y1="70" x2="120" y2="70" />
+        <g :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]">
+          <path d="M4 98
+                L 98 98
+                Q 100 94, 94 90
+                L 65 70
+                Q 54 62, 60 55
+                C 68 48, 70 45, 70 25
+                C 68 -5, 32 -5, 30 25
+                C 30 45, 32 48,  40 55
+                Q 46 62, 35 70
+                L 6 90
+                Q 0 94, 2 98
+                Z" 
+          />
+          <line  x1="80" y1="35" x2="120" y2="35" />
+          <line  x1="90" y1="52.5" x2="120" y2="52.5" />
+          <line  x1="100" y1="70" x2="120" y2="70" />
+        </g>
       </svg>
-      联系人
+      {{t('App.Main.contact')}}
     </div>
 
     <div class="main-tab-item" @click="clickTab(2)">
@@ -43,7 +36,7 @@
         <circle cx="50" cy="50" r="46.5" :class="['svg-color', swiperIndex === 2 ?  'svg-leave' : '', (swiperIndex === 3 && swiperProgress > 0) || (swiperIndex === 1 && swiperProgress < 0) ? 'svg-enter' : '' ]" />
         <polygon points="25,75 40,40 75,25 60,60" :class="['svg-color', swiperIndex === 2 ?  'svg-leave_inset' : '', (swiperIndex === 3 && swiperProgress > 0) || (swiperIndex === 1 && swiperProgress < 0) ? 'svg-enter_inset' : '' ]" />
       </svg>
-      发现
+      {{t('App.Main.discover')}}
     </div>
 
     <div class="main-tab-item" @click="clickTab(3)">
@@ -64,7 +57,7 @@
           :class="['svg-color', swiperIndex === 3 ?  'svg-leave' : '', swiperIndex === 2 && swiperProgress < 0 ? 'svg-enter' : '' ]"
         />
       </svg>
-      我
+      {{t('App.Main.mine')}}
     </div>
 
   </footer>
@@ -75,6 +68,8 @@
 import { reactive, ref } from "vue";
 // import mitt from "mitt";
 import EventBus from "@/utils/eventBus.js"
+import useI18n from "@/local/index";
+
 
 /**
  * @description 计算一个颜色值转换到另一个颜色过程中,不同阶段(progress)对应的不同颜色
@@ -109,6 +104,8 @@ export default {
 
     let swiperIndex = ref(1);
     let swiperProgress = ref(0);
+
+    const { t } = useI18n();
 
     EventBus.on('swipeEvent',  payload => {
       swiperIndex.value = payload.activeIndex;
@@ -173,7 +170,8 @@ export default {
     return {
       swiperIndex,
       swiperProgress,
-      clickTab
+      clickTab,
+      t
     };
   }
 };
