@@ -1,5 +1,5 @@
 <template>
-    <article>
+    <article class="login-page">
         <!-- <span>图标</span> -->
         <img @click="goBack" style="width: .96rem; height: .96rem" src="@/assets/icon/icon-close.png" alt="">
         <div class="title">登录</div>
@@ -88,7 +88,9 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-    article {
+    .login-page {
+        --Login-bg: rgb(245, 245, 245);
+
         box-sizing: border-box;
         padding: 0 .7rem;
         display: grid;
@@ -96,7 +98,8 @@ export default defineComponent({
         grid-template-columns: 1fr;
         width: 100%;
         height: 100%;
-        background: rgb(245, 245, 245);
+        /* background: rgb(245, 245, 245); */
+        background-color: var(--Login-bg);
         align-items: center;
         justify-items: start;
     }
@@ -148,6 +151,6 @@ export default defineComponent({
     }
     .btn-login_active {
         color: #FFF;
-        background: #05c25f;
+        background-color: #05c25f;
     }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <article class="dialogue">
+    <article class="dialogue-page">
         <ki-header :title="Route.params.userId"/>
         <section class="msg-content">
            <!-- <div class="msg-item self">
@@ -181,30 +181,33 @@ export default defineComponent({
     //     --header-background-color: rgb(237, 237, 237);
     // }
     */
-    .dialogue {
+    .dialogue-page {
+        /* --Dialogue-bg: #FFF; 
+           --Dialogue-footer-bg: #191919*/
+
         display: grid;
         grid-template-rows: 3rem auto 3rem;
         grid-template-columns: 1fr;
         width: 100%;
         height: 100%;
-        background-color: cyan;
+        background-color: var(--Dialogue-bg, #ededed);
+        /* background-color: cyan; */
     }
-    header {
+    /* header {
         display: grid;
         grid-template-rows: 1fr;
         grid-template-columns: 3rem auto 3rem;
         align-items: center;
         background-color: var(--header-bg);
-        /*// background-color: rgb(237, 237, 237);
-        // background-color: var(--header-background-color, yellow);*/
-    }
+    } */
 
     .msg-content {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        background-color: #FFF;
-        overflow: scroll;
+        /* background-color: var(--Dialogue-bg, #ededed); */
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     .msg-content .msg-item {
@@ -273,7 +276,8 @@ export default defineComponent({
         grid-template-rows: 1fr;
         grid-template-columns: 2rem auto 2rem 2rem;
         align-items: center;
-        background-color: rgb(237, 237, 237);
+        /* background-color: rgb(237, 237, 237); */
+        background-color: var(--Dialogue-footer-bg);
     }
     .btn-send {
         grid-column: 3 / 5;

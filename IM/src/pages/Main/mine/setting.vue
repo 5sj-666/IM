@@ -1,15 +1,16 @@
 <template>
     <article class="setting-page">
-        <ki-header title="设置"/>
+        <ki-header title="设置"></ki-header>
         <ki-cell
             v-for="(cell, index) in cells"
+            iconWidth="1"
             :key="index"
             :name="cell.name"
             :isLast="index == cells.length - 1 ? true : false"
             :showNextIcon="false"
             @click="cellsEvent(cell.name)"
         >
-            <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" />
+            <!-- <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" /> -->
         </ki-cell>
     </article>
 </template>
@@ -53,6 +54,10 @@ export default {
                 icon: require("@/assets/icon/me-setting.png"),
                 name: "黑暗模式",
             },
+            {
+                icon: require("@/assets/icon/me-setting.png"),
+                name: "普通模式",
+            },
         ];
 
         function cellsEvent(name) {
@@ -62,7 +67,8 @@ export default {
                 "退出登录": loginOut,
                 "语言: 中文": changeLang.bind(this, "zhCN"),
                 "language: english": changeLang.bind(this,"en"),
-                "黑暗模式": changeTheme("dark"),
+                "黑暗模式": changeTheme.bind(this, "dark"),
+                "普通模式": changeTheme.bind(this, ""),
             }
             Reflect.has(eventMapping, name) ? eventMapping[name]() : "";
         }
@@ -87,12 +93,18 @@ export default {
         }
 
         function changeLang(lang) {
+            console.log("---Setting changLang event: ");
             Store.commit("SET_LANG", {lang});
         }
 
+        /**
+         * @description: 主题切换
+         * @params {String} type (dark, normal)
+         */
         function changeTheme(type) {
-            console.log("---changeTheme: ", type);
-            document.documentElement.dataset.theme = "dark";
+            console.log("---Setting changeTheme: ", type);
+            localStorage.setItem("theme", type);
+            document.documentElement.dataset.theme = type;
         }
 
         return {
@@ -104,9 +116,11 @@ export default {
 </script>
 <style scoped>
     .setting-page {
+        /* --Setting-bg: orange; */
         width: 100%;
         height: 100%;
-        background: orange;
+        /* background: orange; */
+        background-color: var(--Setting-bg, #ededed);
     }
 
 </style>

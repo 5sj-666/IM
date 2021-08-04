@@ -72,30 +72,16 @@ export default defineComponent({
 </script>
 <style scoped>
     .profile-page {
-        --profile_bg: #ededed;
-        /* 主背景色调 */
-        --profile-main_bg: rgba(255,255,255, 1);
-        --profile_color: #121212;
-
-        --profile-header_color: #FFF;
-        --profile_hint: #a4a4a4;
-
-        --profile-button_color: #576b86;
-        --profile-button_bg: var(--profile-main_bg);
-
-        --profile-font: 1.09rem;
+        /* --Profile_bg: #ededed;
+        --Profile-btn_color: #576b86;
+        --Profile-btn_bg: rgba(255,255,255, 1); */
 
         width: 100%;
         height: 100%;
-        background-color: var(--profile_bg);
+        background-color: var(--Profile_bg, #000);
     }
 
-    .profile-page header {
-        width: 100%;
-        height: 3.26rem;
 
-        background-color: var(--profile-header_color);
-    }
 
     .profile-btn {
         display: flex;
@@ -103,9 +89,9 @@ export default defineComponent({
         align-items: center;
         width: 100%;
         height: 3.26rem;
-        background: var(--profile-button_bg, "#FFF");
-        color: var(--profile-button_color);
-        font-size: var(--profile-font);
+        background: var(--Profile-btn_bg, #FFF);
+        color: var(--Profile-btn_color, #576b86);
+        font-size: 1.09rem;
         border-bottom: 1px solid #e2e2e2;
     }
 </style>

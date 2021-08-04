@@ -1,8 +1,8 @@
 <template>
-  <section class="ki-cell">
+  <section class="ki-cell" :style="{filter: disable ? 'grayscale(100%)' : ''}">
     <div class="ki-cell-img_container" :style="{ width: iconWidth + 'rem'}">
       <slot>
-        <img class="ki-cell-img_default" src="../assets/icon/me-smile.png" alt="default" />
+        <!-- <img class="ki-cell-img_default" src="../assets/icon/me-smile.png" alt="default" /> -->
       </slot>
     </div>
     <div class="ki-cell-content" :class="{'border-line_bottom': !isLast }">
@@ -46,6 +46,11 @@ export default {
       type: Boolean,
       default: false,
       description: "为最后一个元素时，是否需要下边框"
+    },
+    disable: {
+      type: Boolean,
+      default: false,
+      description: "置灰并不可操作"
     }
   }
 };
@@ -69,9 +74,9 @@ export default {
 }
 
 .ki-cell {
-  --ki-cell-bg: #fff;
-  --ki-cell-name-color: #0d0d0d;
-  --ki-cell-ad-color: #7e7e7e;
+  /* --ki-cell-bg: #FFF; */
+  /* --ki-color_primary:  #0d0d0d;
+  --ki-color_secondary: #7e7e7e; */
 
   box-sizing: border-box;
   display: flex;
@@ -80,7 +85,7 @@ export default {
   flex-shrink: 0;
   width: 100%;
   height: 3.3rem;
-  background-color: var(--ki-cell-bg);
+  background-color: var(--ki-cell-bg, #000);
   overflow: hidden;
 
 }
@@ -113,7 +118,8 @@ export default {
 }
 
 .ki-cell-name {
-  color: var(--ki-cell-name-color);
+  /* color: var(--ki-cell-name-color); */
+  color: var(--ki-color_primary);
   font-size: 0.95rem;
 }
 
@@ -123,7 +129,7 @@ export default {
   flex: 1;
   align-items: center;
   font-size: 0.8rem;
-  color: var(ki-cell-ad-color);
+  color: var(--ki-color_secondary);
 }
 
 .ki-cell-icon {

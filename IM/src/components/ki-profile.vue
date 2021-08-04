@@ -5,8 +5,8 @@
       <span class="profile-name">{{ name }}</span>
       <div class="profile-more">
         <span class="profile-id">微信号：{{ id }}</span>
-        <span class="profile-icon so-icon-QR_code"></span>
-        <span class="profile-icon so-icon-arrow_right"></span>
+        <span class="profile-icon ki-icon-QR_code"></span>
+        <span class="profile-icon ki-icon-arrow_right"></span>
       </div>
     </div>
   </section>
@@ -42,9 +42,11 @@ export default {
 
 <style scoped>
   .profile-container {
-    --so-profile-bg: #fff;
-    --so-profile-name-color: #1b1b1b;
-    --so-profile-id-color: #676767;
+    /* --ki-profile-bg: #FFF; */
+    /* --ki-color_primary: #1b1b1b;
+    --ki-color_secondary: #676767; */
+    /* --ki-profile-name-color: #1b1b1b;
+    --ki-profile-id-color: #676767; */
 
     box-sizing: border-box;
     padding-top: 0.74rem;
@@ -53,7 +55,7 @@ export default {
     justify-content: flex-start;
     width: 100%;
     height: 6.8rem;
-    background-color: var(--so-profile-bg);
+    background-color: var(--ki-profile-bg, #FFF);
   }
 
   .profile-container .profile-avatar {
@@ -74,7 +76,7 @@ export default {
   }
 
   .profile-container .profile-name {
-    color: var(--so-profile-name-color);
+    color: var(--ki-color_primary);
     font-weight: 500;
     font-size: 1.06rem;
   }
@@ -88,7 +90,7 @@ export default {
 
   .profile-container .profile-id {
     flex: 1;
-    color: var(--so-profile-id-color);
+    color: var(--ki-color_secondary);
     font-weight: normal;
     font-size: 0.85rem;
     text-align: left;

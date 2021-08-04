@@ -1,15 +1,12 @@
 <template>
   <article class="main-container">
-    <header class="main-head">
-      <div class="main-head-title">发现</div>
-      <div class="main-head-imgs">
-        <div>放大镜</div>
-        <div>添加</div>
-      </div>
-    </header>
-    <ki-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)">
+    <ki-header id="main-header" :title="headerTitle" :iconBack="false" style="position: absolute"></ki-header>
+    <div class="header_fake"></div>
+    <!-- <ki-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)"> -->
+    <ki-swiper :activeIndex="activeIndex.index">
       <template v-slot:firstItem>
-        <Chats @click="toDialogue"></Chats>
+        <!-- <Chats @click="toDialogue"></Chats> -->
+        <Chats></Chats>
       </template>
       <template v-slot:secondItem>
         <Contacts></Contacts>
@@ -22,14 +19,19 @@
       </template>
     </ki-swiper>
 
-    <main-tab :tabList="tabList" :swipeParam="swipeParam" @changeTab="changeTab($event,index)"></main-tab>
+    <!-- <main-tab :tabList="tabList" :swipeParam="swipeParam" @changeTab="changeTab($event,index)"></main-tab> -->
+    <main-tab></main-tab>
+
   </article>
 </template>
 
 <script>
-import { reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount } from "vue";
+import { computed, reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import useI18n from "@/local/index";
+import EventBus from "@/utils/eventBus"
+
 
 import KiSwiper from "../components/ki-swiper";
 import Chats from "./Main/Chats";
@@ -37,14 +39,34 @@ import Contacts from "./Main/Contacts";
 import Discover from "./Main/Discover";
 import Me from "./Main/Me";
 import MainTab from "../components/main-tab";
+import kiHeader from "@/components/ki-header.vue";
 
-import useI18n from "@/local/index"
+// import {openDB, getObjectStore} from '@/utils/IDB'
+
+
+// openDB()
+// .then(res=>{
+//   console.warn("----Main openDB: res: ", res);
+//   let db = res;
+//   let objStore = getObjectStore(db, 'testobjStore', 'readwrite');
+
+//   // objStore.add({myKey: 125, info: "aaa"});
+
+//   // objStore.delete(124);
+// })
+
+
+
+
+
+
 
 // import Request from "@/utils/request"
 
 export default {
   name: "Main",
   components: {
+    kiHeader,
     KiSwiper,
     Chats,
     Contacts,
@@ -57,6 +79,10 @@ export default {
           Store = useStore(),
           { t } = useI18n();
 
+    let headerTitle  = ref("通讯录");
+
+    let lang = ref(localStorage.getItem("lang"));
+
     onMounted(()=>{
       if(!localStorage.getItem('token')) 
         Router.replace("/login")
@@ -66,11 +92,21 @@ export default {
 
         // 在此初始化websocket连接
         Store.dispatch('wsStore/initWS', {Router: Router});
-
+        Store.dispatch('idbStore/initIDB');
+        // console.log("---idb connection: ", Router.idbStore.db);
     });
 
     onActivated(()=> {
       console.log("---MAIN onActivated");
+
+      if(lang.value !== localStorage.getItem("lang")) {
+        console.log("----执行刷新Main页面----");
+        setTimeout(()=>{
+          Router.go(0); //这里可能需要做骨架屏优化过渡
+          lang.value = localStorage.getItem("lang");
+        }, 300);
+      }
+
     });
     onDeactivated(()=> {
       console.log("---MAIN onDeactivated");
@@ -80,20 +116,9 @@ export default {
       console.log("---MAIN onBeforeUnmount");
     });
 
-    // async function getFriendList() {
-    //   console.log("---getFriendList");
-    //   let res = await Request.post("/api/friend/getFriendList");
-    //   console.log("---getFriendList: ", res);
-    // }
-
     let activeIndex = reactive({
       index: 1
     });
-
-    function changeTab(index) {
-      // console.log("main changeTab:", index);
-      activeIndex.index = index;
-    }
 
     watchEffect(() => {
       // console.log("mian 1111");
@@ -105,108 +130,148 @@ export default {
       activeIndex: 0,
       step: "panend"
     });
-    function swipeEvent(param) {
-      swipeParam.progress = param.progress;
-      swipeParam.activeIndex = param.activeIndex;
-      swipeParam.step = param.step;
-      // console.log("aaaa", param, swipeParam);
+
+    let fieldMap = {
+      0: t('App.Main.chats'),
+      1: t('App.Main.contact'),
+      2: t('App.Main.discover')
     }
 
-    let tabList = reactive([
-      {
-        name: t('app.main.chats'),
-        icon: "CHATS",
-        iconColor: "#000",
-        iconBg: "#f00"
-      },
-      {
-        name: t('app.main.contact'),
-        icon: "CONTACTS",
-        iconColor: "#000",
-        iconBg: "#000"
-      },
-      {
-        name: t('app.main.discover'),
-        icon: "DISCOVER",
-        iconColor: "#00f",
-        iconBg: "#f00"
-      },
-      {
-        name: t('app.main.mine'),
-        icon: "ME",
-        iconColor: "#000",
-        iconBg: "#f00"
+    EventBus.on('swipeEvent', param => {
+      try {
+        // console.log("---Main param: ", param);
+        slideHeader(param.activeIndex, param.progress, param.step);
+        headerTitle.value = fieldMap[param.activeIndex];
+      } catch (error) {
+        console.error("---Main EventBus: ", error);
       }
-    ]);
+   
+    });
+
+    /**
+     * @description 判断标题名称和是否需要坐位移
+     * @params {number|string} index 当前tab位置
+     */
+    function slideHeader(index, progress, step) {
+       //判断对header的位移
+      /**
+       * 
+       * activeIndex === 2:  progress < 0; 即向右滑动，此时header应该向左滑动
+       *    没有滑过去， activeIndex === 2 位置保持0
+       *    滑过去，activeIndex === 3 位置-100%
+       * 
+       * activeIndex === 3: progress > 0; 即向左滑动，此时header应该向右滑动
+       *    没有滑过去， activeIndex === 3 位置保持-100%
+       *    滑过去，activeIndex === 2 位置0
+       * 
+       * 其他情况： 保持不变
+       * 
+       */
+      const header = document.querySelector("#main-header");
+
+      if(index === 2) { //param
+        if(progress < 0) {
+          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * progress);
+          header.style.transform = `translateX(${window.screen.width * progress}px)`;
+          header.style.transition = "all .0s ease-out";
+        }
+        if(step == "panend") {
+          // console.warn("---执行panend");
+          header.style.transform = `translateX(0%)`;
+          header.style.transition = `all ${.25}s ease-out` ;
+        }
+      }else if(index === 3) {
+        if(progress > 0) {
+          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * progress);
+          // header.style.left = "-100%";
+          header.style.transform = `translateX(${window.screen.width * (progress - 1)}px)`;
+          header.style.transition = "all .0s ease-out";
+        }
+        if(step === "panend") {
+          // console.warn("---执行panend");
+          // header.style.left = "-100%";
+          header.style.transform = `translateX(-100%)`;
+          header.style.transition = `all ${.25}s ease-out` ;
+        }
+      }else {
+        //  console.warn("---执行panend");
+          header.style.transform = `translateX(0%)`;
+          header.style.transition = `all 0s ease-out` ;
+      }
+    }
+
+    // let tabList = reactive([
+    //   {
+    //     name: t('App.Main.chats'),
+    //     icon: "CHATS",
+    //     iconColor: "#000",
+    //     iconBg: "#f00"
+    //   },
+    //   {
+    //     name: t('App.Main.contact'),
+    //     icon: "CONTACTS",
+    //     iconColor: "#000",
+    //     iconBg: "#000"
+    //   },
+    //   {
+    //     name: t('App.Main.discover'),
+    //     icon: "DISCOVER",
+    //     iconColor: "#00f",
+    //     iconBg: "#f00"
+    //   },
+    //   {
+    //     name: t('App.Main.mine'),
+    //     icon: "ME",
+    //     iconColor: "#000",
+    //     iconBg: "#f00"
+    //   }
+    // ]);
 
     function toDialogue() {
       Router.push("/Dialogue");
     }
 
     return {
+      headerTitle,
       swipeParam,
-      swipeEvent,
-      tabList,
+      // swipeEvent,
+      // tabList,
       activeIndex,
-      changeTab,
+      // changeTab,
       toDialogue,
     };
   }
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../css/variable.styl';
+<style scoped>
 
-// // 主色调
-// $main-bg_primary = #fff;
-// $main-color_primary = #ededed;
-// // header颜色
-// $main-head-color = #000;
-// $main-head-bg = #ededed;
-// // tab颜色
-// $main-tab-color = #000;
-// $main-tab-bg = #f7f7f7;
-// $main-tab-border_color = #d6d6d6;
-.main-container {
-  box-sizing: border-box;
-  position: relative;
-  // padding-top: 3rem;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: $main-background_primary;
-  overflow: hidden;
-  user-select: none;
+  .main-container {
+    /* --Main-bg: #FFF;
+    --Main-header_fake-color: #FFF;
+    --Main-color: #000;
+    */
 
-  .main-head {
+    box-sizing: border-box;
+    padding-top: 3rem;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--Main-bg);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .main-container .header_fake{
+    box-sizing: border-box;
+    margin: 0;
     position: absolute;
     left: 0;
     top: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     width: 100%;
-    height: 3rem;
-    background-color: $main-head-bg;
-    font-size: 0.95rem;
-    z-index: 10;
-
-    .main-head-title {
-      margin: 0;
-      padding: 0 0.85rem;
-      color: $main-head-color;
-    }
-
-    .main-head-imgs {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-
-      div {
-        margin: 0 0.85rem;
-      }
-    }
+    height: 3.26rem;
+    background: var(--Main-header_fake-bg, #000);
+    z-index: 9;
   }
-}
+
 </style>

@@ -1,9 +1,9 @@
 <template>
   <router-view v-slot="{ Component }">
     <transition :name="transitionName" mode="default">
-      <!-- <keep-alive :include="['Main']"> -->
+      <keep-alive :include="['Main']">
           <component :is="Component" />
-      <!-- </keep-alive> -->
+      </keep-alive>
     </transition>
   </router-view>
 </template>
@@ -22,6 +22,10 @@ export default defineComponent({
       transitionName: "",
     }
   },
+  mounted() {
+    //初始化检测主题
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "normal";
+  },
   watch: {
     '$route' (to, from) {
       // console.log("---app $route : to: ", to, "---from: ", from);
@@ -39,13 +43,82 @@ export default defineComponent({
 
 <style>
 :root {
-  --header-bg: rgb(237, 237, 237);
 
   --transition-time: .2s;
+
+  /* --- Main Page --- */
+  --Main-color_primary: #1b1b1b;
+  --Main-color_secondary: #7e7e7e;
+  --Main-bg: #ededed;
+  --Main-header_fake-bg: #FFF;
+
+  /* --- Charts Page --- */
+  --Charts-bg: --Main-bg;
+
+  /* --- --Contacts Page --- */
+  --Contacts-bg: --Main-bg;
+
+  /* --- Discover Page --- */
+  --Discover-bg: --Main-bg;
+
+  /* --- Me Page --- */
+  --Me-bg: --Main-bg;
+
+  /* --- Profile Page --- */
+  --Profile_bg: var(--Main-bg);
+  --Profile-btn_color: #576b86;
+  --Profile-btn_bg: var(--Main-header_fake-bg);
+
+  /* --- Dialogue Page --- */
+  --Dialogue-bg: var(--Main-bg);
+  --Dialogue-footer-bg: var(--Main-header_fake-bg);
+
+
+
+  /* --- ki-header Component --- */
+  --ki-header-color: var(--Main-color_primary);
+  --ki-header-bg: var(--Main-bg);
+
+  /* --- ki-cell Component --- */
+  --ki-cell-bg: var(--Main-header_fake-bg);
+  --ki-color_primary: var(--Main-color_primary);
+  --ki-color_secondary: var(--Main-color_secondary);
+
+  /* --- ki-profile Component --- */
+  --ki-profile-bg: var(--Main-header_fake-bg);
+  --ki-color_primary: var(--Main-color_primary);
+  --ki-color_secondary: var(--Main-color_secondary);
+
+  /* --- main-tab Component --- */
+  --main-tab-color: var(--Main-color_primary);
+  --main-tab-bg: #f7f7f7;
+  --main-tab-border_color: var(--Main-color_secondary); 
+
+  /* --- Setting Component --- */
+  --Setting-bg: var(--Main-bg);
+
+
+  /* main-tab */
+  --svg-fill: #f7f7f7;
+  --svg-stroke: #000;
+
+
 }
 
 :root[data-theme="dark"] {
-  --header-bg: rgb(33, 33, 33);
+
+  /* --- Main Page --- */
+  --Main-color_primary: #d2d2d2;
+  --Main-color_secondary: #959595;
+  --Main-bg: #111;
+  --Main-header_fake-bg: #191919;
+
+  /* --- main-tab Component --- */
+  --main-tab-bg: #1f1f1f;
+    /* main-tab */
+  --svg-fill: #1f1f1f;
+  --svg-stroke: #d7d7d7;
+
 }
 
 html, body, #app {
@@ -54,6 +127,10 @@ html, body, #app {
   width: 100%;
   height: 100%;
 }
+
+/* #app {
+  transition: color 3s linear;
+} */
 
 /* *@rem+vw布局  动态改变font-size的值
  */
@@ -194,6 +271,45 @@ html {
   top: 0;
   z-index: 90;
 }
+
+
+.border-line_top{
+  position:relative;  
+}
+.border-line_top:before{
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  border-top: 1px solid #cdcdcd;
+  z-index: 6;
+  transform-origin:0% 0%;
+  transform: scale(1, .25);
+}
+.border-line_bottom{
+  position:relative;  
+}
+.border-line_bottom:after{
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-bottom: 1px solid #cdcdcd;
+  z-index: 6;
+  transform-origin: 0% 100%;
+  transform: scale(1, .25);
+}
+
+.so-icon-QR_code {
+  background-image: url('./assets/icon/icon-QR_code.png');
+}
+
+.so-icon-arrow_right {
+  background-image: url('./assets/icon/icon-arrow_right.png');
+}
+
 
 
 </style>

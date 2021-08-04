@@ -19,7 +19,7 @@ export default {
   }
 };
 </script>
-<style lang="stylus" scoped>
+<style scoped>
 h1 {
   color: cyan;
 }

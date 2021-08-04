@@ -13,6 +13,7 @@
         :name="item.name"
         :adTitle="item.adTitle"
         :isLast="index == discoverArr.length - 1 ? true : false"
+        :disable="true"
       >
         <template v-slot:default>
           <img style="width: 1.6rem;height: 1.6rem;" :src="item.icon" />
@@ -30,58 +31,53 @@
 import KiCell from "@/components/ki-cell.vue";
 
 import { reactive } from "vue";
+import useI18n from "@/local/index"
 
 export default {
   components: {
     KiCell
   },
   setup() {
+    const {t} = useI18n();
     const discoverList = reactive([
       [
         {
-          name: "朋友圈",
+          name: t("App.Main.Discover.moments"),
           icon: require("../../assets/icon/discover-pinwheel.jpg"),
-          event: ""
         }
       ],
       [
         {
-          name: "扫一扫",
+          name: t("App.Main.Discover.scan"),
           icon: require("../../assets/icon/discover-shot.jpg"),
-          event: ""
         }
       ],
       [
         {
-          name: "看一看",
+          name: t("App.Main.Discover.topStories"),
           icon: require("../../assets/icon/discover-flower.jpg"),
-          event: ""
         },
         {
-          name: "搜一搜",
+          name: t("App.Main.Discover.search"),
           icon: require("../../assets/icon/discover-bloom.jpg"),
-          event: ""
         }
       ],
       [
         {
-          name: "购物",
+          name: t("App.Main.Discover.liveStreams"),
           icon: require("../../assets/icon/discover-handbag.jpg"),
-          event: ""
         },
         {
-          name: "游戏",
+          name: t("App.Main.Discover.games"),
           icon: require("../../assets/icon/discover-diamond.jpg"),
-          event: "",
           adTitle: "欢迎回家，勇士",
           adImg: require("../../assets/icon/me-ad.png")
         }
       ],
       [
         {
-          name: "小程序",
+          name: t("App.Main.Discover.miniPrograms"),
           icon: require("../../assets/icon/discover-S.jpg"),
-          event: ""
         }
       ]
     ]);
@@ -93,18 +89,16 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../../css/common.styl';
-@import '../../css/variable.styl';
-
-// $discover-container-color = #ededed;
-.discover-container {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 100%;
-  height: 100%;
-  background-color: #ededed;
-}
+<style scoped>
+  .discover-container {
+    /* --Discover-bg: #ededed; */
+    
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    background-color: var(--Discover-bg, #ededed);
+  }
 </style>
