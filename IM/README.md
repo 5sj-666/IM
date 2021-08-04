@@ -35,3 +35,9 @@ see (https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Signaling_and_v
 
 ### 主题切换(修改:root的data-theme)
 see (https://blog.csdn.net/ljw1412/article/details/107260239/)
+
+### IndexDB教程
+see (https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/Using_IndexedDB)
+
+### vue3版本css变量使用，无需显式声明vars，通过v-bind推断
+see (https://github.com/vuejs/rfcs/pull/231)

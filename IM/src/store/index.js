@@ -1,7 +1,8 @@
 // import { createApp } from 'vue'
 import { createStore } from 'vuex'
 
-import wsStore from "./wsStore.js"
+import wsStore from "./wsStore.js";
+import idbStore from './idbStore.js';
 
 const SET_LANG = "SET_LANG" 
 
@@ -9,6 +10,7 @@ const SET_LANG = "SET_LANG"
 const store = createStore({
   modules: {
     wsStore,
+    idbStore
   },
   state() {
     return {

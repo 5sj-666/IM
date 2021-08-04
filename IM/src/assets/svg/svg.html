@@ -1,0 +1,166 @@
+<html>
+  <body>
+  
+  <h1>My first SVG</h1>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100" style="background: yellow">
+    <circle cx="50" cy="50" r="49" stroke="black" stroke-width="2" fill="transparent" />
+    <line x1="50" y1="20" x2="50" y2="80" stroke="black" stroke-width="2" stroke-linecap="round"/>
+    <line x1="20" y1="50" x2="80" y2="50" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width=400 height=400  viewBox="0 0 100 100" style="background: yellow">
+    <circle cx="40" cy="40" r="39" stroke="black" stroke-width="2" fill="transparent" />
+    <line x1="68" y1="68" x2="98" y2="98" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1"  width=100 height=100  viewBox="0 0 100 100" style="background: yellow">
+    <polyline points="25,2 75,50 25,98" style="fill:none;stroke:black;stroke-width:2" stroke-linecap="round"/>
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100  viewBox="0 0 100 100" style="background: yellow">
+    <polyline points="75,2 25,50 75,98" style="fill:none;stroke:black;stroke-width:2" stroke-linecap="round"/>
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 style="background: yellow">
+    <circle cx="50" cy="50" r="49" stroke="black" stroke-width="2" fill="transparent" />
+    <polygon points="25,75 40,40 75,25 60,60" style="fill:transparent; stroke:black;stroke-width:2"/>
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 style="background: yellow" viewBox="0 0 100 100">
+    <!-- <path d="M18 80.7
+          A 48 40, 0, 1, 1, 27 86
+          L 12 94
+          Z"
+          fill="green"
+          stroke="#000"
+          style="stroke-width: 2;"
+    /> -->
+    <path d="M18 78
+          A 48 40, 0, 1, 1, 27 83.2
+          L 12 92
+          Z"
+          fill="green"
+          stroke="#000"
+          style="stroke-width: 2;"
+    />
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 style="background: yellow" viewBox="0 0 100 100">
+    <path d="M4 98
+          L 96 98
+          L 96 90
+          L 60 65
+          L 60 55
+
+          L 70 40
+          L 70 15
+          L 65 8
+          L 55 4
+          L 45 4
+          L 35 8
+          L 30 15
+          L 30 40
+
+          L 40 55
+          L 40 65
+          L 4 90
+          Z4 98
+      "
+      fill="green"
+      stroke="#000"
+      style="stroke-width: 2;"
+    />
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 style="background: yellow" viewBox="0 0 100 100">
+    <!-- 又来了  贝塞尔曲线  -->
+
+    <path d="M4 98
+          L 98 98
+
+          Q 100 94, 94 90
+
+          L 65 70
+
+          Q 54 62, 60 55
+        
+          C 68 48, 70 45, 70 25
+
+          C 68 -5, 32 -5, 30 25
+
+          C 30 45, 32 48,  40 55
+          
+          Q 46 62, 35 70
+
+          L 6 90
+
+          Q 0 94, 2 98
+
+          Z
+      "
+      fill="green"
+      stroke="#000"
+      style="stroke-width: 2;"
+      stroke-linecap="round"
+    />
+
+    <!-- L 40 55
+          L 40 65 -->
+
+    <!-- 右边脖子起点  控制点1 控制点2 和终点 -->
+    <!-- <circle cx="60" cy="55" r="0.5" stroke="red"  fill="red" />
+    <circle cx="68" cy="48" r="0.5" stroke="red"  fill="red" />
+    <circle cx="70" cy="45" r="0.5" stroke="cyan"  fill="cyan" />
+    <circle cx="70" cy="25" r="0.5" stroke="red"  fill="red" /> -->
+
+    <!-- 左边脖子起点  控制点1 控制点2 和终点 -->
+    <!-- <circle cx="30" cy="25" r="0.5" stroke="red"  fill="red" />
+    <circle cx="30" cy="45" r="0.5" stroke="red"  fill="red" />
+    <circle cx="32" cy="48" r="0.5" stroke="cyan"  fill="cyan" />
+    <circle cx="40" cy="55" r="0.5" stroke="red"  fill="red" /> -->
+
+
+  </svg>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 style="background: yellow" viewBox="-2 0 117 100">
+    <path d="M4 98
+          L 98 98
+
+          Q 100 94, 94 90
+
+          L 65 70
+
+          Q 54 62, 60 55
+        
+          C 68 48, 70 45, 70 25
+
+          C 68 -5, 32 -5, 30 25
+
+          C 30 45, 32 48,  40 55
+          
+          Q 46 62, 35 70
+
+          L 6 90
+
+          Q 0 94, 2 98
+
+          Z
+      "
+      fill="green"
+      stroke="#000"
+      style="stroke-width: 6;"
+      stroke-linecap="round"
+    />
+
+    <line x1="80" y1="35" x2="120" y2="35" stroke="black" stroke-width="6"/>
+    <line x1="90" y1="50" x2="120" y2="50" stroke="black" stroke-width="6"/>
+    <line x1="100" y1="70" x2="120" y2="70" stroke="black" stroke-width="6"/>
+  </svg>
+
+
+
+
+  
+  </body>
+</html>

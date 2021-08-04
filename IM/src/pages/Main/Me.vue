@@ -1,10 +1,10 @@
 <template>
-  <article class="me-container">
+  <article class="me-page">
     <ki-profile name="Natural" id="Greenschick"></ki-profile>
 
     <!-- <img width="50" height="50" src="../../assets/icon/me-img.png" /> -->
 
-    <div
+   <div
       class="border-line_top border-line_bottom"
       style="margin-top:0.5rem"
       v-for="(cells, indexs) in cellList"
@@ -15,6 +15,7 @@
         :key="index"
         :name="cell.name"
         :isLast="index == cells.length - 1 ? true : false"
+        :disable="cell.disable"
         @click="cell.event"
       >
         <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" />
@@ -34,7 +35,7 @@ import KiCell from "@/components/ki-cell.vue";
 // import kiHeader from "@/components/ki-header.vue"
 
 //use表示这个是一个复用（composition约定如此）
-// import useI18n from "@/local/index.js"
+import useI18n from "@/local/index"
 
 // console.log("fanyi函数",t('aowu.test.btnContent'));
 
@@ -47,8 +48,8 @@ export default {
     // kiHeader
   },
   setup() {
-    const Router =  useRouter();
-    // const { t } = useI18n;
+    const Router =  useRouter(),
+          { t } = useI18n();
 
 
     const goSetting = () => {
@@ -61,37 +62,37 @@ export default {
       [
         {
           icon: require("../../assets/icon/me-pay.png"),
-          name: "支付",
-          event: ""
+          name: t("App.Main.Me.pay"),
+          disable: true
         }
       ],
       [
         {
           icon: require("../../assets/icon/me-collection.png"),
-          name: "收藏",
-          event: ""
+          name: t("App.Main.Me.favorites"),
+          disable: true
         },
         {
           icon: require("../../assets/icon/me-photo.png"),
-          name: "相册",
-          event: ""
+          name: t("App.Main.Me.myPosts"),
+          disable: true
         },
         {
           icon: require("../../assets/icon/me-cards.png"),
-          name: "卡包",
-          event: ""
+          name: t("App.Main.Me.cards"),
+          disable: true
         },
         {
           icon: require("../../assets/icon/me-smile.png"),
-          name: "表情",
-          event: ""
+          name: t("App.Main.Me.stickerGallery"),
+          disable: true
         }
       ],
       [
         {
           icon: require("../../assets/icon/me-setting.png"),
-          name: "设置",
-          event: goSetting
+          name: t("App.Main.Me.setting"),
+          event: goSetting,
         }
       ],
     ];
@@ -106,12 +107,11 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../../css/common.styl';
-@import '../../css/variable.styl';
+<style scoped>
 
-// $me-container-color = #ededed;
-.me-container {
+.me-page {
+  /* --Me-bg: #ededed; */
+  
   box-sizing: border-box;
   padding-bottom: 3rem;
   display: flex;
@@ -120,7 +120,7 @@ export default {
   width: 100%;
   height: 100%;
   max-height: 100%;
-  background-color: $me-container-color;
-  overflow: scroll;
+  background-color: var(--Me-bg, #ededed);
+  /* overflow: scroll; */
 }
 </style>

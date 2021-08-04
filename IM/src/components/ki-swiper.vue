@@ -17,6 +17,8 @@
 
 <script>
 import Hammer from "hammerjs";
+// import mitt from "mitt";
+import EventBus from "@/utils/eventBus.js"
 
 // import { onMounted, computed, watchEffect } from "vue";
 import { onMounted, watchEffect, nextTick } from "vue";
@@ -30,8 +32,31 @@ export default {
     }
   },
   setup(props, ctx) {
+
+    EventBus.on("clickTab", param => {
+      console.log("---ki-swiper: changeTab param: ", param);
+      // activeIndex = param.tab;
+      slideTo(param.tab, 0);
+
+      activeIndex = param.tab;
+
+      // ctx.emit("swipeEvent", {
+      //   progress: 0,
+      //   activeIndex: param.tab,
+      //   step: 'panEnd'
+      // });
+
+
+      EventBus.emit('swipeEvent', {
+        progress: 0,
+        activeIndex: param.tab,
+        step: 'panEnd'
+      });
+
+    })
+
     // let x = new setupComponent();
-    console.log("window ", window);
+    // console.log("window ", window);
     onMounted(() => {
       // console.log("VNodeProps:");
       BindPanEvent();
@@ -70,6 +95,7 @@ export default {
 
       hammer.on("panend", function(e) {
         switch (true) {
+          //到了边界之后不做位移处理
           case (activeIndex <= 0 && e.deltaX > 0) ||
             (activeIndex >= 3 && e.deltaX < 0):
             break;
@@ -110,6 +136,13 @@ export default {
         activeIndex: activeIndex,
         step: step
       });
+
+      EventBus.emit('swipeEvent', {
+        progress: progress,
+        activeIndex: activeIndex,
+        step: step
+      });
+
     }
 
     return {};
@@ -131,10 +164,10 @@ export default {
     box-sizing: border-box;
     position: absolute;
     top: 0;
-    padding-top: 3rem;
+    /* padding-top: 3rem; */
     width: 100%;
     height: 100%;
-    background-color: cyan;
+    /* background-color: cyan; */
     transition: all .0s ease-out;
     will-change: transform;
 }

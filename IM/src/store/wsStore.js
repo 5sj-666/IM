@@ -92,7 +92,7 @@ const store = {
         commit(SET_WS, WS)
       },
 
-      wsSend({ state, commit } , letter) {
+      wsSend({ state, commit, dispatch } , letter) {
         console.log("---wsSend: ", letter);
         letter.sender = localStorage.getItem("token");
 
@@ -100,7 +100,11 @@ const store = {
         //将数据存入本地聊天记录中
         commit(SET_MSGHISTORY, letter);
         // console.log("--wsSend state:", state.WS)
-
+        try {
+          dispatch('idbStore/add', {}, {root: true});
+        } catch (error) {
+          console.log(error);
+        }
       },
 
       /**

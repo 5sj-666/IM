@@ -1,5 +1,5 @@
 <template>
-  <article class="contacts-container">
+  <article class="contacts-page">
     <!-- <div>Contacts</div> -->
 
     <section class="border-line_top border-line_bottom">
@@ -32,7 +32,7 @@
     >
       <img
         style="width: 2.34rem;height: 2.34rem;border-radius:0.17rem 0.17rem;"
-        :src="'process.env.VUE_APP_AVATAR_URL/avatar/'+item.avatar"
+        :src="'https://www.fffuture.top:443/avatar/'+item.avatar"
       />
     </ki-cell>
 
@@ -44,7 +44,7 @@ import kiCell from "@/components/ki-cell.vue";
 import { onMounted, ref} from "vue";
 
 import {useRouter} from 'vue-router'
-
+import useI18n from "@/local/index"
 import Request from "@/utils/request"
 
 
@@ -93,28 +93,35 @@ export default {
     // console.log("---contact process.env.VUE_APP_AVATAR_URL: ", process.env.VUE_APP_AVATAR_URL);
 
     const Router = useRouter();
+    const  { t } = useI18n();
 
     const systemContacts = [
       {
-        name: "新的朋友",
+        name: t("App.Main.Contacts.newFriends"),
         avatar: require("../../assets/icon/contacts-add-friend.jpg"),
         event: "",
         showNextIcon: false
       },
       {
-        name: "群聊",
+        name: t("App.Main.Contacts.chatsOnlyFriends"),
+        avatar: require("../../assets/icon/contacts-add-friend.jpg"),
+        event: "",
+        showNextIcon: false
+      },
+      {
+        name: t("App.Main.Contacts.groupChat"),
         avatar: require("../../assets/icon/contacts-double-people.jpg"),
         event: "",
         showNextIcon: false
       },
       {
-        name: "标签",
+        name: t("App.Main.Contacts.tags"),
         avatar: require("../../assets/icon/contacts-tag.jpg"),
         event: "",
         showNextIcon: false
       },
       {
-        name: "公众号",
+        name: t("App.Main.Contacts.officialAccounts"),
         avatar: require("../../assets/icon/contacts-person.jpg"),
         event: "",
         showNextIcon: false
@@ -174,32 +181,30 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
-@import '../../css/common.styl';
-@import '../../css/variable.styl';
+<style scoped>
+  .contacts-container {
+    --Contacts-bg: #ededed;
+    /* --contacts-letter-color: #818181; */
 
-// $contacts-container-bg = #ededed;
-$contacts-letter-color = #818181;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    background-color: var(-Contacts-bg);
+  }
 
-.contacts-container {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 100%;
-  height: 100%;
-  background-color: $contacts-container-bg;
-
-  .contacts-letter {
-    box-sizng: border-box;
+  /* .contacts-letter {
+    box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     text-indent: 0.93rem;
     height: 1.9rem;
     width: 100%;
-    color: $contacts-letter-color;
+    color: var(--contacts-letter-color);
     font-size: 0.54rem;
-  }
-}
+  } */
+
 </style>
