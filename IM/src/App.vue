@@ -22,6 +22,10 @@ export default defineComponent({
       transitionName: "",
     }
   },
+  mounted() {
+    //初始化检测主题
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "normal";
+  },
   watch: {
     '$route' (to, from) {
       // console.log("---app $route : to: ", to, "---from: ", from);

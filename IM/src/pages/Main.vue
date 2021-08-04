@@ -41,6 +41,25 @@ import Me from "./Main/Me";
 import MainTab from "../components/main-tab";
 import kiHeader from "@/components/ki-header.vue";
 
+// import {openDB, getObjectStore} from '@/utils/IDB'
+
+
+// openDB()
+// .then(res=>{
+//   console.warn("----Main openDB: res: ", res);
+//   let db = res;
+//   let objStore = getObjectStore(db, 'testobjStore', 'readwrite');
+
+//   // objStore.add({myKey: 125, info: "aaa"});
+
+//   // objStore.delete(124);
+// })
+
+
+
+
+
+
 
 // import Request from "@/utils/request"
 
@@ -62,6 +81,8 @@ export default {
 
     let headerTitle  = ref("通讯录");
 
+    let lang = ref(localStorage.getItem("lang"));
+
     onMounted(()=>{
       if(!localStorage.getItem('token')) 
         Router.replace("/login")
@@ -71,11 +92,21 @@ export default {
 
         // 在此初始化websocket连接
         Store.dispatch('wsStore/initWS', {Router: Router});
-
+        Store.dispatch('idbStore/initIDB');
+        // console.log("---idb connection: ", Router.idbStore.db);
     });
 
     onActivated(()=> {
       console.log("---MAIN onActivated");
+
+      if(lang.value !== localStorage.getItem("lang")) {
+        console.log("----执行刷新Main页面----");
+        setTimeout(()=>{
+          Router.go(0); //这里可能需要做骨架屏优化过渡
+          lang.value = localStorage.getItem("lang");
+        }, 300);
+      }
+
     });
     onDeactivated(()=> {
       console.log("---MAIN onDeactivated");
