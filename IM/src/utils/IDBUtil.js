@@ -4,13 +4,18 @@
  * 设想： 
  *      一个聊天用户对应一个 数据库的对象仓库（objectStore）,
  *      数据库名称跟应用名称保持一致： libre_自己的id（防止在同一个网页上登录不同用户，做基本隔离）
- *      对象仓库名称规律为：
+ *      对象仓库名称规律为：会话对象的id
  */
 
-export const IDBUtil = {
+const IDBUtil = {
     openDB,
+    updateDB,
+    getObjectStore,
+    add,
     clearObjectStore,
 }
+
+export default IDBUtil;
 
 /**
  * @description 因为打开数据库是异步方式，所以在此使用promise
@@ -73,7 +78,6 @@ export async function add(db, msg) {
         console.log("---add name: ", name);
         objStoreList.push(name);
     }
-
     console.log("---objStoreList:", objStoreList);
 
     if(objStoreList.includes(msg.recipient)) {
@@ -98,13 +102,11 @@ export async function add(db, msg) {
  * @param {number} version 
  */
 export function updateDB(storeName) {
-    console.warn("---updateDB: ", storeName, "---:", parseInt(localStorage.getItem("IDB_version")) + 1);
     return new Promise((res, rej) => {
-        // var req = indexedDB.open('MyTestDB', localStorage.getItem("IDB_version") + 2);
         var req = indexedDB.open(localStorage.getItem('userId'), parseInt(localStorage.getItem("IDB_version")) + 1);
 
         req.onsuccess = function (evt) {
-            console.log("----IDB: req success: ", evt);
+            // console.log("----IDB: req success: ", evt);
             try {
                 localStorage.setItem("IDB_version", this.result.version);
             } catch (error) {
@@ -113,12 +115,10 @@ export function updateDB(storeName) {
             res(this.result);
         };
         req.onerror = function (evt) {
-            console.error("---openDb:", evt.target.errorCode);
+            console.error("---updateDB:", evt.target.errorCode);
             rej(evt);
         };
 
-
-        // //该事件仅在较新的浏览器中实现
         req.onupgradeneeded = function(event) {
             console.warn("---utils IDB: 创建对象仓库: ", objectStore, "---db: ", db);
             //保存IDBDateBase接口
@@ -139,8 +139,7 @@ export function clearObjectStore(store_name) {
     var store = getObjectStore(DB_STORE_NAME, 'readwrite');
     var req = store.clear();
     req.onsuccess = function(evt) {
-      displayActionSuccess("Store cleared");
-      displayPubList(store);
+        console.log("----clearObjectStore success----");
     };
     req.onerror = function (evt) {
       console.error("clearObjectStore:", evt.target.errorCode);

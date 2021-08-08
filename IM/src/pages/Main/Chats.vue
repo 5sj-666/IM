@@ -1,6 +1,9 @@
 <template>
   <article class="charts-page">
-    <div>Chats</div>
+    <!-- <div>Chats</div>
+    
+    {{tables}} <br/>
+    {{sessions}} -->
     <!-- <div class="chat-cell">
       <div class="chat-cell-avatar">
         <img src="../../assets/img/avatar.jpg" alt />
@@ -11,13 +14,61 @@
       </div>
       <div class="chat-cell-time">早上8:58</div>
     </div> -->
+    <div class="chat-cell" v-for="(session, index) in sessions" :key="index" @click="Router.push(`/dialogue/${session.friend}`)">
+      <div class="chat-cell-avatar">
+        <img :src="'https://www.fffuture.top:443/avatar/'+session.avatar" alt />
+      </div>
+      <div class="chat-cell-content-container" >
+        <div class="chat-cell-title">{{session.friend}}</div>
+        <div class="chat-cell-content">contentcontentcontentcontentcontentcontentcontentcontent</div>
+      </div>
+      <div class="chat-cell-time">早上8:58</div>
+    </div>
+
+    
   </article>
 </template>
 
 <script>
+
+import {onMounted, reactive, computed, watchEffect } from "vue";
+import { useRouter } from "vue-router";
+import { useStore, mapState } from "vuex";
+
 export default {
   name: "Chats",
-  setup() {}
+  props: {
+    friendList: {
+      type: Array,
+      default: null
+    }
+  },
+  setup(props) {
+    console.warn("----Chats: ", props)
+
+    const Store = useStore();
+    const Router = useRouter();
+
+    let tables = computed(() => Store.state.idbStore.tables);
+    // let friendList =  computed(() => props.friendList);
+
+    let sessions = computed(() => {
+      return props.friendList.filter(item => tables.value.includes(item.friend))
+    });
+
+    onMounted(()=>{
+      console.log("--------Chats Page onMounted------", Store);
+    });
+
+    return {
+      tables,
+      sessions,
+      Router
+    }
+
+  }
+
+  
 };
 </script>
 
