@@ -31,6 +31,26 @@ export default {
           tags: "标签",
           officialAccounts: "公众号"
         },
+      },
+      Dialogue: {
+        send: "发送"
+      },
+      Setting: {
+        fullScreen: '切换全屏',
+        logout: "退出登录",
+        chinese: "语言：中文",
+        english: "语言：英语",
+        normalMode: "普通模式",
+        darkMode: "黑暗模式",
+        modalText: "新的设置需要重启才能生效"
+      },
+      Profile: {
+        sendMessage: "发消息",
+        medias: "音视频通话"
+      },
+      KiModal: {
+        cancel: "取消",
+        confirm: "确定"
       }
     }
 };

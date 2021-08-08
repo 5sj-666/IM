@@ -1,6 +1,11 @@
 <template>
   <article class="me-page">
-    <ki-profile name="Natural" id="Greenschick"></ki-profile>
+      <ki-profile 
+        :name="Store.state.profile.name" 
+        :id="Store.state.profile.account"
+        :avatar="Store.state.profile.avatar ? '/avatar/'+Store.state.profile.avatar : ''"
+      >
+      </ki-profile>
 
     <!-- <img width="50" height="50" src="../../assets/icon/me-img.png" /> -->
 
@@ -18,7 +23,35 @@
         :disable="cell.disable"
         @click="cell.event"
       >
-        <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" />
+        <!-- <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" /> -->
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" style="bwidth: 1.5rem; height: 1.5rem;">
+          <!-- <defs>
+            <style type="text/css"><![CDATA[
+              #minute {
+                transform-origin: 50% 50%;
+                animation: cursorRotate 3600s infinite linear;
+              }
+              #second {
+                transform-origin: 50% 50%;
+                animation: cursorRotate 60s infinite linear;
+              }
+
+              @keyframes cursorRotate {
+                0% {
+                  transform: rotate(0);
+                }
+                100% {
+                  transform: rotate(360deg);
+                }
+              }
+            ]]></style>
+          </defs> -->
+          <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+            <circle cx=50 cy=50 r=47 ></circle>
+            <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+            <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+          </g>
+        </svg>
       </ki-cell>
     </div>
 
@@ -41,6 +74,8 @@ import useI18n from "@/local/index"
 
 import {useRouter} from "vue-router";
 
+import {useStore} from "vuex";
+
 export default {
   components: {
     KiProfile,
@@ -51,12 +86,13 @@ export default {
     const Router =  useRouter(),
           { t } = useI18n();
 
-
     const goSetting = () => {
       Router.push('/setting');
     }
 
-    const avatarUrl = require("../../assets/img/avatar.jpg");
+    const Store = useStore();
+    // Store.state;
+    // debugger;
 
     const cellList = [
       [
@@ -99,9 +135,10 @@ export default {
 
     return {
       cellList,
-      avatarUrl,
-      goSetting
+      goSetting,
       // t
+
+      Store,
     };
   }
 };
@@ -123,4 +160,23 @@ export default {
   background-color: var(--Me-bg, #ededed);
   /* overflow: scroll; */
 }
+
+
+  #minute {
+    transform-origin: 50% 50%;
+    animation: cursorRotate 3600s infinite linear;
+  }
+  #second {
+    transform-origin: 50% 50%;
+    animation: cursorRotate 60s infinite linear;
+  }
+
+  @keyframes cursorRotate {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 </style>

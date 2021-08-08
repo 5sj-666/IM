@@ -54,6 +54,9 @@ export default defineComponent({
 
   /* --- Charts Page --- */
   --Charts-bg: --Main-bg;
+  --Chats-color_primary: --Main-color_primary;
+  --Chats-color_secondary: --Main-color_secondary;
+  --Chats-cell-bg: var(--Main-header_fake-bg);
 
   /* --- --Contacts Page --- */
   --Contacts-bg: --Main-bg;
@@ -71,11 +74,16 @@ export default defineComponent({
 
   /* --- Dialogue Page --- */
   --Dialogue-bg: var(--Main-bg);
-  --Dialogue-footer-bg: var(--Main-header_fake-bg);
+  --Dialogue-footer-bg: var(--main-tab-bg);
+  --Dialogue-color: var(--Main-color_primary);
+  --Dialogue-input-bg: var(--Main-header_fake-bg);
+  --Dialogue-btn_send-color: #FFF;
+  --Dialogue-btn_send-bg: #04c660;
 
 
 
   /* --- ki-header Component --- */
+  --svg-arrow_stroke: var(--Main-color_primary);
   --ki-header-color: var(--Main-color_primary);
   --ki-header-bg: var(--Main-bg);
 
@@ -102,6 +110,13 @@ export default defineComponent({
   --svg-fill: #f7f7f7;
   --svg-stroke: #000;
 
+  /* Ki-Modal */
+  --ki-modal-color: var(--Main-color_primary);
+  --ki-modal-corlor_secondary: #58708d;
+  --ki-modal-bg: #FFF;
+  --ki-modal-border_color:  #e0e0e0;
+
+
 
 }
 
@@ -119,6 +134,10 @@ export default defineComponent({
   --svg-fill: #1f1f1f;
   --svg-stroke: #d7d7d7;
 
+  /* Ki-Modal */
+  --ki-modal-corlor_secondary: #83909b;
+  --ki-modal-bg: #2c2c2c;
+  --ki-modal-border_color: #373737;
 }
 
 html, body, #app {
@@ -126,6 +145,24 @@ html, body, #app {
   padding: 0;
   width: 100%;
   height: 100%;
+}
+
+#minute {
+  transform-origin: 50% 50%;
+  animation: cursorRotate 3600s infinite linear;
+}
+#second {
+  transform-origin: 50% 50%;
+  animation: cursorRotate 60s infinite linear;
+}
+
+@keyframes cursorRotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* #app {
