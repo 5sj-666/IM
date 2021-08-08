@@ -65,6 +65,7 @@ export default defineComponent({
             // 账号密码正确 则 将token存入本地并跳转到主页
             if(result.ok) {
                 console.log("---登录成功");
+                localStorage.setItem('userId', account);
                 localStorage.setItem('token', result.token);
                 Router.replace("/");
             }

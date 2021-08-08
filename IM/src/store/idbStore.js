@@ -1,4 +1,4 @@
-import {openDB, getObjectStore} from '@/utils/IDB.js'
+import {openDB, getObjectStore, updateDB, add} from '@/utils/IDB.js'
 
 const SET_DB = "SET_DB";
 /**
@@ -21,6 +21,11 @@ const store = {
         }
     },
     actions: {
+        /**
+         * @description 初始化数据库
+         * @param {*} context 
+         * @param {*} payload 
+         */
         async initIDB(context, payload) {
             console.log("----initIDB----");
             let db = {};
@@ -33,10 +38,19 @@ const store = {
             }
             
         },
-        async add(context, payload) {
-            console.log("---执行添加数据到indexDB操作");
-            let store = getObjectStore(context.state.db, 'admin', 'readwrite');
-            store.add({'id': parseInt(Math.random() * 10000), test: "vuex Test Add"});
+        /**
+         * @description 将数据存入数据库  //如果不存在对应的对象仓库，写入数据必然是错误的，此时应该新建对应的数据对象， 然后再次尝试写入数据
+         * @param {*} context 
+         * @param {*} payload 
+         */
+        async add(context, letter) {
+            let db = await add(context.state.db, letter);
+            console.log("---idbStore add: ", db);
+            // context.commit("wsStore/")
+            if(db) {
+                context.commit('SET_DB', {db});
+            }
+
         }
     },
 

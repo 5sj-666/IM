@@ -41,3 +41,18 @@ see (https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/Using_Indexe
 
 ### vue3版本css变量使用，无需显式声明vars，通过v-bind推断
 see (https://github.com/vuejs/rfcs/pull/231)
+
+### 血泪教训： front-end分支 git rebase dev 之后没有执行--push-with-lease导致分支重复提交一大段; 2. front分支长达22次提交未rebase，导致后来rebase dev时候，需要疯狂合并，需要合并的次数达10+次。无
+奈放弃rebase，在dev分支上直接使用merge
+
+☑️ 文本信息发送
+☑️ 视频通话
+☑️ 语言切换(中文-英文)
+☑️ 主题切换(普通模式-黑夜模式)
+☑️ 路由过渡动画
+🟦 聊天数据本地持久化(indexDB)
+🟦 骨架屏与预渲染
+
+🟦 登录/注册
+🟦 
+🟪 
