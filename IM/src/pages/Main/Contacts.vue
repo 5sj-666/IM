@@ -2,7 +2,7 @@
   <article class="contacts-page">
     <!-- <div>Contacts</div> -->
 
-    <section class="border-line_top border-line_bottom">
+    <section class="border-line_top border-line_bottom" style="filter: grayscale(100%)">
       <ki-cell
         v-for="(item, index) in systemContacts"
         :key="index"
@@ -12,10 +12,17 @@
         :isLast="index == systemContacts.length - 1 ? true : false"
       >
         <template v-slot:default>
-          <img
+          <!-- <img
             style="width: 2.34rem;height: 2.34rem;border-radius:0.17rem 0.17rem;"
             :src="item.avatar"
-          />
+          /> -->
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" style="bwidth: 1.5rem; height: 1.5rem;">
+            <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+              <circle cx=50 cy=50 r=47 ></circle>
+              <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+              <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+            </g>
+          </svg>
         </template>
       </ki-cell>
     </section>

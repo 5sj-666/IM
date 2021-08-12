@@ -16,12 +16,19 @@
         :disable="true"
       >
         <template v-slot:default>
-          <img style="width: 1.6rem;height: 1.6rem;" :src="item.icon" />
+          <!-- <img style="width: 1.6rem;height: 1.6rem;" :src="item.icon" /> -->
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" style="bwidth: 1.5rem; height: 1.5rem;">
+            <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+              <circle cx=50 cy=50 r=47 ></circle>
+              <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+              <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+            </g>
+          </svg>
         </template>
 
-        <template v-if="!!item.adImg" v-slot:SoAdImg>
+        <!-- <template v-if="!!item.adImg" v-slot:SoAdImg>
           <img :src="item.adImg" style="width:1.8rem;height:1.8rem" alt />
-        </template>
+        </template> -->
       </ki-cell>
     </section>
   </article>
