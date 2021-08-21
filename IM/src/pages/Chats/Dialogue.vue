@@ -2,6 +2,7 @@
     <article class="dialogue-page">
         <ki-header :title="Route.params.userId"/>
         <section class="msg-content">
+            111
            <!-- <div class="msg-item self">
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
                <div class="message">消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容</div>
@@ -17,21 +18,49 @@
                 :class="item.sender && item.sender.length > 100 ? 'self': 'other'" 
                 @click="goToProfile()" >
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
-               <div class="message">{{item.content}}</div>
+               <!-- <div class="message">{{item.content}}</div> -->
+               <div class="message" v-html="item.content"></div>
            </div>
         </section>
-        <footer>
-            <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-voice.png" alt="">
-            <input type="text" v-model="content">
-            <!-- <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-grin.png" alt="">
-            <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-plus.png" alt=""> -->
-            <button class="btn-send" @click.stop="send()">发送</button>
+        <footer class="border-line_top">
+            <svg class="icon-voice" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
+                <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+                <circle cx=50 cy=50 r=47 ></circle>
+                <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+                <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+                </g>
+            </svg>
+
+            <!-- textarea的挂载节点 -->
+            <div id="richText" class="input-mount" contentEditable=true @input="textChange"></div>
+
+            <svg class="icon-voice" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
+                <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+                <circle cx=50 cy=50 r=47 ></circle>
+                <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+                <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+                </g>
+            </svg>
+
+            <svg v-show="!sendAble" class="icon-voice" style="margin-left: 0;" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
+                <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+                <circle cx=50 cy=50 r=47 ></circle>
+                <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+                <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+                </g>
+            </svg>
+                
+            <button class="btn-send" v-show="sendAble" @click.stop="send()">发送</button>
+
+            <div class="emoji-container" v-show="showEmoji">
+                <img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" style="width:1.4rem; height: 1.4rem;" alt="">
+            </div>
         </footer>
     </article>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, computed } from 'vue';
+import { defineComponent, reactive, ref, computed, watchEffect, onMounted } from 'vue';
 // import { defineComponent } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
@@ -55,81 +84,17 @@ export default defineComponent({
         console.log( "---Route: ",  Route.params );
         const store = useStore();
         console.log("---store.state: ", store);
-        // store.dispatch('wsStore/initWS');
-        // store.dispatch('wsStore/initWS');
 
-        // console.log()
-        // const data = reactive([]);
-
-    //     let WS = initWS();
-    //     function initWS():any {
-    //         if(!Reflect.has(window, "WebSocket")) {
-    //             console.log("浏览器不支持websocket!!");
-    //             return;
-    //         }
-
-    //         let WS = new WebSocket("ws://127.0.1:3000");
-    //         // window.userws = WS;
-    //         WS.onopen = function() {
-    //             console.log("---成功连接websocket---");
-    //         };
-            
-    //         WS.onmessage = envelope => {
-    //             console.log("--envelope", envelope);
-
-                
-
-    //             // const msgMapping = {
-    //             //     offer: answerOffer,
-    //             //     offerAnswer: setRemoteSDP,
-    //             //     candidate: setRemoteICE,
-    //             // }
-    //             // msgHistory = document.querySelector("#msgHistory");
-    //             // msgHistory.innerText += `${envelope.data}\n`;
-    //             // let letter = JSON.parse(envelope.data);
-                
-    //             // Reflect.has(msgMapping, letter.type) ? msgMapping[letter.type](letter) : "";
-    //         };
-    //         WS.onclose = () => console.log("---已断开webSocket---");
-    //         WS.onerror = error => console.error("---websoket发生错误: ", error);
-    //         return WS;
-    //     }
-
-    //     /**
-    //      * @description 对websocket发送事件做封装
-    //      * @param {Object} data 数据结构: {type: String, content: String}
-    //     */
-    //    function wsSend(data:message) {
-    //         // const letter:message = {
-    //         //     sender: '',
-    //         //     recipient: '',
-    //         //     type: '',
-    //         //     content:'',
-    //         // }
-    //         const letter = JSON.stringify(data);
-    //         console.log("letter: ", letter);
-    //         WS.send(letter);
-    //     }
-    //     // function wsSend(data) {
-    //     //     let sender = document.querySelector("#sender").value,
-    //     //         recipient = document.querySelector("#recipient").value,
-    //     //         msgHistory = document.querySelector("#msgHistory");
-
-    //     //     //特殊情况: 初始化(init)时候不需要接收者
-    //     //     if(!sender || (!recipient && data.type !== "init")) {
-    //     //         alert(`${sender ? '接收者' : '发送者'}不能为空！`);
-    //     //         return;
-    //     //     }
-
-    //     //     let letter = JSON.stringify({...data, sender, recipient});
-    //     //     msgHistory.innerText += `${letter}\n`
-    //     //     WS.send(letter);
-    //     // }
 
         var sender = localStorage.getItem("token");
         var recipient = Route.params.userId + "";
 
         var content = ref("");
+
+        watchEffect(()=>{
+            console.log("+---content发生变化: ", content);
+            
+        })
 
     
 
@@ -165,9 +130,30 @@ export default defineComponent({
             store.dispatch("wsStore/wsSend", letter);
 
             content.value = "";
+            document.querySelector('#richText')!.innerHTML = "";
         }
 
-        return {goBack, goToProfile, send, content, msgList, Route};
+        function textChange(e:any) {
+            // console.log("---onchange textChange: ", e, "--:", e.srcElement.innerHTML);
+            content.value = e.srcElement.innerHTML;
+        }
+
+        function pushImg() {
+            console.log("--添加表情---");
+            let ele:any = document.querySelector('#richText');
+            ele.innerHTML += `<img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" style="width:1.4rem; height: 1.4rem;margin: 0 2px;" alt="">`+'<span></span>';
+            content.value += `<img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" style="width:1.4rem; height: 1.4rem;margin: 0 2px;" alt="">`;
+        }
+
+        const showEmoji = ref(false);
+
+
+        let sendAble = computed(() => {
+            return  (content.value + "").trim() !== "";
+        })
+
+
+        return {goBack, goToProfile, send, content, msgList, Route, textChange, pushImg, showEmoji, sendAble};
 
     }
 })
@@ -182,15 +168,31 @@ export default defineComponent({
     // }
     */
     .dialogue-page {
-        /* --Dialogue-bg: #FFF; 
-           --Dialogue-footer-bg: #191919*/
+        /* 
+          --Dialogue-bg: var(--Main-bg);
+            --Dialogue-footer-bg: var(--Main-bg);
+            --Dialogue-color: var(--Main-color_primary);
+            --Dialogue-input-bg: var(--Main-header_fake-bg);
+            --Dialogue-btn_send-color: #FFF;
+            --Dialogue-btn_send-bg: #04c660;
+           */
 
-        display: grid;
+
+
+        /* display: grid;
         grid-template-rows: 3rem auto 3rem;
         grid-template-columns: 1fr;
         width: 100%;
         height: 100%;
+        background-color: var(--Dialogue-bg, #ededed); */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
         background-color: var(--Dialogue-bg, #ededed);
+
+
         /* background-color: cyan; */
     }
     /* header {
@@ -202,6 +204,7 @@ export default defineComponent({
     } */
 
     .msg-content {
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
@@ -272,14 +275,75 @@ export default defineComponent({
     }
 
     footer {
-        display: grid;
+        position: relative;
+        /* display: grid;
         grid-template-rows: 1fr;
-        grid-template-columns: 2rem auto 2rem 2rem;
-        align-items: center;
+        grid-template-columns: 2rem 1fr 2rem 3rem;
+        align-items: center; */
+        box-sizing: border-box;
+        padding: 0.53rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        /* flex-wrap: wrap; */
+        width: 100%;
+        min-height: 2.3rem;
+        max-height: 7.1rem;
         /* background-color: rgb(237, 237, 237); */
         background-color: var(--Dialogue-footer-bg);
     }
+    .input-mount {
+        position: relative;
+        box-sizing: border-box;
+        padding: .5rem .5rem;
+        flex-grow: 1;
+        flex-shrink: 1;
+        min-height: 1.3rem;
+        max-height: 6.04rem;
+        color: var(--Dialogue-color);
+        background-color: var(--Dialogue-input-bg);
+        border-radius: .2rem;
+        text-align: left;
+        line-height: 1.5;
+        word-break: break-all;
+        outline: none;
+        overflow: auto;
+    }
+    .input-mount::-webkit-scrollbar {
+        display: none;
+    }
+
+    .emoji-container {
+        /* position: absolute;
+        left: 0;
+        bottom: 3rem; */
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+
+        width: 100%;
+        height: 6rem;
+        background: cyan;
+    }
+
     .btn-send {
-        grid-column: 3 / 5;
+        margin: 0 .48rem .5rem 0;
+        flex-shrink: 0;
+        width: 3.52rem;
+        height: 1.87rem;
+        border: none;
+        outline: none;
+        color: var(--Dialogue-btn_send-color);
+        /* background: #04c660; */
+        background: var(--Dialogue-btn_send-bg);
+        font-size: .9rem;
+        border-radius: .2rem;
+    }
+
+    .icon-voice {
+        margin: .5rem 0.56rem;
+        flex-shrink: 0;
+        width: 1.67rem;
+        height: 1.67rem;
     }
 </style>

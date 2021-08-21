@@ -76,15 +76,11 @@ export default {
 
 
 .charts-page {
-  /* --Charts-bg: #ededed; */
-  --chat-cell-bg: #fff;
-  --chat-cell-title-color: #0f0f0f;
-  --chat-cell-title-bg: transparent;
-  --chat-cell-content-container-bg: #fff;
-  --chat-cell-content-color: #a4a4a4;
-  --chat-cell-content-bg: transparent;
-  --chat-cell-time-bg: transparent;
-  --chat-cell-time-color: #a4a4a4;
+
+  /* --Chats-color_primary: #0f0f0f;
+  --Chats-color_secondary: #a4a4a4;
+  --Chats-cell-bg: #FFF; */
+
 
   box-sizing: border-box;
   display: flex;
@@ -102,7 +98,7 @@ export default {
   align-items: center;
   width: 100%;
   height: 4.2rem;
-  background: var(--chat-cell-bg);
+  background: var(--Chats-cell-bg);
 }
 
 .chat-cell-avatar {
@@ -131,14 +127,14 @@ img {
   flex: 1;
   min-width: 50%;
   height: 100%;
-  background: var(--chat-cell-content-container-bg);
+  background: var(--Charts-bg);
 }
 
 .chat-cell-title {
   text-align: left;
   font-size: 0.95rem;
-  color: var(--chat-cell-title-color);
-  background-color: var(--chat-cell-title-bg);
+  color: var(--Chats-color_primary);
+  background-color: transparent;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -147,8 +143,8 @@ img {
 .chat-cell-content {
   text-align: left;
   font-size: 0.76rem;
-  color: var(--chat-cell-content-color);
-  background-color: var(--chat-cell-content-bg);
+  color: var(--Chats-color_secondary);
+  background-color: transparent;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -158,8 +154,8 @@ img {
   padding: 0.9rem 0.95rem 0 0.1rem;
   align-self: flex-start;
   font-size: 0.67rem;
-  background: var(--chat-cell-time-bg);
-  color: var(--chat-cell-time-color);
+  background: transparent;
+  color: var(--Chats-color_secondary);
 }
 
 </style>
