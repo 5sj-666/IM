@@ -95,13 +95,17 @@ const store = {
       wsSend({ state, commit, dispatch } , letter) {
         console.log("---wsSend: ", letter);
         letter.sender = localStorage.getItem("token");
+        letter.timeStamp = new Date().getTime();
 
         state.WS.send(JSON.stringify(letter));
         //将数据存入本地聊天记录中
         commit(SET_MSGHISTORY, letter);
         // console.log("--wsSend state:", state.WS)
         try {
-          dispatch('idbStore/add', {}, {root: true});
+          //将聊天记录存入数据（不包含初始化，ice cadidate信息等）
+          if(letter.type === "message") {
+            dispatch('idbStore/add', letter, {root: true});
+          }
         } catch (error) {
           console.log(error);
         }

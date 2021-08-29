@@ -12,12 +12,22 @@
         <span>{{ adTitle }}</span>
         <div class="unread-mark">
           <slot name="SoAdImg">
-            <img src="../assets/icon/me-pay.png" style="width:1.6rem;height:1.6rem" alt />
+            <!-- <img src="../assets/icon/me-pay.png" style="width:1.6rem;height:1.6rem" alt /> -->
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" style="bwidth: 1.5rem; height: 1.5rem;">
+              <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+                <circle cx=50 cy=50 r=47 ></circle>
+                <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+                <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+              </g>
+            </svg>
           </slot>
         </div>
       </div>
 
-      <span class="ki-cell-icon so-icon-arrow_right" v-if="showNextIcon"></span>
+      <!-- <span class="ki-cell-icon so-icon-arrow_right" v-if="showNextIcon"></span> -->
+      <svg class="ki-cell-icon" v-if="showNextIcon" xmlns="http://www.w3.org/2000/svg" version="1.1"  viewBox="0 0 100 100">
+        <polyline points="25,2 75,50 25,98" style="stroke: var(--svg-arrow_stroke)" stroke-width="5" fill="transparent" stroke-linecap="round"/>;
+      </svg>
     </div>
   </section>
 </template>
@@ -138,6 +148,8 @@ export default {
   height: 0.8rem;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  /* stroke:  */
+  stroke: var(--svg-arrow_stroke);
 }
 
 

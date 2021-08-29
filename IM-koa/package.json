@@ -4,7 +4,7 @@
   "description": "koa project",
   "main": "index.js",
   "scripts": {
-    "test": "test",
+    "test": "jest",
     "start": "node ./src/index.js"
   },
   "keywords": [
@@ -13,6 +13,7 @@
   "author": "wsj",
   "license": "MIT",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
@@ -20,6 +21,10 @@
     "koa-sslify": "^4.0.3",
     "koa-static": "^5.0.0",
     "mysql": "^2.18.1",
+    "node-fetch": "^2.6.1",
     "ws": "^7.4.4"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
   }
 }
