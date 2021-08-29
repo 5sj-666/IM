@@ -2,15 +2,6 @@
     <article class="dialogue-page">
         <ki-header :title="Route.params.userId"/>
         <section class="msg-content">
-            111
-           <!-- <div class="msg-item self">
-               <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
-               <div class="message">消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容</div>
-           </div>
-           <div class="msg-item other" @click="goToProfile()">
-               <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
-               <div class="message">消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容</div>
-           </div> -->
            <div 
                 v-for="(item, index) in msgList" 
                 :key="index"
@@ -22,40 +13,47 @@
                <div class="message" v-html="item.content"></div>
            </div>
         </section>
-        <footer class="border-line_top">
-            <svg class="icon-voice" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
-                <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
-                <circle cx=50 cy=50 r=47 ></circle>
-                <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
-                <line id="second" x1="85"  y1="50" x2="50" y2="50" />
-                </g>
-            </svg>
+        <section class="">
+            <div class="input-container border-line_top border-line_bottom">
+                <svg class="icon-voice" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
+                    <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+                    <circle cx=50 cy=50 r=47 ></circle>
+                    <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+                    <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+                    </g>
+                </svg>
 
-            <!-- textarea的挂载节点 -->
-            <div id="richText" class="input-mount" contentEditable=true @input="textChange"></div>
+                <!-- textarea的挂载节点 -->
+                <div id="richText" class="rich-text" contentEditable=true @input="textChange"></div>
 
-            <svg class="icon-voice" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
-                <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
-                <circle cx=50 cy=50 r=47 ></circle>
-                <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
-                <line id="second" x1="85"  y1="50" x2="50" y2="50" />
-                </g>
-            </svg>
+                <svg class="icon-voice" @click="showEmoji = !showEmoji" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
+                    <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+                    <circle cx=50 cy=50 r=47 ></circle>
+                    <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+                    <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+                    </g>
+                </svg>
 
-            <svg v-show="!sendAble" class="icon-voice" style="margin-left: 0;" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
-                <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
-                <circle cx=50 cy=50 r=47 ></circle>
-                <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
-                <line id="second" x1="85"  y1="50" x2="50" y2="50" />
-                </g>
-            </svg>
-                
-            <button class="btn-send" v-show="sendAble" @click.stop="send()">发送</button>
+                <svg v-show="!sendAble" class="icon-voice" style="margin-left: 0;" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
+                    <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
+                    <circle cx=50 cy=50 r=47 ></circle>
+                    <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
+                    <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+                    </g>
+                </svg>
+                    
+                <button class="btn-send" v-show="sendAble" @click.stop="send()">发送</button>
 
-            <div class="emoji-container" v-show="showEmoji">
-                <img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" style="width:1.4rem; height: 1.4rem;" alt="">
             </div>
-        </footer>
+            <div class="emoji-container" v-show="showEmoji">
+                <img 
+                    class="emoji"
+                    v-for="(emoji, i) in emojiList" 
+                    :key="i" :src="require(`@/assets/emoji/emoji_${emoji.EN}.png`)" 
+                    @click="pushImg(emoji)" />
+            </div>
+        </section>
+        
     </article>
 </template>
 
@@ -65,6 +63,12 @@ import { defineComponent, reactive, ref, computed, watchEffect, onMounted } from
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import KiHeader from '../../components/ki-header.vue';
+
+
+import emojiList from '@/assets/icomNames';
+
+console.warn("---emojiList: ", emojiList);
+
 
     interface Message {
         sender: string,
@@ -134,15 +138,18 @@ export default defineComponent({
         }
 
         function textChange(e:any) {
+            showEmoji.value = false;
             // console.log("---onchange textChange: ", e, "--:", e.srcElement.innerHTML);
             content.value = e.srcElement.innerHTML;
         }
 
-        function pushImg() {
+        function pushImg(emoji:any) {
             console.log("--添加表情---");
             let ele:any = document.querySelector('#richText');
-            ele.innerHTML += `<img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" style="width:1.4rem; height: 1.4rem;margin: 0 2px;" alt="">`+'<span></span>';
-            content.value += `<img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" style="width:1.4rem; height: 1.4rem;margin: 0 2px;" alt="">`;
+            // ele.innerHTML += `<img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" style="width:1.4rem; height: 1.4rem;margin: 0 2px;" alt="">`+'<span></span>';
+            // content.value += `<img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" alt="">`;
+            ele.innerHTML += `[${emoji.CN}]`;
+            content.value += `[${emoji.CN}]`;
         }
 
         const showEmoji = ref(false);
@@ -153,7 +160,19 @@ export default defineComponent({
         })
 
 
-        return {goBack, goToProfile, send, content, msgList, Route, textChange, pushImg, showEmoji, sendAble};
+        return {
+            goBack, 
+            goToProfile, 
+            send, 
+            content, 
+            msgList, 
+            Route, 
+            textChange, 
+            pushImg, 
+            showEmoji, 
+            sendAble,
+            emojiList
+            };
 
     }
 })
@@ -161,12 +180,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
-/**background-color: rgb(237,237, 237) 
-    // :root {
-    //     --header-background-color: rgb(237, 237, 237);
-    // }
-    */
     .dialogue-page {
         /* 
           --Dialogue-bg: var(--Main-bg);
@@ -176,15 +189,6 @@ export default defineComponent({
             --Dialogue-btn_send-color: #FFF;
             --Dialogue-btn_send-bg: #04c660;
            */
-
-
-
-        /* display: grid;
-        grid-template-rows: 3rem auto 3rem;
-        grid-template-columns: 1fr;
-        width: 100%;
-        height: 100%;
-        background-color: var(--Dialogue-bg, #ededed); */
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -195,13 +199,6 @@ export default defineComponent({
 
         /* background-color: cyan; */
     }
-    /* header {
-        display: grid;
-        grid-template-rows: 1fr;
-        grid-template-columns: 3rem auto 3rem;
-        align-items: center;
-        background-color: var(--header-bg);
-    } */
 
     .msg-content {
         flex-grow: 1;
@@ -256,7 +253,6 @@ export default defineComponent({
     .message::before {
         content: "";
         position: absolute;
-        /* left: -.5rem; */
         top: 1.3rem;
         width: .5rem;
         height: .5rem;
@@ -274,25 +270,19 @@ export default defineComponent({
         clip-path: polygon(30% 50%, 100% 0%, 100% 100%);
     }
 
-    footer {
+    .input-container {
         position: relative;
-        /* display: grid;
-        grid-template-rows: 1fr;
-        grid-template-columns: 2rem 1fr 2rem 3rem;
-        align-items: center; */
         box-sizing: border-box;
         padding: 0.53rem 0;
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        /* flex-wrap: wrap; */
         width: 100%;
         min-height: 2.3rem;
         max-height: 7.1rem;
-        /* background-color: rgb(237, 237, 237); */
         background-color: var(--Dialogue-footer-bg);
     }
-    .input-mount {
+    .rich-text {
         position: relative;
         box-sizing: border-box;
         padding: .5rem .5rem;
@@ -309,21 +299,8 @@ export default defineComponent({
         outline: none;
         overflow: auto;
     }
-    .input-mount::-webkit-scrollbar {
+    .rich-text::-webkit-scrollbar {
         display: none;
-    }
-
-    .emoji-container {
-        /* position: absolute;
-        left: 0;
-        bottom: 3rem; */
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-
-        width: 100%;
-        height: 6rem;
-        background: cyan;
     }
 
     .btn-send {
@@ -334,7 +311,6 @@ export default defineComponent({
         border: none;
         outline: none;
         color: var(--Dialogue-btn_send-color);
-        /* background: #04c660; */
         background: var(--Dialogue-btn_send-bg);
         font-size: .9rem;
         border-radius: .2rem;
@@ -346,4 +322,30 @@ export default defineComponent({
         width: 1.67rem;
         height: 1.67rem;
     }
+
+    .emoji-container {
+        box-sizing: border-box;
+        padding: 1rem 0 0 1rem;
+        display: flex;
+        justify-content: flex-start;
+        align-content:flex-start;
+        flex-wrap: wrap;
+        width: 100%;
+        height: 16.5rem;
+        overflow: auto;
+    }
+    .emoji-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .emoji-container .emoji {
+        margin-right: .85rem;
+        margin-bottom: .85rem;
+        flex-grow: 0;
+        flex-shrink: 0;
+        display: inline-block;
+        width: 1.8rem;
+        height: 1.8rem;
+    }
+
 </style>

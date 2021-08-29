@@ -45,6 +45,9 @@ see (https://github.com/vuejs/rfcs/pull/231)
 ### 血泪教训： front-end分支 git rebase dev 之后没有执行--push-with-lease导致分支重复提交一大段; 2. front分支长达22次提交未rebase，导致后来rebase dev时候，需要疯狂合并，需要合并的次数达10+次。无
 奈放弃rebase，在dev分支上直接使用merge
 
+### mysql 社区版安装教程
+see (https://www.cnblogs.com/winton-nfs/p/11524007.html)
+
 
 ### 1rem = 16px; 设计图大小1080x2248; 1080 / 375 = 2.88; 16 * 2.88 = 46.08; 
 ### 在1080px设计图的情况下  1rem = 46.08px;
