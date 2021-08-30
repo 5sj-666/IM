@@ -10,7 +10,7 @@
                 @click="goToProfile()" >
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
                <!-- <div class="message">{{item.content}}</div> -->
-               <div class="message" v-html="item.content"></div>
+               <div class="message" v-html="formatMsg(item.content)"></div>
            </div>
         </section>
         <section class="">
@@ -24,7 +24,7 @@
                 </svg>
 
                 <!-- textarea的挂载节点 -->
-                <div id="richText" class="rich-text" contentEditable=true @input="textChange"></div>
+                <div id="richText" class="rich-text" contentEditable=true @click="showEmoji = false" @input="textChange"></div>
 
                 <svg class="icon-voice" @click="showEmoji = !showEmoji" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
                     <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
@@ -46,11 +46,19 @@
 
             </div>
             <div class="emoji-container" v-show="showEmoji">
+                <!-- <img 
+                    class="emoji"
+                    v-for="(emoji, i) in emojiList" 
+                    :key="i" 
+                    :src="require(`@/assets/emoji/emoji_${emoji.EN}.png`)" 
+                    @click="pushImg(emoji)" /> -->
                 <img 
                     class="emoji"
                     v-for="(emoji, i) in emojiList" 
-                    :key="i" :src="require(`@/assets/emoji/emoji_${emoji.EN}.png`)" 
-                    @click="pushImg(emoji)" />
+                    :key="i" 
+                    :src="'https://www.fffuture.top/emoji_' + emoji.EN + '.png'"
+                    @click="pushImg(emoji)" 
+                />
             </div>
         </section>
         
@@ -75,6 +83,12 @@ console.warn("---emojiList: ", emojiList);
         recipient?: string,
         type: string,
         content: Object
+    }
+
+    interface Emoji {
+        url: string,
+        CN: string,
+        EN: string,
     }
 
 export default defineComponent({
@@ -138,7 +152,7 @@ export default defineComponent({
         }
 
         function textChange(e:any) {
-            showEmoji.value = false;
+            
             // console.log("---onchange textChange: ", e, "--:", e.srcElement.innerHTML);
             content.value = e.srcElement.innerHTML;
         }
@@ -157,7 +171,39 @@ export default defineComponent({
 
         let sendAble = computed(() => {
             return  (content.value + "").trim() !== "";
-        })
+        });
+
+
+        function formatMsg(text:String) {
+            // console.log("---text: ", text);
+            text = text.replace(/\[[\u4e00-\u9fa5]+\]/g, replaceEmoji);
+            // debugger;
+            return text;
+
+            function replaceEmoji(param:string) {
+
+                let target = emojiList.find(emoji => param.includes(emoji.CN + ""));
+                console.log(target);
+                if(target) {
+                    // return `<img 
+                    //             style="display: inline-block; width: 1.8rem; height: 1.8rem;transform: translateY(.5rem)" 
+                    //             src=${require('@/assets/emoji/emoji_' + target.EN + '.png')}
+                    //         />`
+                    return `<img 
+                                style="display: inline-block; width: 1.2rem; height: 1.2rem;transform: translateY(.3rem)" 
+                                src=${'https://www.fffuture.top/emoji_' + target.EN + '.png'}
+                            />`;
+                }
+
+                // debugger;
+                // console.log()''
+                return param;
+            }
+
+
+        }
+
+
 
 
         return {
@@ -171,8 +217,9 @@ export default defineComponent({
             pushImg, 
             showEmoji, 
             sendAble,
-            emojiList
-            };
+            emojiList,
+            formatMsg
+        };
 
     }
 })
@@ -249,6 +296,13 @@ export default defineComponent({
         border-radius: .5rem;
         line-height: 2rem;
         word-break: break-all;
+        
+        /* display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: nowrap; */
+        /* writing-mode: horizontal-tb;
+        vertical-align: baseline; */
     }
     .message::before {
         content: "";
@@ -347,5 +401,11 @@ export default defineComponent({
         width: 1.8rem;
         height: 1.8rem;
     }
+
+    /* .emoji {
+        display: inline-block;
+        width: 1.8rem;
+        height: 1.8rem;
+    } */
 
 </style>

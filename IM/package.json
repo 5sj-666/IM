@@ -49,7 +49,9 @@
     },
     "rules": {
       "no-unused-vars": "off",
-      "no-undef": 0
+      "no-undef": 0,
+      "comma-dangle": "off",
+      "no-debugger": "off"
     }
   },
   "browserslist": [
