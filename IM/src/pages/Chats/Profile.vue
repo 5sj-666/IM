@@ -1,16 +1,10 @@
 <template>
     <article class="profile-page">
-        <!-- <header>
-            <img @click="goBack()" style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-back.png" alt="返回图标">
-        </header> -->
         <ki-header :title="Route.params.userId"/>
+        <!-- {{$route.params}}个人信息页面!! -->
 
-        {{$route.params}}
-        个人信息页面!!
-
-        <div class="profile-btn" @click="Router.push('/dialogue/'+$route.params.userId)">发消息</div>
-        <!-- <div class="profile-btn" @click="Router.push('/dialogue/videoCall/'+$route.params.userId)">音视频通话</div> -->
-        <div class="profile-btn" @click="goVideoPage()">音视频通话</div>
+        <div class="profile-btn" @click="Router.push('/dialogue/'+$route.params.userId)">{{t('App.Profile.sendMessage')}}</div>
+        <div class="profile-btn" @click="goVideoPage()">{{t('App.Profile.medias')}}</div>
 
     </article>
 </template>
@@ -19,6 +13,7 @@
 import { defineComponent, onMounted } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
+import useI18n from "@/local/index"
 
 import KiHeader from '@/components/ki-header';
 
@@ -34,14 +29,8 @@ export default defineComponent({
         const Route = useRoute();
         console.log( "---Route: ",  Route.params );
         const Store = useStore();
+        const { t } = useI18n();
 
-
-        // const friendName = ref("");
-        // onMounted(() => {
-        //     friendName.value = 
-        // })
-
-        // goBack();
         function goBack() {
             Router.go(-1);
         }
@@ -65,7 +54,7 @@ export default defineComponent({
             })
         }
 
-        return { goBack, Router, Route, goVideoPage }
+        return { goBack, Router, Route, goVideoPage, t }
     },
 })
 

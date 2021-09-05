@@ -8,67 +8,96 @@
             :name="cell.name"
             :isLast="index == cells.length - 1 ? true : false"
             :showNextIcon="false"
-            @click="cellsEvent(cell.name)"
+            @click="cellsEvent(index)"
         >
             <!-- <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" /> -->
         </ki-cell>
+
+        <ki-modal 
+            :content="t('App.Setting.modalText')"
+            v-model="showModal"
+            @onConfirm="modalConfirm"
+        />
     </article>
 </template>
 <script>
 import kiHeader from "@/components/ki-header.vue";
 import KiCell from "@/components/ki-cell.vue";
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import useI18n from "@/local/index";
+
+import KiModal from "@/components/ki-modal.vue";
+
 
 
 export default {
     name: "setting",
     components: {
         kiHeader,
-        KiCell
+        KiCell,
+        KiModal
     },
     setup() {
         const Router =  useRouter();
         const Store = useStore();
+        const { t } = useI18n();
 
         let cells = reactive([]);
         cells = [
             {
                 icon: require("@/assets/icon/me-setting.png"),
-                name: "切换全屏",
+                // name: "切换全屏",
+                name: t('App.Setting.fullScreen')
             },
             {
                 icon: require("@/assets/icon/me-setting.png"),
-                name: "退出登录",
+                // name: "退出登录",
+                name: t('App.Setting.logout'),
             },
             {
                 icon: require("@/assets/icon/me-setting.png"),
-                name: "语言: 中文",
+                // name: "语言: 中文",
+                name: t('App.Setting.chinese')
             },
             {
                 icon: require("@/assets/icon/me-setting.png"),
-                name: "language: english",
+                // name: "language: english",
+                name: t('App.Setting.english')
             },
             {
                 icon: require("@/assets/icon/me-setting.png"),
-                name: "黑暗模式",
+                // name: "黑暗模式",
+                name: t('App.Setting.darkMode')
             },
             {
                 icon: require("@/assets/icon/me-setting.png"),
-                name: "普通模式",
+                // name: "普通模式",
+                name: t('App.Setting.normalMode')
             },
         ];
-
+        console.log("---t('APP.Setting.fullScreen'): ", t('App.Setting.fullScreen'));
+    // debugger;
         function cellsEvent(name) {
             console.log("--proxyEvent: ", name);
+            // const eventMapping = {
+            //     "切换全屏": launchFullScreen,
+            //     "退出登录": loginOut,
+            //     "语言: 中文": changeLang,
+            //     "语言：英语": changeLang,
+            //     "language: chinese": changeLang,
+            //     "language: english": changeLang,
+            //     "黑暗模式": changeTheme.bind(this, "dark"),
+            //     "普通模式": changeTheme.bind(this, ""),
+            // }
             const eventMapping = {
-                "切换全屏": launchFullScreen,
-                "退出登录": loginOut,
-                "语言: 中文": changeLang.bind(this, "zhCN"),
-                "language: english": changeLang.bind(this,"en"),
-                "黑暗模式": changeTheme.bind(this, "dark"),
-                "普通模式": changeTheme.bind(this, ""),
+                "0": launchFullScreen,
+                "1": loginOut,
+                "2": changeLang,
+                "3": changeLang,
+                "4": changeTheme.bind(this, "dark"),
+                "5": changeTheme.bind(this, ""),
             }
             Reflect.has(eventMapping, name) ? eventMapping[name]() : "";
         }
@@ -92,10 +121,29 @@ export default {
             Router.replace('/login');
         }
 
-        function changeLang(lang) {
-            console.log("---Setting changLang event: ");
-            Store.commit("SET_LANG", {lang});
+        let showModal = ref(false);
+
+        function changeLang() {
+            showModal.value = true;
+            // debugger;
         }
+
+        function modalConfirm() {
+            console.log("---modalConfirm ");
+            Store.state.lang;
+            let lang = 'en';
+            if(Store.state.lang === 'zhCN') {
+                lang = 'en';
+            }else {
+                lang = 'zhCN';
+            }
+            Store.commit("SET_LANG", {lang});
+            // debugger;
+
+            window.location.href="/";
+        }
+
+
 
         /**
          * @description: 主题切换
@@ -107,9 +155,18 @@ export default {
             document.documentElement.dataset.theme = type;
         }
 
+
+
+
+
         return {
             cells,
-            cellsEvent
+            cellsEvent,
+
+            t,
+
+            showModal,
+            modalConfirm,
         }
     },
 }

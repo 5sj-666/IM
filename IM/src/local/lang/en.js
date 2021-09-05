@@ -31,6 +31,27 @@ export default {
           officialAccounts: "Official Accounts"
         },
 
+      },
+      Dialogue: {
+        send: "send"
+      },
+      Setting: {
+        fullScreen: 'full screen',
+        logout: "logout",
+        lang: "",
+        chinese: "language: chinese",
+        english: "language: english",
+        normalMode: "normal mode",
+        darkMode: "dark mode",
+        modalText: "New settings will take effect after restarting."
+      },
+      Profile: {
+        sendMessage: "send message",
+        medias: "video&audio connection"
+      },
+      KiModal: {
+        cancel: "cancel",
+        confirm: "OK"
       }
     }
 };

@@ -77,13 +77,14 @@ export default {
 
     onActivated(()=> {
       // console.log("---MAIN onActivated");
-      if(lang.value !== localStorage.getItem("lang")) {
-        console.log("----执行刷新Main页面----");
-        setTimeout(()=>{
-          Router.go(0); //这里可能需要做骨架屏优化过渡
-          lang.value = localStorage.getItem("lang");
-        }, 300);
-      }
+      
+      // if(lang.value !== localStorage.getItem("lang")) {
+      //   console.log("----执行刷新Main页面----");
+      //   setTimeout(()=>{
+      //     Router.go(0); //这里可能需要做骨架屏优化过渡
+      //     lang.value = localStorage.getItem("lang");
+      //   }, 300);
+      // }
 
     });
     onDeactivated(()=> {

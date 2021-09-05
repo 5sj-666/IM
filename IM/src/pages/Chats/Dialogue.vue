@@ -1,5 +1,5 @@
 <template>
-    <article class="dialogue-page">
+    <article class="dialogue-page" @click="showEmoji=false">
         <ki-header :title="Route.params.userId"/>
         <section class="msg-content">
            <div 
@@ -16,54 +16,46 @@
         <section class="">
             <div class="input-container border-line_top border-line_bottom">
 
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="icon-svg" viewBox="0 0 100 100" style="background: #FFF">
-                    <g fill="transparent">
-                    <path d="M 20 50
-                            L 60 20
-                            A 60 60 0 0 1 60 80
-                            Z 
-                            "
-                            fill="#000"
-                            stroke="#000"
-                    />
-                    <circle cx=0 cy=50 r=35 stroke="#FFF" stroke-width="10" ></circle>
-                    <circle cx=0 cy=50 r=54 stroke="#FFF" stroke-width="10" ></circle>
-                    </g>
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="icon-svg" viewBox="0 0 100 100">
+                    
+                    <path d="M 20 50 L 25 45 A 9 9 0 0 1 25 55 Z " stroke-width="1" fill="var(--svg-stroke)"/>
 
-                    <circle cx=50 cy=50 r=47 fill="transparent" stroke="#000" stroke-width="5"></circle>
+                    <path d=" M 35 35 A 21.3 21.3 0 0 1 35 65" stroke-width="8" />
+
+                    <path d="M 50 20 A 42.5 42.5 0 0 1 50 80 " stroke-width="8" />
+                    <circle cx=50 cy=50 r=47 fill="transparent" stroke-width="5"></circle>
                 </svg>
 
                 <!-- textarea的挂载节点 -->
                 <div id="richText" class="rich-text" contentEditable=true @click="showEmoji = false" @input="textChange"></div>
 
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" @click="showEmoji = !showEmoji" version="1.1" viewBox="0 0 100 100" >
-                    <g fill="transparent" stroke="black" stroke-width="5" stroke-lineCap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" @click.stop="showEmoji = !showEmoji" version="1.1" viewBox="0 0 100 100" >
+                    <g fill="transparent" stroke-width="5" stroke-lineCap="round" stroke-linejoin="round">
                         <circle cx=50 cy=50 r=47 ></circle>
-                        <circle cx=30 cy=35 r=5 fill="black"></circle>
-                        <circle cx=70 cy=35 r=5 fill="black"></circle>
+                        <circle cx=30 cy=35 r=3 stroke-width="6"></circle>
+                        <circle cx=70 cy=35 r=3 stroke-width="6"></circle>
                         <path d = " M 20 55 L 80 55 A 30.4 30.4 0 0 1 20 55" />
                     </g>
                 </svg>
 
-                <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100">
-                    <g stroke="black" stroke-width="5" stroke-linecap="round">
-                        <circle cx="50" cy="50" r="47" fill="transparent" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" v-show="!sendAble" version="1.1" viewBox="0 0 100 100" style="filter: grayscale(100%);">
+                    <g  stroke-width="5" stroke-linecap="round">
+                        <circle cx="50" cy="50" r="47" />
                         <line x1="50" y1="20" x2="50" y2="80" />
                         <line x1="20" y1="50" x2="80" y2="50"/>
                     </g>
-                 
                 </svg>
                     
-                <button class="btn-send" v-show="sendAble" @click.stop="send()">发送</button>
+                <button class="btn-send" v-show="sendAble" @click.stop="send()">{{t('App.Dialogue.send')}}</button>
 
             </div>
-            <div class="emoji-container" v-show="showEmoji">
+            <div class="emoji-container" v-show="showEmoji"  @click.stop>
                 <img 
                     class="emoji"
                     v-for="(emoji, i) in emojiList" 
                     :key="i" 
                     :src="'https://www.fffuture.top/emoji_' + emoji.EN + '.png'"
-                    @click="pushImg(emoji)" 
+                    @click.stop="pushImg(emoji)" 
                 />
             </div>
         </section>
@@ -77,6 +69,8 @@ import { defineComponent, reactive, ref, computed, watchEffect, onMounted } from
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import KiHeader from '../../components/ki-header.vue';
+
+import useI18n from "@/local/index";
 
 
 import emojiList from '@/assets/icomNames';
@@ -106,6 +100,7 @@ export default defineComponent({
         const Router = useRouter();
         const Route = useRoute();
         const store = useStore();
+        const { t } = useI18n();
 
         var sender = localStorage.getItem("token");
         var recipient = Route.params.userId + "";
@@ -216,7 +211,9 @@ export default defineComponent({
             showEmoji, 
             sendAble,
             emojiList,
-            formatMsg
+            formatMsg,
+
+            t
         };
 
     }
@@ -361,6 +358,9 @@ export default defineComponent({
         flex-shrink: 0;
         width: 1.67rem;
         height: 1.67rem;
+
+        fill: var(--svg-fill);
+        stroke: var(--svg-stroke);
     }
 
     .emoji-container {
