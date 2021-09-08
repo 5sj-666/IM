@@ -1,6 +1,11 @@
 <template>
   <article class="me-page">
-    <ki-profile name="Natural" id="Greenschick"></ki-profile>
+      <ki-profile 
+        :name="Store.state.profile.name" 
+        :id="Store.state.profile.account"
+        :avatar="Store.state.profile.avatar ? '/avatar/'+Store.state.profile.avatar : ''"
+      >
+      </ki-profile>
 
     <!-- <img width="50" height="50" src="../../assets/icon/me-img.png" /> -->
 
@@ -69,6 +74,8 @@ import useI18n from "@/local/index"
 
 import {useRouter} from "vue-router";
 
+import {useStore} from "vuex";
+
 export default {
   components: {
     KiProfile,
@@ -79,12 +86,13 @@ export default {
     const Router =  useRouter(),
           { t } = useI18n();
 
-
     const goSetting = () => {
       Router.push('/setting');
     }
 
-    const avatarUrl = require("../../assets/img/avatar.jpg");
+    const Store = useStore();
+    // Store.state;
+    // debugger;
 
     const cellList = [
       [
@@ -127,9 +135,10 @@ export default {
 
     return {
       cellList,
-      avatarUrl,
-      goSetting
+      goSetting,
       // t
+
+      Store,
     };
   }
 };

@@ -1,5 +1,5 @@
 <template>
-    <article class="dialogue-page">
+    <article class="dialogue-page" @click="showEmoji=false">
         <ki-header :title="Route.params.userId"/>
         <section class="msg-content">
            <div 
@@ -10,47 +10,53 @@
                 @click="goToProfile()" >
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
                <!-- <div class="message">{{item.content}}</div> -->
-               <div class="message" v-html="item.content"></div>
+               <div class="message" v-html="formatMsg(item.content)"></div>
            </div>
         </section>
         <section class="">
             <div class="input-container border-line_top border-line_bottom">
-                <svg class="icon-voice" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
-                    <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
-                    <circle cx=50 cy=50 r=47 ></circle>
-                    <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
-                    <line id="second" x1="85"  y1="50" x2="50" y2="50" />
-                    </g>
+
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="icon-svg" viewBox="0 0 100 100">
+                    
+                    <path d="M 20 50 L 25 45 A 9 9 0 0 1 25 55 Z " stroke-width="1" fill="var(--svg-stroke)"/>
+
+                    <path d=" M 35 35 A 21.3 21.3 0 0 1 35 65" stroke-width="8" />
+
+                    <path d="M 50 20 A 42.5 42.5 0 0 1 50 80 " stroke-width="8" />
+                    <circle cx=50 cy=50 r=47 fill="transparent" stroke-width="5"></circle>
                 </svg>
 
                 <!-- textarea的挂载节点 -->
-                <div id="richText" class="rich-text" contentEditable=true @input="textChange"></div>
+                <div id="richText" class="rich-text" contentEditable=true @click="showEmoji = false" @input="textChange"></div>
 
-                <svg class="icon-voice" @click="showEmoji = !showEmoji" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
-                    <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
-                    <circle cx=50 cy=50 r=47 ></circle>
-                    <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
-                    <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" @click.stop="showEmoji = !showEmoji" version="1.1" viewBox="0 0 100 100" >
+                    <g fill="transparent" stroke-width="5" stroke-lineCap="round" stroke-linejoin="round">
+                        <circle cx=50 cy=50 r=47 ></circle>
+                        <circle cx=30 cy=35 r=3 stroke-width="6"></circle>
+                        <circle cx=70 cy=35 r=3 stroke-width="6"></circle>
+                        <path d = " M 20 55 L 80 55 A 30.4 30.4 0 0 1 20 55" />
                     </g>
                 </svg>
 
-                <svg v-show="!sendAble" class="icon-voice" style="margin-left: 0;" xmlns="http://www.w3.org/2000/svg" version="1.1" width=100 height=100 viewBox="0 0 100 100">
-                    <g fill="transparent" stroke="orange" stroke-width="5" stroke-lineCap="round">
-                    <circle cx=50 cy=50 r=47 ></circle>
-                    <line id="minute" x1="50"  y1="15" x2="50" y2="50" />
-                    <line id="second" x1="85"  y1="50" x2="50" y2="50" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" v-show="!sendAble" version="1.1" viewBox="0 0 100 100" style="filter: grayscale(100%);">
+                    <g  stroke-width="5" stroke-linecap="round">
+                        <circle cx="50" cy="50" r="47" />
+                        <line x1="50" y1="20" x2="50" y2="80" />
+                        <line x1="20" y1="50" x2="80" y2="50"/>
                     </g>
                 </svg>
                     
-                <button class="btn-send" v-show="sendAble" @click.stop="send()">发送</button>
+                <button class="btn-send" v-show="sendAble" @click.stop="send()">{{t('App.Dialogue.send')}}</button>
 
             </div>
-            <div class="emoji-container" v-show="showEmoji">
+            <div class="emoji-container" v-show="showEmoji"  @click.stop>
                 <img 
                     class="emoji"
                     v-for="(emoji, i) in emojiList" 
-                    :key="i" :src="require(`@/assets/emoji/emoji_${emoji.EN}.png`)" 
-                    @click="pushImg(emoji)" />
+                    :key="i" 
+                    :src="'/emoji/emoji_' + emoji.EN + '.png'"
+                    @click.stop="pushImg(emoji)" 
+                />
             </div>
         </section>
         
@@ -63,6 +69,8 @@ import { defineComponent, reactive, ref, computed, watchEffect, onMounted } from
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import KiHeader from '../../components/ki-header.vue';
+
+import useI18n from "@/local/index";
 
 
 import emojiList from '@/assets/icomNames';
@@ -77,6 +85,12 @@ console.warn("---emojiList: ", emojiList);
         content: Object
     }
 
+    interface Emoji {
+        url: string,
+        CN: string,
+        EN: string,
+    }
+
 export default defineComponent({
     name: 'DialoguePage',
     components: {
@@ -85,10 +99,8 @@ export default defineComponent({
     setup() {
         const Router = useRouter();
         const Route = useRoute();
-        console.log( "---Route: ",  Route.params );
         const store = useStore();
-        console.log("---store.state: ", store);
-
+        const { t } = useI18n();
 
         var sender = localStorage.getItem("token");
         var recipient = Route.params.userId + "";
@@ -97,21 +109,15 @@ export default defineComponent({
 
         watchEffect(()=>{
             console.log("+---content发生变化: ", content);
-            
         })
 
-    
-
-        // var msgList = ref(new Array());
         var msgList = computed(() => {
-                // console.warn("----msgList store: ", store);
                 return store.state.wsStore.msgHistory.filter((msg:Message) => msg.sender === recipient || msg.recipient === recipient);
             }
         );
 
 
         function goBack() {
-            // console.log("---context: ", context);
             Router.go(-1);
         }
 
@@ -119,45 +125,78 @@ export default defineComponent({
             Router.push("/dialogue/profile");
         }
 
+        /**
+         * @description 发送消息
+         */
         function send() {
             if(content.value.trim() === "") return ;
-            
-            // console.log("---send event---", content.value);
-            //  wsSend({sender: sender+"",recipient: recipient,type: "message", content: {value: content.value} })
             let letter = {
                 sender,
                 recipient,
                 type: "message",
                 content: content.value,
             }
-            // store.dispatch("wsStore/wsSend", {sender: sender+"",recipient: recipient,type: "message", content: {value: content.value} });
             store.dispatch("wsStore/wsSend", letter);
 
             content.value = "";
             document.querySelector('#richText')!.innerHTML = "";
         }
 
+        /**
+         * @description 当contentEditable中内容发生变化时，将值实时赋值给content：模拟数据双向绑定(v-model)
+         */
         function textChange(e:any) {
-            showEmoji.value = false;
-            // console.log("---onchange textChange: ", e, "--:", e.srcElement.innerHTML);
             content.value = e.srcElement.innerHTML;
         }
 
+        /**
+         * @description 点击表情，将对应字符串推进输入框中 例子： 点击‘微笑表情’ -> 输入框中增加: [微笑]
+         */
         function pushImg(emoji:any) {
-            console.log("--添加表情---");
             let ele:any = document.querySelector('#richText');
-            // ele.innerHTML += `<img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" style="width:1.4rem; height: 1.4rem;margin: 0 2px;" alt="">`+'<span></span>';
-            // content.value += `<img src="https://www.fffuture.top/emoji_0.png" @click="pushImg" alt="">`;
             ele.innerHTML += `[${emoji.CN}]`;
             content.value += `[${emoji.CN}]`;
         }
 
         const showEmoji = ref(false);
 
-
+        /**
+         * @description 根据用户输入的内容，判定是否显示‘发送’按钮
+         */
         let sendAble = computed(() => {
             return  (content.value + "").trim() !== "";
-        })
+        });
+
+        /**
+         * @description 将特定字符提换为图片 
+         *                  例子: [微笑] -> <img 
+                                    style="display: inline-block; width: 1.2rem; height: 1.2rem;transform: translateY(.3rem)" 
+                                    src=${'https://www.fffuture.top/emoji_smile.png'}
+                                    />
+         * @param {String} text 要替换的字符串（即用户发送的消息）
+         * @returns {String} 格式化之后的dom
+         */
+        function formatMsg(text:String) {
+            text = text.replace(/\[[\u4e00-\u9fa5]+\]/g, replaceEmoji);
+            // debugger;
+            return text;
+
+            function replaceEmoji(param:string) {
+                let target = emojiList.find(emoji => param.includes(emoji.CN + ""));
+                console.log(target);
+                if(target) {
+                    return `<img 
+                                style="display: inline-block; width: 1.2rem; height: 1.2rem;transform: translateY(.3rem)" 
+                                src=${'https://www.fffuture.top/emoji_' + target.EN + '.png'}
+                            />`;
+                }
+                return param;
+            }
+
+
+        }
+
+
 
 
         return {
@@ -171,8 +210,11 @@ export default defineComponent({
             pushImg, 
             showEmoji, 
             sendAble,
-            emojiList
-            };
+            emojiList,
+            formatMsg,
+
+            t
+        };
 
     }
 })
@@ -205,7 +247,6 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        /* background-color: var(--Dialogue-bg, #ededed); */
         overflow-x: hidden;
         overflow-y: auto;
     }
@@ -214,21 +255,17 @@ export default defineComponent({
         margin-top: 1rem;
         display: flex;
         align-items: flex-start;
-        /* width: 80%; */
         width: calc(100% - 4rem);
         min-height: 3rem;
-        /* background-color: green; */
         text-align: left;
     }
 
     .msg-content .self {
         align-self: flex-end;
         flex-direction: row-reverse;
-        /* background-color: cyan; */
         
     }
     .msg-content .other {
-        /* background-color: green; */
     }
 
     .avatar {
@@ -316,11 +353,14 @@ export default defineComponent({
         border-radius: .2rem;
     }
 
-    .icon-voice {
+    .icon-svg {
         margin: .5rem 0.56rem;
         flex-shrink: 0;
         width: 1.67rem;
         height: 1.67rem;
+
+        fill: var(--svg-fill);
+        stroke: var(--svg-stroke);
     }
 
     .emoji-container {
