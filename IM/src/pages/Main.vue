@@ -2,14 +2,13 @@
   <article class="main-container">
     <ki-header id="main-header" :title="headerTitle" :iconBack="false" style="position: absolute"></ki-header>
     <div class="header_fake"></div>
-    <!-- <ki-swiper :activeIndex="activeIndex.index" @swipeEvent="swipeEvent($event,param)"> -->
     <ki-swiper :activeIndex="activeIndex.index">
       <template v-slot:firstItem>
         <!-- <Chats @click="toDialogue"></Chats> -->
-        <Chats></Chats>
+        <Chats :friendList="friendList"></Chats>
       </template>
       <template v-slot:secondItem>
-        <Contacts></Contacts>
+        <Contacts :friendList="friendList"></Contacts>
       </template>
       <template v-slot:thirdItem>
         <Discover></Discover>
@@ -19,7 +18,6 @@
       </template>
     </ki-swiper>
 
-    <!-- <main-tab :tabList="tabList" :swipeParam="swipeParam" @changeTab="changeTab($event,index)"></main-tab> -->
     <main-tab></main-tab>
 
   </article>
@@ -41,27 +39,8 @@ import Me from "./Main/Me";
 import MainTab from "../components/main-tab";
 import kiHeader from "@/components/ki-header.vue";
 
-// import {openDB, getObjectStore} from '@/utils/IDB'
 
-
-// openDB()
-// .then(res=>{
-//   console.warn("----Main openDB: res: ", res);
-//   let db = res;
-//   let objStore = getObjectStore(db, 'testobjStore', 'readwrite');
-
-//   // objStore.add({myKey: 125, info: "aaa"});
-
-//   // objStore.delete(124);
-// })
-
-
-
-
-
-
-
-// import Request from "@/utils/request"
+import Request from "@/utils/request";
 
 export default {
   name: "Main",
@@ -87,49 +66,41 @@ export default {
       if(!localStorage.getItem('token')) 
         Router.replace("/login")
         // console.log("--onMounted token:", localStorage.getItem('token'));
-        console.log("---Main onMounted!!");
+        // console.log("---Main onMounted!!");
         // getFriendList();
 
         // 在此初始化websocket连接
         Store.dispatch('wsStore/initWS', {Router: Router});
         Store.dispatch('idbStore/initIDB');
         // console.log("---idb connection: ", Router.idbStore.db);
+
+        Store.dispatch('getProfile');
     });
 
     onActivated(()=> {
-      console.log("---MAIN onActivated");
-
-      if(lang.value !== localStorage.getItem("lang")) {
-        console.log("----执行刷新Main页面----");
-        setTimeout(()=>{
-          Router.go(0); //这里可能需要做骨架屏优化过渡
-          lang.value = localStorage.getItem("lang");
-        }, 300);
-      }
+      // console.log("---MAIN onActivated");
+      
+      // if(lang.value !== localStorage.getItem("lang")) {
+      //   console.log("----执行刷新Main页面----");
+      //   setTimeout(()=>{
+      //     Router.go(0); //这里可能需要做骨架屏优化过渡
+      //     lang.value = localStorage.getItem("lang");
+      //   }, 300);
+      // }
 
     });
     onDeactivated(()=> {
-      console.log("---MAIN onDeactivated");
+      // console.log("---MAIN onDeactivated");
     })
 
     onBeforeUnmount(() =>{
-      console.log("---MAIN onBeforeUnmount");
+      // console.log("---MAIN onBeforeUnmount");
     });
 
     let activeIndex = reactive({
       index: 1
     });
 
-    watchEffect(() => {
-      // console.log("mian 1111");
-      return activeIndex.value;
-    });
-
-    let swipeParam = reactive({
-      progress: 0,
-      activeIndex: 0,
-      step: "panend"
-    });
 
     let fieldMap = {
       0: t('App.Main.chats'),
@@ -145,8 +116,8 @@ export default {
       } catch (error) {
         console.error("---Main EventBus: ", error);
       }
-   
     });
+
 
     /**
      * @description 判断标题名称和是否需要坐位移
@@ -200,45 +171,34 @@ export default {
       }
     }
 
-    // let tabList = reactive([
-    //   {
-    //     name: t('App.Main.chats'),
-    //     icon: "CHATS",
-    //     iconColor: "#000",
-    //     iconBg: "#f00"
-    //   },
-    //   {
-    //     name: t('App.Main.contact'),
-    //     icon: "CONTACTS",
-    //     iconColor: "#000",
-    //     iconBg: "#000"
-    //   },
-    //   {
-    //     name: t('App.Main.discover'),
-    //     icon: "DISCOVER",
-    //     iconColor: "#00f",
-    //     iconBg: "#f00"
-    //   },
-    //   {
-    //     name: t('App.Main.mine'),
-    //     icon: "ME",
-    //     iconColor: "#000",
-    //     iconBg: "#f00"
-    //   }
-    // ]);
 
     function toDialogue() {
       Router.push("/Dialogue");
     }
 
+
+    onMounted(()=> {
+      getFriendList();
+    })
+
+    const friendList = ref([]);
+    async function getFriendList() {
+      // console.log("---getFriendList");
+      let res = await Request.post("/api/friend/getFriendList");
+      console.log("---getFriendList: ", res);
+      if(res.ok) {
+        friendList.value = res.data;
+        console.log("---getFriendList  friendList: ", friendList)
+      }
+    }
+    
+
+
     return {
       headerTitle,
-      swipeParam,
-      // swipeEvent,
-      // tabList,
       activeIndex,
-      // changeTab,
       toDialogue,
+      friendList
     };
   }
 };

@@ -1,15 +1,7 @@
 <template>
-    <article class="dialogue-page">
+    <article class="dialogue-page" @click="showEmoji=false">
         <ki-header :title="Route.params.userId"/>
         <section class="msg-content">
-           <!-- <div class="msg-item self">
-               <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
-               <div class="message">消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容</div>
-           </div>
-           <div class="msg-item other" @click="goToProfile()">
-               <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
-               <div class="message">消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容</div>
-           </div> -->
            <div 
                 v-for="(item, index) in msgList" 
                 :key="index"
@@ -17,31 +9,86 @@
                 :class="item.sender && item.sender.length > 100 ? 'self': 'other'" 
                 @click="goToProfile()" >
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
-               <div class="message">{{item.content}}</div>
+               <!-- <div class="message">{{item.content}}</div> -->
+               <div class="message" v-html="formatMsg(item.content)"></div>
            </div>
         </section>
-        <footer>
-            <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-voice.png" alt="">
-            <input type="text" v-model="content">
-            <!-- <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-grin.png" alt="">
-            <img style="width: 1.4rem; height: 1.4rem" src="@/assets/icon/icon-plus.png" alt=""> -->
-            <button class="btn-send" @click.stop="send()">发送</button>
-        </footer>
+        <section class="">
+            <div class="input-container border-line_top border-line_bottom">
+
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="icon-svg" viewBox="0 0 100 100">
+                    
+                    <path d="M 20 50 L 25 45 A 9 9 0 0 1 25 55 Z " stroke-width="1" fill="var(--svg-stroke)"/>
+
+                    <path d=" M 35 35 A 21.3 21.3 0 0 1 35 65" stroke-width="8" />
+
+                    <path d="M 50 20 A 42.5 42.5 0 0 1 50 80 " stroke-width="8" />
+                    <circle cx=50 cy=50 r=47 fill="transparent" stroke-width="5"></circle>
+                </svg>
+
+                <!-- textarea的挂载节点 -->
+                <div id="richText" class="rich-text" contentEditable=true @click="showEmoji = false" @input="textChange"></div>
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" @click.stop="showEmoji = !showEmoji" version="1.1" viewBox="0 0 100 100" >
+                    <g fill="transparent" stroke-width="5" stroke-lineCap="round" stroke-linejoin="round">
+                        <circle cx=50 cy=50 r=47 ></circle>
+                        <circle cx=30 cy=35 r=3 stroke-width="6"></circle>
+                        <circle cx=70 cy=35 r=3 stroke-width="6"></circle>
+                        <path d = " M 20 55 L 80 55 A 30.4 30.4 0 0 1 20 55" />
+                    </g>
+                </svg>
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" v-show="!sendAble" version="1.1" viewBox="0 0 100 100" style="filter: grayscale(100%);">
+                    <g  stroke-width="5" stroke-linecap="round">
+                        <circle cx="50" cy="50" r="47" />
+                        <line x1="50" y1="20" x2="50" y2="80" />
+                        <line x1="20" y1="50" x2="80" y2="50"/>
+                    </g>
+                </svg>
+                    
+                <button class="btn-send" v-show="sendAble" @click.stop="send()">{{t('App.Dialogue.send')}}</button>
+
+            </div>
+            <div class="emoji-container" v-show="showEmoji"  @click.stop>
+                <img 
+                    class="emoji"
+                    v-for="(emoji, i) in emojiList" 
+                    :key="i" 
+                    :src="'/emoji/emoji_' + emoji.EN + '.png'"
+                    @click.stop="pushImg(emoji)" 
+                />
+            </div>
+        </section>
+        
     </article>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, computed } from 'vue';
+import { defineComponent, reactive, ref, computed, watchEffect, onMounted } from 'vue';
 // import { defineComponent } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import KiHeader from '../../components/ki-header.vue';
+
+import useI18n from "@/local/index";
+
+
+import emojiList from '@/assets/icomNames';
+
+console.warn("---emojiList: ", emojiList);
+
 
     interface Message {
         sender: string,
         recipient?: string,
         type: string,
         content: Object
+    }
+
+    interface Emoji {
+        url: string,
+        CN: string,
+        EN: string,
     }
 
 export default defineComponent({
@@ -52,97 +99,25 @@ export default defineComponent({
     setup() {
         const Router = useRouter();
         const Route = useRoute();
-        console.log( "---Route: ",  Route.params );
         const store = useStore();
-        console.log("---store.state: ", store);
-        // store.dispatch('wsStore/initWS');
-        // store.dispatch('wsStore/initWS');
-
-        // console.log()
-        // const data = reactive([]);
-
-    //     let WS = initWS();
-    //     function initWS():any {
-    //         if(!Reflect.has(window, "WebSocket")) {
-    //             console.log("浏览器不支持websocket!!");
-    //             return;
-    //         }
-
-    //         let WS = new WebSocket("ws://127.0.1:3000");
-    //         // window.userws = WS;
-    //         WS.onopen = function() {
-    //             console.log("---成功连接websocket---");
-    //         };
-            
-    //         WS.onmessage = envelope => {
-    //             console.log("--envelope", envelope);
-
-                
-
-    //             // const msgMapping = {
-    //             //     offer: answerOffer,
-    //             //     offerAnswer: setRemoteSDP,
-    //             //     candidate: setRemoteICE,
-    //             // }
-    //             // msgHistory = document.querySelector("#msgHistory");
-    //             // msgHistory.innerText += `${envelope.data}\n`;
-    //             // let letter = JSON.parse(envelope.data);
-                
-    //             // Reflect.has(msgMapping, letter.type) ? msgMapping[letter.type](letter) : "";
-    //         };
-    //         WS.onclose = () => console.log("---已断开webSocket---");
-    //         WS.onerror = error => console.error("---websoket发生错误: ", error);
-    //         return WS;
-    //     }
-
-    //     /**
-    //      * @description 对websocket发送事件做封装
-    //      * @param {Object} data 数据结构: {type: String, content: String}
-    //     */
-    //    function wsSend(data:message) {
-    //         // const letter:message = {
-    //         //     sender: '',
-    //         //     recipient: '',
-    //         //     type: '',
-    //         //     content:'',
-    //         // }
-    //         const letter = JSON.stringify(data);
-    //         console.log("letter: ", letter);
-    //         WS.send(letter);
-    //     }
-    //     // function wsSend(data) {
-    //     //     let sender = document.querySelector("#sender").value,
-    //     //         recipient = document.querySelector("#recipient").value,
-    //     //         msgHistory = document.querySelector("#msgHistory");
-
-    //     //     //特殊情况: 初始化(init)时候不需要接收者
-    //     //     if(!sender || (!recipient && data.type !== "init")) {
-    //     //         alert(`${sender ? '接收者' : '发送者'}不能为空！`);
-    //     //         return;
-    //     //     }
-
-    //     //     let letter = JSON.stringify({...data, sender, recipient});
-    //     //     msgHistory.innerText += `${letter}\n`
-    //     //     WS.send(letter);
-    //     // }
+        const { t } = useI18n();
 
         var sender = localStorage.getItem("token");
         var recipient = Route.params.userId + "";
 
         var content = ref("");
 
-    
+        watchEffect(()=>{
+            console.log("+---content发生变化: ", content);
+        })
 
-        // var msgList = ref(new Array());
         var msgList = computed(() => {
-                // console.warn("----msgList store: ", store);
                 return store.state.wsStore.msgHistory.filter((msg:Message) => msg.sender === recipient || msg.recipient === recipient);
             }
         );
 
 
         function goBack() {
-            // console.log("---context: ", context);
             Router.go(-1);
         }
 
@@ -150,24 +125,96 @@ export default defineComponent({
             Router.push("/dialogue/profile");
         }
 
+        /**
+         * @description 发送消息
+         */
         function send() {
             if(content.value.trim() === "") return ;
-            
-            // console.log("---send event---", content.value);
-            //  wsSend({sender: sender+"",recipient: recipient,type: "message", content: {value: content.value} })
             let letter = {
                 sender,
                 recipient,
                 type: "message",
                 content: content.value,
             }
-            // store.dispatch("wsStore/wsSend", {sender: sender+"",recipient: recipient,type: "message", content: {value: content.value} });
             store.dispatch("wsStore/wsSend", letter);
 
             content.value = "";
+            document.querySelector('#richText')!.innerHTML = "";
         }
 
-        return {goBack, goToProfile, send, content, msgList, Route};
+        /**
+         * @description 当contentEditable中内容发生变化时，将值实时赋值给content：模拟数据双向绑定(v-model)
+         */
+        function textChange(e:any) {
+            content.value = e.srcElement.innerHTML;
+        }
+
+        /**
+         * @description 点击表情，将对应字符串推进输入框中 例子： 点击‘微笑表情’ -> 输入框中增加: [微笑]
+         */
+        function pushImg(emoji:any) {
+            let ele:any = document.querySelector('#richText');
+            ele.innerHTML += `[${emoji.CN}]`;
+            content.value += `[${emoji.CN}]`;
+        }
+
+        const showEmoji = ref(false);
+
+        /**
+         * @description 根据用户输入的内容，判定是否显示‘发送’按钮
+         */
+        let sendAble = computed(() => {
+            return  (content.value + "").trim() !== "";
+        });
+
+        /**
+         * @description 将特定字符提换为图片 
+         *                  例子: [微笑] -> <img 
+                                    style="display: inline-block; width: 1.2rem; height: 1.2rem;transform: translateY(.3rem)" 
+                                    src=${'https://www.fffuture.top/emoji_smile.png'}
+                                    />
+         * @param {String} text 要替换的字符串（即用户发送的消息）
+         * @returns {String} 格式化之后的dom
+         */
+        function formatMsg(text:String) {
+            text = text.replace(/\[[\u4e00-\u9fa5]+\]/g, replaceEmoji);
+            // debugger;
+            return text;
+
+            function replaceEmoji(param:string) {
+                let target = emojiList.find(emoji => param.includes(emoji.CN + ""));
+                console.log(target);
+                if(target) {
+                    return `<img 
+                                style="display: inline-block; width: 1.2rem; height: 1.2rem;transform: translateY(.3rem)" 
+                                src=${'https://www.fffuture.top/emoji_' + target.EN + '.png'}
+                            />`;
+                }
+                return param;
+            }
+
+
+        }
+
+
+
+
+        return {
+            goBack, 
+            goToProfile, 
+            send, 
+            content, 
+            msgList, 
+            Route, 
+            textChange, 
+            pushImg, 
+            showEmoji, 
+            sendAble,
+            emojiList,
+            formatMsg,
+
+            t
+        };
 
     }
 })
@@ -175,37 +222,31 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
-/**background-color: rgb(237,237, 237) 
-    // :root {
-    //     --header-background-color: rgb(237, 237, 237);
-    // }
-    */
     .dialogue-page {
-        /* --Dialogue-bg: #FFF; 
-           --Dialogue-footer-bg: #191919*/
-
-        display: grid;
-        grid-template-rows: 3rem auto 3rem;
-        grid-template-columns: 1fr;
+        /* 
+          --Dialogue-bg: var(--Main-bg);
+            --Dialogue-footer-bg: var(--Main-bg);
+            --Dialogue-color: var(--Main-color_primary);
+            --Dialogue-input-bg: var(--Main-header_fake-bg);
+            --Dialogue-btn_send-color: #FFF;
+            --Dialogue-btn_send-bg: #04c660;
+           */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         width: 100%;
         height: 100%;
         background-color: var(--Dialogue-bg, #ededed);
+
+
         /* background-color: cyan; */
     }
-    /* header {
-        display: grid;
-        grid-template-rows: 1fr;
-        grid-template-columns: 3rem auto 3rem;
-        align-items: center;
-        background-color: var(--header-bg);
-    } */
 
     .msg-content {
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        /* background-color: var(--Dialogue-bg, #ededed); */
         overflow-x: hidden;
         overflow-y: auto;
     }
@@ -214,21 +255,17 @@ export default defineComponent({
         margin-top: 1rem;
         display: flex;
         align-items: flex-start;
-        /* width: 80%; */
         width: calc(100% - 4rem);
         min-height: 3rem;
-        /* background-color: green; */
         text-align: left;
     }
 
     .msg-content .self {
         align-self: flex-end;
         flex-direction: row-reverse;
-        /* background-color: cyan; */
         
     }
     .msg-content .other {
-        /* background-color: green; */
     }
 
     .avatar {
@@ -253,7 +290,6 @@ export default defineComponent({
     .message::before {
         content: "";
         position: absolute;
-        /* left: -.5rem; */
         top: 1.3rem;
         width: .5rem;
         height: .5rem;
@@ -271,15 +307,85 @@ export default defineComponent({
         clip-path: polygon(30% 50%, 100% 0%, 100% 100%);
     }
 
-    footer {
-        display: grid;
-        grid-template-rows: 1fr;
-        grid-template-columns: 2rem auto 2rem 2rem;
-        align-items: center;
-        /* background-color: rgb(237, 237, 237); */
+    .input-container {
+        position: relative;
+        box-sizing: border-box;
+        padding: 0.53rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        width: 100%;
+        min-height: 2.3rem;
+        max-height: 7.1rem;
         background-color: var(--Dialogue-footer-bg);
     }
-    .btn-send {
-        grid-column: 3 / 5;
+    .rich-text {
+        position: relative;
+        box-sizing: border-box;
+        padding: .5rem .5rem;
+        flex-grow: 1;
+        flex-shrink: 1;
+        min-height: 1.3rem;
+        max-height: 6.04rem;
+        color: var(--Dialogue-color);
+        background-color: var(--Dialogue-input-bg);
+        border-radius: .2rem;
+        text-align: left;
+        line-height: 1.5;
+        word-break: break-all;
+        outline: none;
+        overflow: auto;
     }
+    .rich-text::-webkit-scrollbar {
+        display: none;
+    }
+
+    .btn-send {
+        margin: 0 .48rem .5rem 0;
+        flex-shrink: 0;
+        width: 3.52rem;
+        height: 1.87rem;
+        border: none;
+        outline: none;
+        color: var(--Dialogue-btn_send-color);
+        background: var(--Dialogue-btn_send-bg);
+        font-size: .9rem;
+        border-radius: .2rem;
+    }
+
+    .icon-svg {
+        margin: .5rem 0.56rem;
+        flex-shrink: 0;
+        width: 1.67rem;
+        height: 1.67rem;
+
+        fill: var(--svg-fill);
+        stroke: var(--svg-stroke);
+    }
+
+    .emoji-container {
+        box-sizing: border-box;
+        padding: 1rem 0 0 1rem;
+        display: flex;
+        justify-content: flex-start;
+        align-content:flex-start;
+        flex-wrap: wrap;
+        width: 100%;
+        height: 16.5rem;
+        overflow: auto;
+    }
+    .emoji-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .emoji-container .emoji {
+        margin-right: .85rem;
+        margin-bottom: .85rem;
+        flex-grow: 0;
+        flex-shrink: 0;
+        display: inline-block;
+        width: 1.8rem;
+        height: 1.8rem;
+    }
+
 </style>

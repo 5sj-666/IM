@@ -33,8 +33,26 @@ async function addUser(account, password) {
     
 }
 
+/**
+ * @description 查询指定用户的个人信息
+ * @params {string} account 
+ * @return {Array[Object]} 
+ */
+async function getProfile(account) {
+    try {
+        const sql = `select * from user where account = '${account}'`;
+        const result = await query( sql );
+        return result;
+    } catch (error) {
+        console.log("---error: ", error);
+        // return {ok: false, status:200, err: error.message};
+        throw error;
+    }
+}
+
 
 module.exports = {
     hasUser,
-    addUser
+    addUser,
+    getProfile
 }
