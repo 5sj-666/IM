@@ -36,7 +36,7 @@
     >
       <img
         style="width: 2.34rem;height: 2.34rem;border-radius:0.17rem 0.17rem;"
-        :src="'https://www.fffuture.top:443/avatar/'+item.avatar"
+        :src="'/avatar/'+item.avatar"
       />
     </ki-cell>
 

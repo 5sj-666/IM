@@ -74,7 +74,7 @@ export default defineComponent({
 
   /* --- Dialogue Page --- */
   --Dialogue-bg: var(--Main-bg);
-  --Dialogue-footer-bg: var(--Main-bg);
+  --Dialogue-footer-bg: var(--main-tab-bg);
   --Dialogue-color: var(--Main-color_primary);
   --Dialogue-input-bg: var(--Main-header_fake-bg);
   --Dialogue-btn_send-color: #FFF;
@@ -110,6 +110,13 @@ export default defineComponent({
   --svg-fill: #f7f7f7;
   --svg-stroke: #000;
 
+  /* Ki-Modal */
+  --ki-modal-color: var(--Main-color_primary);
+  --ki-modal-corlor_secondary: #58708d;
+  --ki-modal-bg: #FFF;
+  --ki-modal-border_color:  #e0e0e0;
+
+
 
 }
 
@@ -127,6 +134,10 @@ export default defineComponent({
   --svg-fill: #1f1f1f;
   --svg-stroke: #d7d7d7;
 
+  /* Ki-Modal */
+  --ki-modal-corlor_secondary: #83909b;
+  --ki-modal-bg: #2c2c2c;
+  --ki-modal-border_color: #373737;
 }
 
 html, body, #app {
