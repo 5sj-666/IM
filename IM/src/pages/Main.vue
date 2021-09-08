@@ -73,6 +73,8 @@ export default {
         Store.dispatch('wsStore/initWS', {Router: Router});
         Store.dispatch('idbStore/initIDB');
         // console.log("---idb connection: ", Router.idbStore.db);
+
+        Store.dispatch('getProfile');
     });
 
     onActivated(()=> {

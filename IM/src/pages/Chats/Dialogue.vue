@@ -54,7 +54,7 @@
                     class="emoji"
                     v-for="(emoji, i) in emojiList" 
                     :key="i" 
-                    :src="'https://www.fffuture.top/emoji_' + emoji.EN + '.png'"
+                    :src="'/emoji/emoji_' + emoji.EN + '.png'"
                     @click.stop="pushImg(emoji)" 
                 />
             </div>

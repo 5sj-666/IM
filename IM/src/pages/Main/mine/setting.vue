@@ -40,17 +40,17 @@ export default {
         KiModal
     },
     setup() {
-        const Router =  useRouter();
-        const Store = useStore();
-        const { t } = useI18n();
+        const Router =  useRouter(),
+              Store = useStore(),
+              { t } = useI18n();
 
         let cells = reactive([]);
         cells = [
-            {
-                icon: require("@/assets/icon/me-setting.png"),
-                // name: "切换全屏",
-                name: t('App.Setting.fullScreen')
-            },
+            // {
+            //     icon: require("@/assets/icon/me-setting.png"),
+            //     // name: "切换全屏",
+            //     name: t('App.Setting.fullScreen')
+            // },
             {
                 icon: require("@/assets/icon/me-setting.png"),
                 // name: "退出登录",
@@ -91,17 +91,22 @@ export default {
             //     "黑暗模式": changeTheme.bind(this, "dark"),
             //     "普通模式": changeTheme.bind(this, ""),
             // }
+            // debugger;
+            name += 1;
             const eventMapping = {
                 "0": launchFullScreen,
                 "1": loginOut,
-                "2": changeLang,
-                "3": changeLang,
+                "2": changeLang('zhCN'),
+                "3": changeLang('en'),
                 "4": changeTheme.bind(this, "dark"),
                 "5": changeTheme.bind(this, ""),
             }
             Reflect.has(eventMapping, name) ? eventMapping[name]() : "";
         }
 
+        /**
+         * @description 打开全屏
+         */
         function launchFullScreen() {
             const element = document.documentElement;
             if (element.requestFullscreen) {
@@ -115,29 +120,32 @@ export default {
             }
         }
 
+        /**
+         * @description 登出
+         */
         function loginOut() {
-            console.log("---登出---");
+            // console.log("---登出---");
             localStorage.setItem('token', '');
             Router.replace('/login');
         }
 
         let showModal = ref(false);
+        let lang = ref('');
 
-        function changeLang() {
-            showModal.value = true;
-            // debugger;
+        function changeLang(type) {
+            return () => {
+                showModal.value = true;
+                lang.value = type;
+                // debugger;
+            }
         }
 
         function modalConfirm() {
-            console.log("---modalConfirm ");
-            Store.state.lang;
-            let lang = 'en';
-            if(Store.state.lang === 'zhCN') {
-                lang = 'en';
-            }else {
-                lang = 'zhCN';
+            if(lang.value === Store.state.lang) {
+                return ;
             }
-            Store.commit("SET_LANG", {lang});
+
+            Store.commit("SET_LANG", {lang: lang.value});
             // debugger;
 
             window.location.href="/";

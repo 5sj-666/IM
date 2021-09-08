@@ -16,6 +16,17 @@ import { useStore } from "vuex";
 import useI18n from "@/local/index"
 
 import KiHeader from '@/components/ki-header';
+import Request from "@/utils/request";
+
+/**
+ * @description 获取指定用户信息
+ */
+async function getProfile(account) {
+    return await Request.get(`/api/user/getProfile?account=${account}`);
+    //   debugger;
+}
+
+
 
 
 export default defineComponent({
@@ -30,6 +41,12 @@ export default defineComponent({
         console.log( "---Route: ",  Route.params );
         const Store = useStore();
         const { t } = useI18n();
+
+        const profile = ref({})
+
+        onMounted(async ()=>{
+            profile.val = await getProfile(Route.params.userId);
+        })
 
         function goBack() {
             Router.go(-1);

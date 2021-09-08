@@ -38,7 +38,6 @@ export default {
       Setting: {
         fullScreen: 'full screen',
         logout: "logout",
-        lang: "",
         chinese: "language: chinese",
         english: "language: english",
         normalMode: "normal mode",
@@ -47,7 +46,7 @@ export default {
       },
       Profile: {
         sendMessage: "send message",
-        medias: "video&audio connection"
+        medias: "Voice or Video Call"
       },
       KiModal: {
         cancel: "cancel",

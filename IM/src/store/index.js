@@ -1,10 +1,12 @@
 // import { createApp } from 'vue'
 import { createStore } from 'vuex'
+import Request from "@/utils/request";
 
 import wsStore from "./wsStore.js";
 import idbStore from './idbStore.js';
 
-const SET_LANG = "SET_LANG" 
+const SET_LANG = "SET_LANG";
+const SET_PROFILE = "SET_PROFILE";
 
 // 创建一个新的 store 实例
 const store = createStore({
@@ -16,6 +18,12 @@ const store = createStore({
     return {
       // lang: "en", //"en"
       lang: localStorage.getItem("lang") || "zhCN", //"en"
+      profile: {
+        account: "",
+        avatar: "",
+        gender: null,
+        name: "",
+      }
     }
   },
   mutations: {
@@ -25,9 +33,30 @@ const store = createStore({
      * @param {object} payload {lang: string}
      */
     [SET_LANG](state, payload) {
-      console.log("---store: SET_LANG：payload ", payload);
+      // console.log("---store: SET_LANG：payload ", payload);
       state.lang = payload.lang;
       localStorage.setItem("lang", payload.lang);
+    },
+    [SET_PROFILE](state, payload) {
+      state.profile = payload;
+      // state;
+      // debugger;
+    }
+  }, 
+  actions: {
+    /**
+     * @description 获取用户个人信息
+     * 
+     *  */
+    async getProfile({commit}) {
+      let res = await Request.get("/api/user/getProfile");
+
+      if(res.ok) {
+        commit(SET_PROFILE, res.profile)
+      }
+      // let param =  await Request.get("/api/user/getProfile", {account: 'admin1'});
+      // debugger;
+      //SET_PROFILE
     }
   }
   // state () {

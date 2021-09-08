@@ -22,7 +22,11 @@ let Request:Object = {
             payload += `&${key}=${data[key]}`;
         }
         // fetch(`/api/user/hasUser?id=${account}&pwd=${password}`);
-        let res = await fetch(`${url}?${payload}`);
+        let res = await fetch(`${url}${payload ? '?' + payload : ''}`, {
+            headers:  {
+                'token': localStorage.getItem('token') || "",
+            },
+        });
         return res.json();
     },
 
