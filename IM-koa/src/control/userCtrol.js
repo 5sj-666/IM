@@ -1,4 +1,5 @@
-const {hasUserServ, addUserServ} = require("../service/userServ.js")
+const {hasUserServ, addUserServ, getProfileServ} = require("../service/userServ.js");
+const JWT = require("../utils/jwt.js");
 const KoaRouter = require('koa-router');
 
 const userCtrol = new KoaRouter({prefix: '/api/user'}); // 实例化路由
@@ -18,5 +19,24 @@ userCtrol.post('/register', async ctx=>{
     console.log("---add user result:", result);
     ctx.body = JSON.stringify(result);
 });
+
+userCtrol.get('/getProfile', async ctx => {
+    let token = ctx.request.header.token;
+    let payload = JWT.parse(token);
+    // console.log("---request.header token: ", token , "parse: ", payload);
+
+    let paramsObj = ctx.request.query;
+    console.log("---/getProfile: paramsObj", paramsObj);
+    let result;
+    if(paramsObj.account) {
+       result = await getProfileServ(paramsObj.account);
+    }else {
+        result = await getProfileServ(payload.id);
+    }
+    
+    console.log("---/getProfile result:", result);
+    ctx.body = JSON.stringify(result);
+})
+
 
 module.exports = { userCtrol };
