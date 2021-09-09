@@ -70,6 +70,14 @@ const routes = [
     }
   },
   {
+    path: "/dialogueDeep/profile/:userId", // /users/:username
+    name: "ProfileDeep",
+    component: Profile,
+    meta: {
+      rank: 4,
+    }
+  },
+  {
     path: "/dialogue/videoCall/:userId",
     name: "VideoCall",
     component: videoCall,
