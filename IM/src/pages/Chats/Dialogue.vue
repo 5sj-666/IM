@@ -1,13 +1,14 @@
 <template>
     <article class="dialogue-page" @click="showEmoji=false">
         <ki-header :title="Route.params.userId"/>
-        <section class="msg-content">
+        <section class="msg-content" ref="msgContainer">
            <div 
                 v-for="(item, index) in msgList" 
                 :key="index"
                 class="msg-item" 
                 :class="item.sender && item.sender.length > 100 ? 'self': 'other'" 
-                @click="goToProfile()" >
+                @click="Router.push(`/dialogueDeep/profile/${Route.params.userId}`)" >
+               <!-- <img class="avatar" src="@/assets/img/avatar.jpg" alt=""> Store.state.profile.avatar ? '/avatar/'+Store.state.profile.avatar : '' -->
                <img class="avatar" src="@/assets/img/avatar.jpg" alt="">
                <!-- <div class="message">{{item.content}}</div> -->
                <div class="message" v-html="formatMsg(item.content)"></div>
@@ -26,8 +27,8 @@
                     <circle cx=50 cy=50 r=47 fill="transparent" stroke-width="5"></circle>
                 </svg>
 
-                <!-- textarea的挂载节点 -->
-                <div id="richText" class="rich-text" contentEditable=true @click="showEmoji = false" @input="textChange"></div>
+                <!-- 用户输入框 -->
+                <div ref="richText" class="rich-text" contentEditable=true @click="inputMsg" @input="textChange"></div>
 
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon-svg" @click.stop="showEmoji = !showEmoji" version="1.1" viewBox="0 0 100 100" >
                     <g fill="transparent" stroke-width="5" stroke-lineCap="round" stroke-linejoin="round">
@@ -65,18 +66,13 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, computed, watchEffect, onMounted } from 'vue';
-// import { defineComponent } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
-import KiHeader from '../../components/ki-header.vue';
-
 import useI18n from "@/local/index";
 
+import KiHeader from '../../components/ki-header.vue';
 
 import emojiList from '@/assets/icomNames';
-
-console.warn("---emojiList: ", emojiList);
-
 
     interface Message {
         sender: string,
@@ -105,24 +101,39 @@ export default defineComponent({
         var sender = localStorage.getItem("token");
         var recipient = Route.params.userId + "";
 
-        var content = ref("");
-
-        watchEffect(()=>{
-            console.log("+---content发生变化: ", content);
-        })
-
         var msgList = computed(() => {
                 return store.state.wsStore.msgHistory.filter((msg:Message) => msg.sender === recipient || msg.recipient === recipient);
             }
         );
 
+       
+        var content = ref("");
 
-        function goBack() {
-            Router.go(-1);
+        /**
+         * @description 当contentEditable中内容发生变化时，将值实时赋值给content：模拟数据双向绑定(v-model)
+         */
+        function textChange(e:any) {
+            content.value = e.srcElement.innerHTML;
         }
 
-        function goToProfile() {
-            Router.push("/dialogue/profile");
+        const msgContainer:any = ref(),
+              showEmoji = ref(false);
+
+        /**
+         * @description 用户点击输入框输入
+         */
+        function inputMsg() {
+            showEmoji.value = false;
+            msgContainer.value!.scrollTop = 99999;
+        }
+
+        const richText:any = ref();
+        /**
+         * @description 点击表情，将对应字符串推进输入框中 例子： 点击‘微笑表情’ -> 输入框中增加: [微笑]
+         */
+        function pushImg(emoji:Emoji) {
+            richText.value!.innerHTML += `[${emoji.CN}]`;
+            content.value += `[${emoji.CN}]`;
         }
 
         /**
@@ -139,26 +150,10 @@ export default defineComponent({
             store.dispatch("wsStore/wsSend", letter);
 
             content.value = "";
-            document.querySelector('#richText')!.innerHTML = "";
+            richText.value!.innerHTML = "";
+
         }
 
-        /**
-         * @description 当contentEditable中内容发生变化时，将值实时赋值给content：模拟数据双向绑定(v-model)
-         */
-        function textChange(e:any) {
-            content.value = e.srcElement.innerHTML;
-        }
-
-        /**
-         * @description 点击表情，将对应字符串推进输入框中 例子： 点击‘微笑表情’ -> 输入框中增加: [微笑]
-         */
-        function pushImg(emoji:any) {
-            let ele:any = document.querySelector('#richText');
-            ele.innerHTML += `[${emoji.CN}]`;
-            content.value += `[${emoji.CN}]`;
-        }
-
-        const showEmoji = ref(false);
 
         /**
          * @description 根据用户输入的内容，判定是否显示‘发送’按钮
@@ -182,12 +177,12 @@ export default defineComponent({
             return text;
 
             function replaceEmoji(param:string) {
-                let target = emojiList.find(emoji => param.includes(emoji.CN + ""));
+                let target = emojiList.find(emoji => param === `[${emoji.CN}]`);
                 console.log(target);
                 if(target) {
                     return `<img 
                                 style="display: inline-block; width: 1.2rem; height: 1.2rem;transform: translateY(.3rem)" 
-                                src=${'https://www.fffuture.top/emoji_' + target.EN + '.png'}
+                                src=${'/emoji/emoji_' + target.EN + '.png'}
                             />`;
                 }
                 return param;
@@ -197,23 +192,24 @@ export default defineComponent({
         }
 
 
-
-
         return {
-            goBack, 
-            goToProfile, 
-            send, 
+            t,
+            Router,
+
+            emojiList,
             content, 
+            msgContainer,
+            inputMsg,
+            richText,
+            send, 
             msgList, 
             Route, 
             textChange, 
-            pushImg, 
+            pushImg,
             showEmoji, 
             sendAble,
-            emojiList,
             formatMsg,
 
-            t
         };
 
     }
@@ -237,9 +233,6 @@ export default defineComponent({
         width: 100%;
         height: 100%;
         background-color: var(--Dialogue-bg, #ededed);
-
-
-        /* background-color: cyan; */
     }
 
     .msg-content {

@@ -2,29 +2,33 @@
     <article class="profile-page">
         <ki-header :title="Route.params.userId"/>
         <!-- {{$route.params}}个人信息页面!! -->
+        <ki-profile 
+            :name="profile.name" 
+            :id="profile.account"
+            :avatar="profile.avatar ? '/avatar/'+ profile.avatar : ''"
+        />
 
-        <div class="profile-btn" @click="Router.push('/dialogue/'+$route.params.userId)">{{t('App.Profile.sendMessage')}}</div>
+        <div class="profile-btn" 
+            style="margin-top: .48rem" 
+            @click="Router.replace('/dialogue/'+$route.params.userId)"
+        >
+            {{t('App.Profile.sendMessage')}}
+        </div>
         <div class="profile-btn" @click="goVideoPage()">{{t('App.Profile.medias')}}</div>
 
     </article>
 </template>
 <script>
 
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import useI18n from "@/local/index"
-
-import KiHeader from '@/components/ki-header';
 import Request from "@/utils/request";
 
-/**
- * @description 获取指定用户信息
- */
-async function getProfile(account) {
-    return await Request.get(`/api/user/getProfile?account=${account}`);
-    //   debugger;
-}
+
+import KiHeader from '@/components/ki-header';
+import KiProfile from '@/components/ki-profile.vue';
 
 
 
@@ -32,20 +36,34 @@ async function getProfile(account) {
 export default defineComponent({
     name: "ProfilePage",
     components: {
-        KiHeader
+        KiHeader,
+        KiProfile
     },
     
     setup() {
         const Router = useRouter();
         const Route = useRoute();
-        console.log( "---Route: ",  Route.params );
+        // console.log( "---Route: ",  Route.params );
         const Store = useStore();
         const { t } = useI18n();
 
-        const profile = ref({})
+        const profile = ref({name: '', id: '', avatar: ''})
+
+        /**
+         * @description 获取指定用户信息
+         */
+        async function getProfile(account) {
+            try {
+                let res = await Request.get(`/api/user/getProfile?account=${account}`);
+                if(res && res.profile) profile.value = res.profile;
+                // debugger;
+            } catch (error) {
+                console.error("getProfile: ", error);
+            }
+        }
 
         onMounted(async ()=>{
-            profile.val = await getProfile(Route.params.userId);
+            await getProfile(Route.params.userId);
         })
 
         function goBack() {
@@ -71,7 +89,7 @@ export default defineComponent({
             })
         }
 
-        return { goBack, Router, Route, goVideoPage, t }
+        return { goBack, Router, Route, goVideoPage, profile, t }
     },
 })
 
@@ -99,5 +117,9 @@ export default defineComponent({
         color: var(--Profile-btn_color, #576b86);
         font-size: 1.09rem;
         border-bottom: 1px solid #e2e2e2;
+    }
+
+    .profile-btn:nth-child(1) {
+        margin-top: 2rem;
     }
 </style>

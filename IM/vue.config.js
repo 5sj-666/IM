@@ -30,9 +30,6 @@ module.exports = {
           '/emoji': {
             target: 'https://www.fffuture.top:443', 
             secure: true,
-            pathRewrite:{
-              '^/emoji':''
-          }
           }
       }
     },

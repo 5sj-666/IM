@@ -24,7 +24,7 @@ export default {
     },
     avatar: {
       type: String, //传入图片的http地址，没有的话，则显示默认图片
-      default: require("../assets/img/avatar.jpg")
+      // default: require("../assets/img/avatar.jpg")
     },
     id: {
       type: String,
@@ -63,7 +63,7 @@ export default {
     width: 3.75rem;
     height: 3.75rem;
     border-radius: 0.35rem;
-    background: green;
+    background: #f2f2f2;
   }
 
   .profile-container .profile-info {
