@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "hammerjs": "^2.0.8",
     "mitt": "^3.0.0",
+    "prerender-spa-plugin": "^3.4.0",
     "register-service-worker": "^1.7.1",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
