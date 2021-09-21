@@ -1,5 +1,8 @@
 <template>
+  <!-- <article class="main-container" v-if="!showSkeleton"> -->
   <article class="main-container">
+    <ki-skeleton v-model="showSkeleton"></ki-skeleton>
+
     <ki-header id="main-header" :title="headerTitle" :iconBack="false" style="position: absolute"></ki-header>
     <div class="header_fake"></div>
     <ki-swiper :activeIndex="activeIndex.index">
@@ -21,6 +24,7 @@
     <main-tab></main-tab>
 
   </article>
+
 </template>
 
 <script>
@@ -38,7 +42,7 @@ import Discover from "./Main/Discover";
 import Me from "./Main/Me";
 import MainTab from "../components/main-tab";
 import kiHeader from "@/components/ki-header.vue";
-
+import kiSkeleton from '@/components/ki-skeleton.vue';
 
 import Request from "@/utils/request";
 
@@ -51,7 +55,9 @@ export default {
     Contacts,
     Discover,
     Me,
-    MainTab
+    MainTab,
+
+    kiSkeleton
   },
   setup() {
     const Router = useRouter(),
@@ -75,6 +81,12 @@ export default {
         // console.log("---idb connection: ", Router.idbStore.db);
 
         Store.dispatch('getProfile');
+
+        // caches.open(localStorage.getItem('userId'))
+        // .then(function(cache) {
+        //   return cache.add('https://www.fffuture.top:443/avatar/361d0c1c185b695d49b1a3dc3efaef3a.jpeg');
+        // });
+
     });
 
     onActivated(()=> {
@@ -181,6 +193,9 @@ export default {
       getFriendList();
     })
 
+    const showSkeleton = ref(true);
+
+
     const friendList = ref([]);
     async function getFriendList() {
       // console.log("---getFriendList");
@@ -188,9 +203,20 @@ export default {
       console.log("---getFriendList: ", res);
       if(res.ok) {
         friendList.value = res.data;
-        console.log("---getFriendList  friendList: ", friendList)
+        console.log("---getFriendList  friendList: ", friendList);
       }
+
+      // showSkeleton.value = false;
+      showSkeleton.value = false;
     }
+
+
+
+    // onMounted(()=>{
+    //   setTimeout(()=> {
+    //     showSkeleton.value = true;
+    //   },5000)
+    // })
     
 
 
@@ -198,7 +224,9 @@ export default {
       headerTitle,
       activeIndex,
       toDialogue,
-      friendList
+      friendList,
+
+      showSkeleton,
     };
   }
 };

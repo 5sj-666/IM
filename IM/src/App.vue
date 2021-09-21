@@ -23,6 +23,8 @@ export default defineComponent({
     }
   },
   mounted() {
+    //预渲染事件执行
+    document.dispatchEvent(new Event('render-event'));
     //初始化检测主题
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "normal";
   },
