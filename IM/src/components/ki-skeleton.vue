@@ -31,11 +31,13 @@ export default {
     --skeleton-colouration: rgba(190, 190, 190, .2);
     /* --skeleton-colouration: #000; */
 
+    position: fixed;
     width: 100%;
     height: 100%;
     background: #ededed;
 
     overflow: hidden;
+    z-index: 100;
   }
 
 

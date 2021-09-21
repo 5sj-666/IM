@@ -1,5 +1,8 @@
 <template>
-  <article class="main-container" v-if="!showSkeleton">
+  <!-- <article class="main-container" v-if="!showSkeleton"> -->
+  <article class="main-container">
+    <ki-skeleton v-model="showSkeleton"></ki-skeleton>
+
     <ki-header id="main-header" :title="headerTitle" :iconBack="false" style="position: absolute"></ki-header>
     <div class="header_fake"></div>
     <ki-swiper :activeIndex="activeIndex.index">
@@ -22,7 +25,6 @@
 
   </article>
 
-  <ki-skeleton v-model="showSkeleton"></ki-skeleton>
 </template>
 
 <script>
@@ -79,6 +81,12 @@ export default {
         // console.log("---idb connection: ", Router.idbStore.db);
 
         Store.dispatch('getProfile');
+
+        // caches.open(localStorage.getItem('userId'))
+        // .then(function(cache) {
+        //   return cache.add('https://www.fffuture.top:443/avatar/361d0c1c185b695d49b1a3dc3efaef3a.jpeg');
+        // });
+
     });
 
     onActivated(()=> {
