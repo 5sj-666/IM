@@ -19,7 +19,7 @@ const store = createStore({
       // lang: "en", //"en"
       lang: localStorage.getItem("lang") || "zhCN", //"en"
       profile: {
-        account: "",
+        userId: "",
         avatar: "",
         gender: null,
         name: "",
@@ -54,7 +54,7 @@ const store = createStore({
       if(res.ok) {
         commit(SET_PROFILE, res.profile)
       }
-      // let param =  await Request.get("/api/user/getProfile", {account: 'admin1'});
+      // let param =  await Request.get("/api/user/getProfile", {userId: 'admin1'});
       // debugger;
       //SET_PROFILE
     }

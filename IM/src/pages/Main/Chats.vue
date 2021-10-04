@@ -1,11 +1,11 @@
 <template>
   <article class="charts-page">
-    <div class="chat-cell" v-for="(session, index) in sessions" :key="index" @click="Router.push(`/dialogue/${session.friend}`)">
+    <div class="chat-cell" v-for="(session, index) in sessions" :key="index" @click="Router.push(`/dialogue/${session.friendId}`)">
       <div class="chat-cell-avatar">
         <img :src="'/avatar/'+session.avatar" alt />
       </div>
       <div class="chat-cell-content-container" >
-        <div class="chat-cell-title">{{session.friend}}</div>
+        <div class="chat-cell-title">{{session.friendId}}</div>
         <div class="chat-cell-content">contentcontentcontentcontentcontentcontentcontentcontent</div>
       </div>
       <div class="chat-cell-time">早上8:58</div>
@@ -37,7 +37,7 @@ export default {
     // let friendList =  computed(() => props.friendList);
 
     let sessions = computed(() => {
-      return props.friendList.filter(item => tables.value.includes(item.friend))
+      return props.friendList.filter(item => tables.value.includes(item.friendId))
     });
 
     onMounted(()=>{

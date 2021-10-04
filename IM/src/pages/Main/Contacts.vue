@@ -30,9 +30,9 @@
     <ki-cell
         v-for="item in contactsList"
         :key="'contact' + item.id"
-        :name="item.friend"
+        :name="item.friendId"
         iconWidth="4.3"
-        @click="Router.push('/dialogue/profile/'+item.friend)"
+        @click="Router.push('/dialogue/profile/'+item.friendId)"
     >
       <img
         style="width: 2.34rem;height: 2.34rem;border-radius:0.17rem 0.17rem;"

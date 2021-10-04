@@ -71,13 +71,13 @@ see (https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plu
 🟦 SVG图标   
 🟦 聊天发送图片
 
-🟦 上传头像（优化点： 使用canvas做图片压缩）
-🟦 添加/拒绝好友
+🟦 上传头像（优化点： 使用canvas做图片压缩）   
+🟦 添加/拒绝好友   
 
 ☑️ 登录/注册   
 🟦      
-🟦 生产者-消费者模式使用
-🟦 建造者模式使用
+🟦 生产者-消费者模式使用   
+🟦 建造者模式使用   
 🟦 插入排序应用在Contacts页面联系人锚点跳转   
 
 
@@ -85,13 +85,13 @@ see (https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plu
 ☑️ 登录/注册   
 ☑️ 获取用户信息   
 ☑️ 获取好友列表   
-🟦 添加、删除好友
-☑️ JWT
+🟦 添加、删除好友   
+☑️ JWT   
 ☑️ https   
 ☑️ 用户消息处理与转发   
 ☑️ MVC架构   
-☑️ mySQL
-☑️ 获取掘金emoji表情脚本
+☑️ mySQL   
+☑️ 获取掘金emoji表情脚本   
 
 其他：   
 ☑️ coturn服务器搭建   

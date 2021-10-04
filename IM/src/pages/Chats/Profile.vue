@@ -4,7 +4,7 @@
         <!-- {{$route.params}}个人信息页面!! -->
         <ki-profile 
             :name="profile.name" 
-            :id="profile.account"
+            :id="profile.userId"
             :avatar="profile.avatar ? '/avatar/'+ profile.avatar : ''"
         />
 
@@ -52,9 +52,9 @@ export default defineComponent({
         /**
          * @description 获取指定用户信息
          */
-        async function getProfile(account) {
+        async function getProfile(userId) {
             try {
-                let res = await Request.get(`/api/user/getProfile?account=${account}`);
+                let res = await Request.get(`/api/user/getProfile?userId=${userId}`);
                 if(res && res.profile) profile.value = res.profile;
                 // debugger;
             } catch (error) {

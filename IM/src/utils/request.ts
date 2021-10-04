@@ -21,7 +21,7 @@ let Request:Object = {
         for(let key in data) {
             payload += `&${key}=${data[key]}`;
         }
-        // fetch(`/api/user/hasUser?id=${account}&pwd=${password}`);
+        // fetch(`/api/user/hasUser?id=${userId}&pwd=${password}`);
         let res = await fetch(`${url}${payload ? '?' + payload : ''}`, {
             headers:  {
                 'token': localStorage.getItem('token') || "",
