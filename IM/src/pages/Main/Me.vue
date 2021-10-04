@@ -2,7 +2,7 @@
   <article class="me-page">
       <ki-profile 
         :name="Store.state.profile.name" 
-        :id="Store.state.profile.account"
+        :id="Store.state.profile.userId"
         :avatar="Store.state.profile.avatar ? '/avatar/'+Store.state.profile.avatar : ''"
       >
       </ki-profile>

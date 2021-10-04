@@ -72,7 +72,7 @@ import useI18n from "@/local/index";
 
 import KiHeader from '../../components/ki-header.vue';
 
-import emojiList from '@/assets/icomNames';
+import emojiList from '@/assets/iconNames';
 
     interface Message {
         sender: string,

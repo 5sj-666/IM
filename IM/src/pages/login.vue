@@ -5,7 +5,7 @@
         <div class="title">登录</div>
         <div class="user-input">
             <label for="">账号</label>
-            <input id="account" type="text" v-model="account" placeholder="请填写账号">
+            <input id="userId" type="text" v-model="userId" placeholder="请填写账号">
         </div>
         <div class="user-input">
             <label for="">密码</label>
@@ -15,7 +15,7 @@
             没有账号？<router-link to="/register">立即注册</router-link>
         </div>
 
-        <button :class='["btn-login", loginActive ? "btn-login_active" :""]' @click="commit(account, password)">登录</button>
+        <button :class='["btn-login", loginActive ? "btn-login_active" :""]' @click="commit(userId, password)">登录</button>
 
     </article>
 </template>
@@ -43,7 +43,7 @@ export default defineComponent({
     setup() {
         // const { user } = toRefs(props)
 
-        let account = ref(""),
+        let userId = ref(""),
             password = ref("");
 
         const Router = useRouter();
@@ -51,12 +51,12 @@ export default defineComponent({
         /**
          * @description 登录
          */
-        async function commit(account, password) {
+        async function commit(userId, password) {
             console.log("---参数：", arguments );
-            // let res = await fetch(`/api/user/hasUser?id=${account}&pwd=${password}`);
+            // let res = await fetch(`/api/user/hasUser?id=${userId}&pwd=${password}`);
             // let result = await res.json();
-            // let result = await Request.get("/api/user/hasUser", {account, password});
-            let result = await Request.post("/api/user/hasUser", { data: {account, password}});
+            // let result = await Request.get("/api/user/hasUser", {userId, password});
+            let result = await Request.post("/api/user/hasUser", { data: {userId: userId, password}});
             // let result = JSON.parse(res);
             // console.log(result);
             console.log("---fetch respond data: ", result);
@@ -65,22 +65,22 @@ export default defineComponent({
             // 账号密码正确 则 将token存入本地并跳转到主页
             if(result.ok) {
                 console.log("---登录成功");
-                localStorage.setItem('userId', account);
+                localStorage.setItem('userId', userId);
                 localStorage.setItem('token', result.token);
                 Router.replace("/");
             }
         }
 
         let loginActive = computed(() => {
-            console.log("--account: ", account.value, "password: ", password.value);
-            return !!account.value.trim() && !!password.value.trim(); 
+            console.log("--userId: ", userId.value, "password: ", password.value);
+            return !!userId.value.trim() && !!password.value.trim(); 
         })
-        watch(account, (A,B) => {
+        watch(userId, (A,B) => {
             console.log("新值:", A, " ----旧值: ", B);
         })
 
         return {
-            account,
+            userId,
             password,
             loginActive,
             commit
