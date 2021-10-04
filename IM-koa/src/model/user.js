@@ -3,20 +3,20 @@ const { query } = require('../utils/DB-access')
 
 let tableName = 'user';
 
-async function hasUser (account, password) {
+async function hasUser (userId, password) {
     console.log("--hasUser param:", arguments);
-    let sql = `SELECT * FROM ${tableName} where account = '${account}' and password = '${password}'`;
+    let sql = `SELECT * FROM ${tableName} where userId = '${userId}' and password = '${password}'`;
     console.log("--hasUser sql:　", sql);
     let result = await query( sql );
     console.log( "查询结果: ", result);
     return result && result.length > 0;
 }
 
-async function addUser(account, password) {
+async function addUser(userId, password) {
     console.log("--registerUser param:", arguments);
     //表结构 weChatId weChatName imgURL password 
     try {
-        let sql = `insert into ${tableName} values ('${account}', '${password}', '', '',  Null) `;
+        let sql = `insert into ${tableName} values ('${userId}', '${password}', '', '',  Null) `;
         let result = await query( sql );
         console.log( "新增用户结果: ", JSON.stringify(result));
         if(result.affectedRows === 1) {
@@ -35,12 +35,12 @@ async function addUser(account, password) {
 
 /**
  * @description 查询指定用户的个人信息
- * @params {string} account 
+ * @params {string} userId 
  * @return {Array[Object]} 
  */
-async function getProfile(account) {
+async function getProfile(userId) {
     try {
-        const sql = `select * from user where account = '${account}'`;
+        const sql = `select * from user where userId = '${userId}'`;
         const result = await query( sql );
         return result;
     } catch (error) {

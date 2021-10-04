@@ -13,6 +13,9 @@ const http = require('http');
 // import wsTool from './utils/wsTool'
 const wsTool = require('./utils/wsTool');
 
+var wsPool = {};
+app.context.wsPool = wsPool;
+
 const { userCtrol } =  require("./control/userCtrol.js");
 const { friendCtrol } =  require("./control/friendCtrol.js");
 
@@ -46,7 +49,8 @@ const server = http.createServer(app.callback());//koa脚手架创建的服务�
 let ws = new WebSocket.Server({
     server: server//挂载到原有服务器上，不然你得重新开一个端口，详见文档
 })
-wsTool(ws);
+
+wsTool(ws, wsPool);
 
 
 // app.listen(3000);
