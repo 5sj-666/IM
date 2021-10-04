@@ -2,9 +2,9 @@
 
 const JWT = require("./jwt.js");
 
-module.exports = function wsTool(ws) {
+module.exports = function wsTool(ws, wsPool = {}) {
 
-  let wsPool = {};
+  // let wsPool = {};
 
   ws.on('connection', ws => {
     console.log('wsTool server connection---');
