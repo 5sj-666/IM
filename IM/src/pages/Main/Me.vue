@@ -22,6 +22,7 @@
         :isLast="index == cells.length - 1 ? true : false"
         :disable="cell.disable"
         @click="cell.event"
+        :showNextIcon="true"
       >
         <!-- <img style="width: 1.5rem;height: 1.5rem;" :src="cell.icon" /> -->
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" style="bwidth: 1.5rem; height: 1.5rem;">

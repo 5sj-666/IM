@@ -14,6 +14,7 @@
         :adTitle="item.adTitle"
         :isLast="index == discoverArr.length - 1 ? true : false"
         :disable="true"
+        :showNextIcon="true"
       >
         <template v-slot:default>
           <!-- <img style="width: 1.6rem;height: 1.6rem;" :src="item.icon" /> -->

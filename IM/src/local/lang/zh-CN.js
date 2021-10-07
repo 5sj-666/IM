@@ -44,6 +44,20 @@ export default {
         darkMode: "黑暗模式",
         modalText: "新的设置需要重启才能生效"
       },
+      FriendRequest: {
+        inputPlaceHolder: "微信号/手机号",
+        myId: "我的微信号",
+        addContacts: "添加好友",
+        cancel: "取消",
+        search: "搜索",
+        added: "已添加",
+        accept: "通过",
+        nonExistent: "该用户不存在"
+      },
+      AddFriend: {
+        add: "添加到通讯录",
+        modalText: "已发送添加好友请求"
+      },
       Profile: {
         sendMessage: "发消息",
         medias: "音视频通话"

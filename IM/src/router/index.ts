@@ -10,6 +10,9 @@ import videoCall from "@/pages/Chats/VideoCall.vue"
 
 import Setting from "@/pages/Main/Mine/Setting.vue"
 
+import AddFriend from "@/pages/Main/Contacts/AddFriend.vue"
+import FriendRequest from "@/pages/Main/Contacts/FriendRequest.vue"
+
 const routes = [
   {
     path: "/",
@@ -45,14 +48,30 @@ const routes = [
     }
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../pages/About.vue")
+    path: "/addFriend",
+    name: "AddFriend",
+    component: AddFriend,
+    meta: {
+      rank: 4
+    }
   },
+  {
+    path: "/friendRequest",
+    name: "FriendRequest",
+    component: FriendRequest,
+    meta: {
+      rank: 3
+    }
+  },
+  // {
+  //   path: "/about",
+  //   name: "About",
+  //   // route level code-splitting
+  //   // this generates a separate chunk (about.[hash].js) for this route
+  //   // which is lazy-loaded when the route is visited.
+  //   component: () =>
+  //     import(/* webpackChunkName: "about" */ "../pages/About.vue")
+  // },
   {
     path: "/dialogue/:userId",
     name: "Dialogue",

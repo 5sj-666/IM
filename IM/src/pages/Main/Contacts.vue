@@ -2,7 +2,7 @@
   <article class="contacts-page">
     <!-- <div>Contacts</div> -->
 
-    <section class="border-line_top border-line_bottom" style="filter: grayscale(100%)">
+    <section class="border-line_top border-line_bottom">
       <ki-cell
         v-for="(item, index) in systemContacts"
         :key="index"
@@ -10,6 +10,8 @@
         :showNextIcon="item.showNextIcon"
         iconWidth="4.3"
         :isLast="index == systemContacts.length - 1 ? true : false"
+        :style="{filter: index === 0 ? '' : 'grayscale(100%)'}"
+        @click="sysEvent(index)"
       >
         <template v-slot:default>
           <!-- <img
@@ -99,11 +101,21 @@ export default {
 
     const contactsList = computed(() => props.friendList);
 
+
+    function sysEvent(index) {
+      switch(index) {
+        case 0 : 
+          Router.push("/friendRequest");
+          break;
+      }
+    }
+
     return {
       systemContacts,
       contactsList,
       Router,
       // toRefs(props)
+      sysEvent
     };
   }
 };
