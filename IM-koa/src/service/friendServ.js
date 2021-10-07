@@ -3,6 +3,7 @@ const { getFriendList } = require("../model/friend");
 
 const friendModel = require("../model/friend");
 const addFriendModel = require("../model/addFriend");
+const userModel = require("../model/user");
 
 async function friendListServ(userId) {
     // return getFriendList("admin");
@@ -89,9 +90,80 @@ async function acceptServ(ctx, userId, friendId, NO) {
     
 }
 
+/**
+ * @description 获取指定用户的所有的好友请求
+ * @param {string} userId 
+ * @returns {
+                NO: number,
+                userId: string,
+                avatar: string,
+                friendId: string,
+                status: string,
+            }
+ */
+async function getFriendReqListServ(userId) {
+    try {
+        // let result = await addFriendModel.getFriendReq(userId);
+        let reqList = await addFriendModel.getFriendReq(userId);
+
+        let avatarList = await getAvatarAll(reqList);
+        console.log("---avatarList: ", avatarList);
+        for(let i = 0; i < reqList.length; i++) {
+            // reqList[i].avatar = avatarList[i].avatar;
+            if(avatarList[i]) {
+                reqList[i].avatar = avatarList[i].avatar;
+            }else {
+                reqList[i].avatar = "";
+            }
+        }
+       
+        return {
+            ok: true,
+            status: 200,
+            data: reqList
+        }
+
+        /**
+         * @description 获取头像
+         * @param {*} reqList 
+         * @returns 
+         */
+        async function getAvatarAll(reqList) {
+            return new Promise(async (resolve, reject) => {
+                let queryList = [];
+                let avatarList = [];
+                for(let item of reqList) {
+                    queryList.push(userModel.getProfile(item.userId));
+                }
+                Promise.allSettled(queryList)
+                .then(results => {
+                    results.forEach(result => {
+                        avatarList.push(result.status === "fulfilled" ? result.value[0] : {avatar: ""});
+                    });
+
+                    resolve(avatarList);
+                })
+                .catch(err=> {
+                    resolve([]);
+                    console.log("--获取头像失败： ", err);
+                });
+            })
+            
+        }
+    } catch (error) {
+        console.log("---getFriendReqListServ: ", error);
+        return {
+            ok: false,
+            status: 200,
+            error: error
+        }
+    }
+}
+
 
 module.exports = {
     friendListServ,
     friendRequestServ,
-    acceptServ
+    acceptServ,
+    getFriendReqListServ
 }
