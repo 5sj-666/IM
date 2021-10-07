@@ -44,6 +44,20 @@ export default {
         darkMode: "dark mode",
         modalText: "New settings will take effect after restarting."
       },
+      FriendRequest: {
+        inputPlaceHolder: "WeChat ID/Mobile",
+        myId: "My WeChat ID",
+        addContacts: "Add Contacts",
+        cancel: "Cancel",
+        search: "Search",
+        added: "Added",
+        accept: "Accept",
+        nonExistent: "Cannot search due to a possibly compromised account"
+      },
+      AddFriend: {
+        add: "Add",
+        modalText: "A friend request has been sent"
+      },
       Profile: {
         sendMessage: "send message",
         medias: "Voice or Video Call"

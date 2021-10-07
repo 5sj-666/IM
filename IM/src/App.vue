@@ -82,6 +82,21 @@ export default defineComponent({
   --Dialogue-btn_send-color: #FFF;
   --Dialogue-btn_send-bg: #04c660;
 
+  /* --- --- */
+  --FriendReq-color: var(--Main-color_primary);
+  --FriendReq-color_secondary: var(--Main-color_secondary);
+  --FriendReq_bg: var(--Main-bg);
+  --FriendReq-bg_secondary: var(--Main-header_fake-bg);
+  --FriendReq-btn-color: var(--Profile-btn_color);
+  --FriendReq-btn_add-color: #FFF;
+  --FriendReq-btn_add_bg: #04c660;
+  --FriendReq-card_color: #000;
+  --FriendReq-card_bg: #FFF;
+
+  /* --- AddFriend Page --- */
+  --AddFriend_bg: var(--Main-bg);
+  --AddFriend-btn_color: var(--Profile-btn_color);
+  --AddFriend-btn_bg: var(--Main-header_fake-bg);
 
 
   /* --- ki-header Component --- */
@@ -130,9 +145,14 @@ export default defineComponent({
   --Main-bg: #111;
   --Main-header_fake-bg: #191919;
 
+  /* FriendRequest Page */
+  --FriendReq-card_color: #d1d1d1;
+  --FriendReq-card_bg: #2c2c2c;
+
   /* --- main-tab Component --- */
   --main-tab-bg: #1f1f1f;
-    /* main-tab */
+
+  /* main-tab */
   --svg-fill: #1f1f1f;
   --svg-stroke: #d7d7d7;
 
