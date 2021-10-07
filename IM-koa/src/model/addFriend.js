@@ -77,6 +77,20 @@ async function query(params) {
     }
 }
 
+/**
+ * @description 获取某个用户的全部好友请求
+ * @param {*} userId 
+ */
+async function getFriendReq(userId) {
+    try {
+        let sql =  `SELECT * FROM addFriend WHERE friendId = '${userId}' `;
+        return await execSql(sql);
+    } catch (error) {
+        console.log("---model addFriend query: ", error);
+        return [];
+    }
+}
+
 
 /**
  * @description 校验参数，对缺少的参数，赋默认值
@@ -96,5 +110,7 @@ function _checkParams(params) {
 module.exports = {
     insert,
     update,
-    query
+    query,
+
+    getFriendReq
 }

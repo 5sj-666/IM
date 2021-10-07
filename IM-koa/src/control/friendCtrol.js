@@ -1,5 +1,5 @@
 // const { getFriendList } = require("../model/friend.js");
-const { friendListServ, friendRequestServ, acceptServ } = require("../service/friendServ.js");
+const { friendListServ, friendRequestServ, acceptServ, getFriendReqListServ } = require("../service/friendServ.js");
 const JWT = require("../utils/jwt.js");
 
 const KoaRouter = require('koa-router');
@@ -55,6 +55,13 @@ friendCtrol.post("/manage", async ctx => {
     console.log("control Friend manage : ",params.type, "--", result);
     ctx.body = JSON.stringify(result);
 
+})
+
+friendCtrol.get("/getFriendReqList", async ctx => {
+    let token = ctx.request.header.token;
+    let payload = JWT.parse(token);
+
+    ctx.body = await getFriendReqListServ(payload.id);
 })
 
 

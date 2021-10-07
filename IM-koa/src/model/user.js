@@ -36,12 +36,18 @@ async function addUser(userId, password) {
 /**
  * @description 查询指定用户的个人信息
  * @params {string} userId 
- * @return {Array[Object]} 
+ * @return {Array[Object]} {
+                                avatar: string,
+                                gender: string,
+                                name: string,
+                                userId: string,
+                            }
  */
 async function getProfile(userId) {
     try {
         const sql = `select * from user where userId = '${userId}'`;
         const result = await query( sql );
+        console.log("model getProfile: ", result);
         return result;
     } catch (error) {
         console.log("---error: ", error);
