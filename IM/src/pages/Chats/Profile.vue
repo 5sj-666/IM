@@ -85,7 +85,7 @@ export default defineComponent({
             Router.push({
                 // path: '/dialogue/videoCall/'+Route.params.userId,
                 path: `/dialogue/videoCall/${Route.params.userId}`,
-                query: {type: "invate"}
+                query: {type: "invite"}
             })
         }
 

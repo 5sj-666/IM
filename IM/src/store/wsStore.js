@@ -5,6 +5,7 @@ console.log("---utilRTC: ", utilRTC);
 
 const SET_WS = 'SET_WS';
 const SET_MSGHISTORY = "SET_MSGHISTORY";
+const SET_MEDIA_STATUS = "SET_MEDIA_STATUS";
 
 const store = {
     namespaced: true,
@@ -15,6 +16,7 @@ const store = {
         
         PC: {},
         mediaRecipient: "",
+        mediaStatus: "", //视频在什么状态: ["invate", 'waiting', "inVideo", "close"]
       }
     },
     getters: {},
@@ -27,7 +29,9 @@ const store = {
         state.msgHistory.push(msg);
         // console.warn("--SET_MSGHISTORY", state.msgHistory);
       },
-
+      [SET_MEDIA_STATUS](state, status) {
+        state.mediaStatus = status;
+      }
 
     },
     actions: {
@@ -80,7 +84,7 @@ const store = {
               // console.log("---store ws: initWs payload: ", payload);
               payload.Router.push({
                 path: `/dialogue/videoCall/${msg.sender}`,
-                query: {type: "answer"}
+                query: {type: "waiting"}
               });
 
             }
