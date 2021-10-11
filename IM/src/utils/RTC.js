@@ -68,7 +68,8 @@ function setRemoteSDP(context, data) {
  * @param {Object} data
  */
 function answerOffer(context, data) {
-    let { state, dispatch } = context;
+    let { state, dispatch, commit } = context;
+    commit('SET_MEDIA_STATUS', "inVideo");
     const remoteDesc = new RTCSessionDescription(data.content);
     console.warn("-----回复offer remoteDesc: ----:", remoteDesc);
     state.PC.setRemoteDescription(remoteDesc)
