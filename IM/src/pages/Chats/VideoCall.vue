@@ -134,7 +134,7 @@ export default {
         width:100%;
         height: 100%;
         color: #FFF;
-        /* background-color: #000; */
+        background-color: #333;
     }
     video {
         width: 100%;
@@ -203,7 +203,7 @@ export default {
 
         width: 100%;
         height: 9rem;
-        background: green;
+        /* background: green; */
     }
     .operate-container button {
         width: 4rem;

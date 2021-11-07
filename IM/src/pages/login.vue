@@ -17,6 +17,18 @@
 
         <button :class='["btn-login", loginActive ? "btn-login_active" :""]' @click="commit(userId, password)">登录</button>
 
+        <!-- <ki-modal 
+      :content="t('App.AddFriend.modalText')"
+      v-model="showModal"
+      @onConfirm="modalConfirm"
+      :showCancel="false"
+    /> -->
+        <ki-modal 
+            v-model="modalError"
+            content="账号或密码错误"
+            :showCancel="false"
+        />
+
     </article>
 </template>
 <script>
@@ -25,6 +37,8 @@ import { defineComponent, ref,computed, watch } from 'vue'
 import { useRouter } from "vue-router";
 
 import Request from "@/utils/request.ts";
+
+import KiModal from "@/components/ki-modal.vue";
 
 // fetch('/api/user/hasUser?id=admin5',{
 //     method: 'GET', // or 'PUT'
@@ -40,13 +54,18 @@ import Request from "@/utils/request.ts";
 
 export default defineComponent({
     name: "Login",
+    components: {
+        KiModal,
+    },
     setup() {
         // const { user } = toRefs(props)
 
-        let userId = ref(""),
-            password = ref("");
+        let userId = ref("admin"),
+            password = ref("123456");
 
         const Router = useRouter();
+
+        let modalError = ref(false);
 
         /**
          * @description 登录
@@ -67,7 +86,14 @@ export default defineComponent({
                 console.log("---登录成功");
                 localStorage.setItem('userId', userId);
                 localStorage.setItem('token', result.token);
-                Router.replace("/");
+                Router.replace({
+                    path: "/",
+                    query: {from: "login"}
+                }); 
+
+            }
+            if(result && result.error) {
+                modalError.value = true;
             }
         }
 
@@ -83,7 +109,8 @@ export default defineComponent({
             userId,
             password,
             loginActive,
-            commit
+            commit,
+            modalError
         }
     },
 })

@@ -29,7 +29,7 @@
 
 <script>
 import { computed, reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import useI18n from "@/local/index";
 import EventBus from "@/utils/eventBus"
@@ -61,6 +61,7 @@ export default {
   },
   setup() {
     const Router = useRouter(),
+          Route = useRoute(),
           Store = useStore(),
           { t } = useI18n();
 
@@ -69,11 +70,8 @@ export default {
     let lang = ref(localStorage.getItem("lang"));
 
     onMounted(()=>{
-      if(!localStorage.getItem('token')) 
-        Router.replace("/login")
-        // console.log("--onMounted token:", localStorage.getItem('token'));
-        // console.log("---Main onMounted!!");
-        // getFriendList();
+        if(!localStorage.getItem('token')) 
+          Router.replace("/login")
 
         // 在此初始化websocket连接
         Store.dispatch('wsStore/initWS', {Router: Router});
@@ -82,24 +80,20 @@ export default {
 
         Store.dispatch('getProfile');
 
+        getFriendList();
+
         // caches.open(localStorage.getItem('userId'))
         // .then(function(cache) {
         //   return cache.add('https://www.fffuture.top:443/avatar/361d0c1c185b695d49b1a3dc3efaef3a.jpeg');
         // });
-
     });
 
-    onActivated(()=> {
-      // console.log("---MAIN onActivated");
-      
-      // if(lang.value !== localStorage.getItem("lang")) {
-      //   console.log("----执行刷新Main页面----");
-      //   setTimeout(()=>{
-      //     Router.go(0); //这里可能需要做骨架屏优化过渡
-      //     lang.value = localStorage.getItem("lang");
-      //   }, 300);
-      // }
+    onActivated(() => {
+      if(Route.query && (Route.query.from === "login" || Route.query.from ==="addFriend")) {
+          getFriendList();
+      }
 
+      // debugger;
     });
     onDeactivated(()=> {
       // console.log("---MAIN onDeactivated");
@@ -188,13 +182,7 @@ export default {
       Router.push("/Dialogue");
     }
 
-
-    onMounted(()=> {
-      getFriendList();
-    })
-
     const showSkeleton = ref(true);
-
 
     const friendList = ref([]);
     async function getFriendList() {
@@ -209,15 +197,6 @@ export default {
       // showSkeleton.value = false;
       showSkeleton.value = false;
     }
-
-
-
-    // onMounted(()=>{
-    //   setTimeout(()=> {
-    //     showSkeleton.value = true;
-    //   },5000)
-    // })
-    
 
 
     return {
