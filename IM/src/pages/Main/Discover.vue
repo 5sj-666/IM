@@ -1,5 +1,6 @@
 <template>
   <article class="discover-container">
+    <ki-header id="headerDom" :title="title" :iconBack="false" />
     <!-- Discover -->
     <section
       class="border-line_top border-line_bottom"
@@ -41,9 +42,18 @@ import KiCell from "@/components/ki-cell.vue";
 import { reactive } from "vue";
 import useI18n from "@/local/index"
 
+import kiHeader from "@/components/ki-header.vue";
+
 export default {
   components: {
-    KiCell
+    kiHeader,
+    KiCell,
+  },
+  props: {
+    title: {
+      type: String,
+      default: ''
+    }
   },
   setup() {
     const {t} = useI18n();

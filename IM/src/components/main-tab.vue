@@ -227,7 +227,7 @@ export default {
 
 
   box-sizing: border-box;
-  position: absolute;
+  position: fixed;
   left: 0;
   bottom: 0;
   display: flex;
@@ -295,6 +295,7 @@ export default {
   min-width: 0;
   height: 100%;
   transform: translateZ(0);
+  outline: 0;
 }
 
 </style>

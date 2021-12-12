@@ -3,18 +3,18 @@
   <article class="main-container">
     <ki-skeleton v-model="showSkeleton"></ki-skeleton>
 
-    <ki-header id="headerDom" :title="headerTitle" style="position: absolute;transition: all 0s linear; will-change: transform" :iconBack="false" />
-    <div class="header_fake"></div>
-    <ki-swiper :activeIndex="activeIndex.index">
+    <!-- <ki-header id="headerDom" :title="headerTitle" style="position: absolute;transition: all 0s linear; will-change: transform" :iconBack="false" /> -->
+    <!-- <div class="header_fake"></div> -->
+    <ki-swiper>
       <template v-slot:firstItem>
         <!-- <Chats @click="toDialogue"></Chats> -->
-        <Chats :friendList="friendList"></Chats>
+        <Chats :friendList="friendList" :title="t('App.Main.chats')"></Chats>
       </template>
       <template v-slot:secondItem>
-        <Contacts :friendList="friendList"></Contacts>
+        <Contacts :friendList="friendList" :title="t('App.Main.contact')"></Contacts>
       </template>
       <template v-slot:thirdItem>
-        <Discover></Discover>
+        <Discover :title="t('App.Main.discover')"></Discover>
       </template>
       <template v-slot:fourthItem>
         <Me></Me>
@@ -56,7 +56,7 @@ import Request from "@/utils/request";
 export default {
   name: "Main",
   components: {
-    kiHeader,
+    // kiHeader,
     KiSwiper,
     Chats,
     Contacts,
@@ -72,21 +72,14 @@ export default {
           Store = useStore(),
           { t } = useI18n();
 
-    let headerTitle  = ref("通讯录");
-
-    let lang = ref(localStorage.getItem("lang"));
+    // let lang = ref(localStorage.getItem("lang"));
 
     let currentIndex = ref(1);
 
-    EventBus.on('clickTab', payload => {
-      currentIndex.value = payload.tab;
-      // debugger;
-    })
-
+    // EventBus.on('clickTab', payload => {currentIndex.value = payload.tab;});
 
     onMounted(()=>{
-        if(!localStorage.getItem('token')) 
-          Router.replace("/login")
+        if(!localStorage.getItem('token')) Router.replace("/login");
 
         // 在此初始化websocket连接
         Store.dispatch('wsStore/initWS', {Router: Router});
@@ -112,44 +105,11 @@ export default {
         // debugger;
       })
     });
-    
-    onDeactivated(()=> {
-      // console.log("---MAIN onDeactivated");
-    })
-
-    onBeforeUnmount(() =>{
-      // console.log("---MAIN onBeforeUnmount");
-    });
-
-    let activeIndex = reactive({
-      index: 1
-    });
 
 
-    let fieldMap = {
-      0: t('App.Main.chats'),
-      1: t('App.Main.contact'),
-      2: t('App.Main.discover')
-    }
-
-
-    
     EventBus.on('scrollX', payload => {
-      
+
       currentIndex.value = getTabIndex(payload.ScrollPct);
-
-      if(payload.ScrollPct >= 0.667) {
-        document.querySelector('#headerDom').style.transform = `translateX(-${(payload.ScrollPct - 0.667) * 3 * document.body.clientWidth}px)`;
-      }else {
-        document.querySelector('#headerDom').style.transform = `translateX(0px)`;
-      }
-      try {
-        headerTitle.value = fieldMap[Math.round(payload.ScrollPct * 3)];
-      } catch (error) {
-        // headerTitle.value = '';
-        debugger;
-      }
-
 
       /**
        * @description 根据滑动的百分比数计算当前激活的tab页面索引
@@ -198,12 +158,12 @@ export default {
 
 
     return {
-      headerTitle,
-      activeIndex,
+      t,
+      showSkeleton,
+
       toDialogue,
       friendList,
 
-      showSkeleton,
     };
   }
 };
@@ -218,7 +178,7 @@ export default {
     */
 
     box-sizing: border-box;
-    padding-top: 3rem;
+    /* padding-top: 3rem; */
     position: relative;
     width: 100%;
     height: 100%;

@@ -1,5 +1,6 @@
 <template>
   <article class="charts-page">
+     <ki-header id="headerDom" :title="title" :iconBack="false" />
     <div class="chat-cell" v-for="(session, index) in sessions" :key="index" @click="Router.push(`/dialogue/${session.friendId}`)">
       <div class="chat-cell-avatar">
         <img :src="'/avatar/'+session.avatar" alt />
@@ -19,12 +20,21 @@ import {onMounted, reactive, computed, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { useStore, mapState } from "vuex";
 
+import kiHeader from "@/components/ki-header.vue";
+
 export default {
   name: "Chats",
+  components: {
+    kiHeader,
+  },
   props: {
     friendList: {
       type: Array,
       default: null
+    },
+    title: {
+      type: String,
+      default: ''
     }
   },
   setup(props) {

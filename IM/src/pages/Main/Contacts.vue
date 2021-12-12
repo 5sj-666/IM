@@ -1,7 +1,7 @@
 <template>
   <article class="contacts-page">
     <!-- <div>Contacts</div> -->
-
+    <ki-header id="headerDom" :title="title" :iconBack="false" />
     <section class="border-line_top border-line_bottom">
       <ki-cell
         v-for="(item, index) in systemContacts"
@@ -52,18 +52,22 @@ import { onMounted, ref, toRefs, computed} from "vue";
 import {useRouter} from 'vue-router'
 import useI18n from "@/local/index"
 // import Request from "@/utils/request"
-
-
+import kiHeader from "@/components/ki-header.vue";
 
 export default {
   name: "Contacts",
   components: {
-    kiCell
+    kiCell,
+    kiHeader
   },
   props: {
     friendList: {
       type: Array,
       default: null
+    },
+    title: {
+      type: String,
+      default: ''
     }
   },
   setup(props) {

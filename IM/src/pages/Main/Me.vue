@@ -1,5 +1,6 @@
 <template>
   <article class="me-page">
+    <div class="header_fake"></div>
       <ki-profile 
         :name="Store.state.profile.name" 
         :id="Store.state.profile.userId"
@@ -148,7 +149,10 @@ export default {
 <style scoped>
 
 .me-page {
-  /* --Me-bg: #ededed; */
+  /* 
+    --Me-bg: #ededed; 
+    --Main-header_fake-bg
+  */
   
   box-sizing: border-box;
   padding-bottom: 3rem;
@@ -160,6 +164,17 @@ export default {
   max-height: 100%;
   background-color: var(--Me-bg, #ededed);
   /* overflow: scroll; */
+}
+.me-page .header_fake{
+  box-sizing: border-box;
+  margin: 0;
+  /* position: absolute;
+  left: 0;
+  top: 0; */
+  width: 100%;
+  height: 3.26rem;
+  background: var(--Main-header_fake-bg, #000);
+  /* z-index: 9; */
 }
 
 
