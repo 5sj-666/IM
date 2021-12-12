@@ -61,19 +61,20 @@ module.exports = {
     },
  
     pwa: {
-      name: 'My App test',
+      name: 'IM test',
       themeColor: '#4DBA87',
       msTileColor: '#000000',
       appleMobileWebAppCapable: 'yes',
       appleMobileWebAppStatusBarStyle: 'black',
   
-      // configure the workbox plugin
-      workboxPluginMode: 'InjectManifest',
-      workboxOptions: {
-        // swSrc is required in InjectManifest mode.
-        swSrc: './service-worker.js',
-        // ...other Workbox options...
-      }
+      // configure the workbox plugin GenerateSW
+      // workboxPluginMode: 'InjectManifest', //
+      workboxPluginMode: 'GenerateSW', //
+      // workboxOptions: {
+      //   // swSrc is required in InjectManifest mode.
+      //   swSrc: './service-worker.js',
+      //   // ...other Workbox options...
+      // }
     }
     
     

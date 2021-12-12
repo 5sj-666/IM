@@ -3,7 +3,7 @@
   <article class="main-container">
     <ki-skeleton v-model="showSkeleton"></ki-skeleton>
 
-    <ki-header id="main-header" :title="headerTitle" :iconBack="false" style="position: absolute"></ki-header>
+    <ki-header id="headerDom" :title="headerTitle" style="position: absolute;transition: all 0s linear; will-change: transform" :iconBack="false" />
     <div class="header_fake"></div>
     <ki-swiper :activeIndex="activeIndex.index">
       <template v-slot:firstItem>
@@ -28,7 +28,14 @@
 </template>
 
 <script>
-import { computed, reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount, ref } from "vue";
+
+// const js = import("@chuanxi/hello-wasm/hello_wasm.js");
+// js.then(js => {
+//   js.greet("WebAssembly");
+// });
+
+
+import { computed, reactive, watchEffect, onMounted, onActivated, onDeactivated, onBeforeUnmount, ref, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import useI18n from "@/local/index";
@@ -69,6 +76,14 @@ export default {
 
     let lang = ref(localStorage.getItem("lang"));
 
+    let currentIndex = ref(1);
+
+    EventBus.on('clickTab', payload => {
+      currentIndex.value = payload.tab;
+      // debugger;
+    })
+
+
     onMounted(()=>{
         if(!localStorage.getItem('token')) 
           Router.replace("/login")
@@ -92,9 +107,12 @@ export default {
       if(Route.query && (Route.query.from === "login" || Route.query.from ==="addFriend")) {
           getFriendList();
       }
-
-      // debugger;
+      nextTick(()=>{
+        EventBus.emit('clickTab', {tab: currentIndex.value});
+        // debugger;
+      })
     });
+    
     onDeactivated(()=> {
       // console.log("---MAIN onDeactivated");
     })
@@ -114,69 +132,49 @@ export default {
       2: t('App.Main.discover')
     }
 
-    EventBus.on('swipeEvent', param => {
-      try {
-        // console.log("---Main param: ", param);
-        slideHeader(param.activeIndex, param.progress, param.step);
-        headerTitle.value = fieldMap[param.activeIndex];
-      } catch (error) {
-        console.error("---Main EventBus: ", error);
-      }
-    });
 
+    
+    EventBus.on('scrollX', payload => {
+      
+      currentIndex.value = getTabIndex(payload.ScrollPct);
 
-    /**
-     * @description 判断标题名称和是否需要坐位移
-     * @params {number|string} index 当前tab位置
-     */
-    function slideHeader(index, progress, step) {
-       //判断对header的位移
-      /**
-       * 
-       * activeIndex === 2:  progress < 0; 即向右滑动，此时header应该向左滑动
-       *    没有滑过去， activeIndex === 2 位置保持0
-       *    滑过去，activeIndex === 3 位置-100%
-       * 
-       * activeIndex === 3: progress > 0; 即向左滑动，此时header应该向右滑动
-       *    没有滑过去， activeIndex === 3 位置保持-100%
-       *    滑过去，activeIndex === 2 位置0
-       * 
-       * 其他情况： 保持不变
-       * 
-       */
-      const header = document.querySelector("#main-header");
-
-      if(index === 2) { //param
-        if(progress < 0) {
-          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * progress);
-          header.style.transform = `translateX(${window.screen.width * progress}px)`;
-          header.style.transition = "all .0s ease-out";
-        }
-        if(step == "panend") {
-          // console.warn("---执行panend");
-          header.style.transform = `translateX(0%)`;
-          header.style.transition = `all ${.25}s ease-out` ;
-        }
-      }else if(index === 3) {
-        if(progress > 0) {
-          // console.warn("----位移header: ", header, "--距离: ", window.screen.width * progress);
-          // header.style.left = "-100%";
-          header.style.transform = `translateX(${window.screen.width * (progress - 1)}px)`;
-          header.style.transition = "all .0s ease-out";
-        }
-        if(step === "panend") {
-          // console.warn("---执行panend");
-          // header.style.left = "-100%";
-          header.style.transform = `translateX(-100%)`;
-          header.style.transition = `all ${.25}s ease-out` ;
-        }
+      if(payload.ScrollPct >= 0.667) {
+        document.querySelector('#headerDom').style.transform = `translateX(-${(payload.ScrollPct - 0.667) * 3 * document.body.clientWidth}px)`;
       }else {
-        //  console.warn("---执行panend");
-          header.style.transform = `translateX(0%)`;
-          header.style.transition = `all 0s ease-out` ;
+        document.querySelector('#headerDom').style.transform = `translateX(0px)`;
       }
-    }
+      try {
+        headerTitle.value = fieldMap[Math.round(payload.ScrollPct * 3)];
+      } catch (error) {
+        // headerTitle.value = '';
+        debugger;
+      }
 
+
+      /**
+       * @description 根据滑动的百分比数计算当前激活的tab页面索引
+       * @param {number} ScrollPct 
+       */
+      function getTabIndex(pct) {
+        //正常判断下写法如下： 判断条件太多
+        // let index = 1;
+        // if(pct < 0.333) {
+        //   index = 0;
+        // }else if(pct < 0.667) {
+        //   index = 1;
+        // }else if(pct < 1) {
+        //   index = 2;
+        // }else {
+        //   index = 3;
+        // }
+
+        // 优化下：
+        let keyPoint = [.333, .667, 1];
+        let index = keyPoint.findIndex(point => pct < point);
+        return index === -1 ? 3 : index;
+      }
+
+    });
 
     function toDialogue() {
       Router.push("/Dialogue");

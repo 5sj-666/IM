@@ -2,14 +2,22 @@
   <footer class="main-tab">
     <div class="main-tab-item" @click="clickTab(0)">
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="-2 -2 102 102">
-        <path :class="['svg-color', swiperIndex === 0 ? 'svg-leave' : '', swiperIndex === 1 && swiperProgress > 0 ? 'svg-enter' : '']" d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z" />
+        <path d="M18 78 A 48 40, 0, 1, 1, 27 83.2 L 12 92Z" 
+              :class="['svg-color', 
+                        ScrollPct >= 0 && ScrollPct <= 0.33 ? 'svg-leave' : '',
+                        ScrollPct <= 0 ? 'svg-active' : ''
+                      ]" 
+        />
       </svg>
       {{t('App.Main.chats')}}
     </div>
     
     <div class="main-tab-item" @click="clickTab(1)">
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="-2 2 117 100">
-        <g :class="['svg-color', swiperIndex === 1 ?  'svg-leave' : '', (swiperIndex === 2 && swiperProgress > 0) || (swiperIndex === 0 && swiperProgress < 0) ? 'svg-enter' : '' ]">
+        <g :class="['svg-color', 
+                    ScrollPct > 0.333 && ScrollPct < 0.667 ?  'svg-leave' : '', 
+                    ScrollPct === 0.333 ? 'svg-active' : '',
+                    ScrollPct < 0.333 ? 'svg-enter' : '' ]">
           <path d="M4 98
                 L 98 98
                 Q 100 94, 94 90
@@ -33,8 +41,16 @@
 
     <div class="main-tab-item" @click="clickTab(2)">
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1.4rem" height="1.4rem" style="background: transparent" viewBox="0 0 100 100" >
-        <circle cx="50" cy="50" r="46.5" :class="['svg-color', swiperIndex === 2 ?  'svg-leave' : '', (swiperIndex === 3 && swiperProgress > 0) || (swiperIndex === 1 && swiperProgress < 0) ? 'svg-enter' : '' ]" />
-        <polygon points="25,75 40,40 75,25 60,60" :class="['svg-color', swiperIndex === 2 ?  'svg-leave_inset' : '', (swiperIndex === 3 && swiperProgress > 0) || (swiperIndex === 1 && swiperProgress < 0) ? 'svg-enter_inset' : '' ]" />
+        <circle cx="50" cy="50" r="46.5" 
+          :class="['svg-color',  
+            ScrollPct > 0.667 && ScrollPct < 1 ?  'svg-leave' : '', 
+            ScrollPct === 0.667 ? 'svg-active' : '',
+            ScrollPct > 0.333 && ScrollPct <= 0.667 ? 'svg-enter' : '' ]" />
+        <polygon points="25,75 40,40 75,25 60,60" 
+        :class="['svg-color', 
+                  ScrollPct > 0.667 && ScrollPct < 1 ?  'svg-leave_inset' : '', 
+                  ScrollPct === 0.667 ? 'svg-active_inset' : '',
+                  ScrollPct > 0.333 && ScrollPct < 0.667 ? 'svg-enter_inset' : '' ]" />
       </svg>
       {{t('App.Main.discover')}}
     </div>
@@ -54,7 +70,10 @@
               Q 0 94, 2 98
               Z
           "
-          :class="['svg-color', swiperIndex === 3 ?  'svg-leave' : '', swiperIndex === 2 && swiperProgress < 0 ? 'svg-enter' : '' ]"
+          :class="['svg-color', 
+                    ScrollPct >= 0.667  ? 'svg-enter' : '' , ScrollPct === 1 ? 'svg-leave' : '',
+                    ScrollPct >= 1 ? 'svg-active' : '',
+            ]"
         />
       </svg>
       {{t('App.Main.mine')}}
@@ -65,7 +84,7 @@
 
 <script>
 // import SvgCell from "./svg-cell.vue";
-import { reactive, ref } from "vue";
+import { reactive, ref, onActivated, mounted } from "vue";
 // import mitt from "mitt";
 import EventBus from "@/utils/eventBus.js"
 import useI18n from "@/local/index";
@@ -102,32 +121,44 @@ export default {
   props: { },
   setup(props, ctx) {
 
-    let swiperIndex = ref(1);
     let swiperProgress = ref(0);
 
     const { t } = useI18n();
 
-    EventBus.on('swipeEvent',  payload => {
-      swiperIndex.value = payload.activeIndex;
-      swiperProgress.value = payload.progress;
+    let ScrollPct = ref(0);
 
-      getColor(payload.activeIndex, payload.progress, payload.step);
-      // console.warn("---main-tab EventBus:  swipeEvent", payload)
+    EventBus.on('scrollX', payload => {
+      ScrollPct.value = payload.ScrollPct;
+      getColor((ScrollPct.value * 3) % 1);
+      // console.log("---ScrollPct: ", ScrollPct.value, "--pagePct: ", ScrollPct.value * 3);
     });
 
     function clickTab(index) {
       // console.log("---main-tab: clickTab: ", index);
       EventBus.emit('clickTab', {tab: index});
-      swiperIndex.value = index;
     }
 
+
+    onActivated(() => {
+      let dom = document.querySelector('.main-tab').style;
+      if(localStorage.getItem('theme') && localStorage.getItem('theme') === "dark") {
+        dom.setProperty( '--svg-active_fill', 'rgb(9, 194, 93)');
+        dom.setProperty( '--svg-active_stroke', 'rgb(9, 194, 93)');
+        dom.setProperty( '--svg-active-stroke_inset', 'rgb(31, 31, 31)');
+      }else {
+        dom.setProperty( '--svg-active_fill', 'rgb(33, 164, 105)');
+        dom.setProperty( '--svg-active_stroke', 'rgb(33, 164, 105)');
+        dom.setProperty( '--svg-active-stroke_inset', 'rgb(247, 247, 247)');
+      }
+    });
 
     /**
      * @description 根据index和progress计算 svg图标的颜色，这里只需要两个颜色 进入和出去两个页面的图标颜色
      * index这个序号的svg一定是离开的图标，而progress为正的话，表示向右滑动， 为负表示向左滑动
      */
-    function getColor(index, progress) {
+    function getColor(progress) {
       progress = Math.abs(progress);
+      let dom = document.querySelector('.main-tab').style;
 
       let stroke_normal = [0, 0, 0],
           fill_normal = [247, 247, 247],
@@ -145,8 +176,6 @@ export default {
         stroke_inset_checked = [31, 31, 31];
       }
 
-
-      let dom = document.querySelector('.main-tab').style;
       try {
         /*
           选中状态的图标： 滑动时候时候为离开(.svg-leave)状态：stroke: [33, 164, 105] -> [0, 0, 0]; fill: [33, 164, 105] -> [247, 247, 247]; stoke_inset:  [247, 247, 247]-> [0, 0, 0]
@@ -168,7 +197,7 @@ export default {
     }
 
     return {
-      swiperIndex,
+      ScrollPct,
       swiperProgress,
       clickTab,
       t
@@ -184,8 +213,13 @@ export default {
   --main-tab-border_color: #d6d6d6; */
 
   --svg-leave_fill: rgb(33, 164, 105);
+  /* --svg-leave_stroke: rgb(20, 36, 29); */
   --svg-leave_stroke: rgb(33, 164, 105);
   --svg-leave_stroke_inset: rgb(247, 247, 247);
+
+  --svg-active_fill: rgb(33, 164, 105);
+  --svg-active_stroke: rgb(33, 164, 105);
+  --svg-active-stroke_inset: rgb(247, 247, 247);
 
   --svg-enter_fill: rgb(247, 247, 247);
   --svg-enter_stroke: rgb(0, 0, 0);
@@ -222,6 +256,14 @@ export default {
 .svg-leave {
   fill: var(--svg-leave_fill);
   stroke: var(--svg-leave_stroke);
+}
+
+.svg-active {
+  fill: var(--svg-active_fill);
+  stroke: var(--svg-active_stroke)
+}
+.svg-active_inset {
+  stroke: var(--svg-active-stroke_inset);
 }
 
 .svg-enter_inset {

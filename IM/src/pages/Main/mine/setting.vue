@@ -76,8 +76,13 @@ export default {
                 // name: "普通模式",
                 name: t('App.Setting.normalMode')
             },
+            // {
+            //     icon: require("@/assets/icon/me-setting.png"),
+            //     // name: "切换全屏",
+            //     name: t('App.Setting.fullScreen')
+            // },
         ];
-        console.log("---t('APP.Setting.fullScreen'): ", t('App.Setting.fullScreen'));
+        // console.log("---t('APP.Setting.fullScreen'): ", t('App.Setting.fullScreen'));
     // debugger;
         function cellsEvent(name) {
             console.log("--proxyEvent: ", name);
@@ -100,6 +105,7 @@ export default {
                 "3": changeLang('en'),
                 "4": changeTheme.bind(this, "dark"),
                 "5": changeTheme.bind(this, ""),
+                //"6": launchFullScreen, ios切换全屏无效
             }
             Reflect.has(eventMapping, name) ? eventMapping[name]() : "";
         }
