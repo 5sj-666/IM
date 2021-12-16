@@ -1,6 +1,6 @@
 <template>
   <router-view v-slot="{ Component }">
-    <transition :name="transitionName" mode="default">
+    <transition :name="Transition">
       <keep-alive :include="['Main']">
           <component :is="Component" />
       </keep-alive>
@@ -8,39 +8,54 @@
   </router-view>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script>
+// import { useStore } from 'vuex';
+
+import { useRouter } from "vue-router";
+import { useStore, mapState } from "vuex";
+import { computed, onMounted, ref } from 'vue';
 
 
-export default defineComponent({
+export default {
   name: 'App',
-  components: {
-    // mainPage
-  },
-  data(){
+  setup() {
+    const Store = useStore();
+    const Router = useRouter();
+
+    let transitionName = computed(() => Store.state.transitionName);
+    
+    let Transition = ref('');
+
+    onMounted(()=> {
+      //预渲染事件执行
+      document.dispatchEvent(new Event('render-event'));
+      //初始化检测主题
+      document.documentElement.dataset.theme = localStorage.getItem("theme") || "normal";
+    
+      Router.afterEach((to, from) => {
+        if(!to.meta.rank || !from.meta.rank) {
+          Transition.value = '';
+          // debugger;
+          return;
+        }
+        if(to.meta.rank === from.meta.rank) {
+          Transition.value = 'slide-deep';
+          // debugger;
+        }else {
+          Transition.value = to.meta.rank < from.meta.rank ? 'slide-shallow' : 'slide-deep';
+          // debugger;
+        }
+      })
+    
+    })
+
     return {
-      transitionName: "",
-    }
-  },
-  mounted() {
-    //预渲染事件执行
-    document.dispatchEvent(new Event('render-event'));
-    //初始化检测主题
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "normal";
-  },
-  watch: {
-    '$route' (to, from) {
-      // console.log("---app $route : to: ", to, "---from: ", from);
-      if(to.path == from.path) {
-        this.transitionName = "";
-        return ;
-      }
-      this.transitionName = to.meta.rank > from.meta.rank ? 'slide-deep' : 'slide-shallow';
+      transitionName,
+      Transition,
+      Router,
     }
   }
-
-
-});
+}
 </script>
 
 <style>
@@ -249,87 +264,47 @@ html {
          deep -> shallow动画：原组件从左到右滑动出去，新组件保持不动
  */
 .slide-deep-enter-active {
-  position: absolute !important;
-  left: 100%;
+  position: fixed;
+  /* left: 100%; */
+  left: 0;
+  transform: translate3D(100%, 0, 0);
   top: 0;
   z-index: 100;
-  transition: all var(--transition-time) linear;
-}
-.silde-deep-enter-from {
-  position: absolute !important;
-  left: 100%;
-  top: 0;
-  z-index: 100;
+  transition: all var(--transition-time) cubic-bezier(.04, .69, .41, .98);
+  will-change: transform;
 }
 .slide-deep-enter-to {
-  position: absolute !important;
-  left: 0;
-  top: 0;
-  z-index: 100;
+  transform: translate3d(0, 0, 0);
 }
 
-.slide-deep-leave-active {
-  position: absolute !important;
+.slide-deep-leave-active, .silde-deep-leave-from, .slide-deep-leave-to {
+  position: fixed;
   left: 0;
   top: 0;
   z-index: -1;
-  transition: all var(--transition-time) ease-out;
+  transition: all var(--transition-time) cubic-bezier(.04, .69, .41, .98);
 }
-.silde-deep-leave-from {
-  position: absolute !important;
-  left: 0;
-  top: 0;
-  z-index: -1;
-}
-.slide-deep-leave-to {
-  position: absolute !important;
-  left: 0;
-  top: 0;
-  z-index: -1;
-}
-
-
-
 
 
 
 .slide-shallow-leave-active {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   z-index: 100;
-  transition: all var(--transition-time) ease-in;
-}
-.slide-shallow-leave-from {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 100;
+  transition: all var(--transition-time) cubic-bezier(.04, .69, .41, .98);
+  will-change: transform;
 }
 .slide-shallow-leave-to {
-  position: absolute;
-  left: 100%;
-  z-index: 100;
+  transform: translate3d(100%, 0, 0);
 }
 
-.slide-shallow-enter-active {
-  position: absolute;
+.slide-shallow-enter-active, .slide-shallow-enter-from, .slide-shallow-enter-to {
+  position: fixed;
   left: 0%;
   top: 0;
   z-index: 90;
-  transition: all var(--transition-time) ease-in;
-}
-.slide-shallow-enter-from {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 90;
-}
-.slide-shallow-enter-to {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 90;
+  transition: all var(--transition-time) cubic-bezier(.04, .69, .41, .98);
 }
 
 

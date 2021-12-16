@@ -185,6 +185,7 @@ export default {
     background: var(--Main-bg);
     overflow: hidden;
     user-select: none;
+    transform: translateX(0) !important;
   }
 
   .main-container .header_fake{

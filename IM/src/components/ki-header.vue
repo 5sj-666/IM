@@ -1,7 +1,7 @@
 <template>
     <header class="ki-header">
         <!-- <img class="ki-goback" src="@/assets/icon/icon-back.png" @click="goBack" v-if="iconBack" alt="返回图标" /> -->
-        <svg class="ki-goback" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" style="background: transparent" @click="goBack" v-if="iconBack">
+        <svg class="ki-goback" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" style="background: transparent;margin-left: .5rem;" @click.prevent.stop="goBack" v-if="iconBack">
             <polyline points="75,2 25,50 75,98" stroke="var(--svg-stroke)" fill="none" stroke-width=5 stroke-linecap="round"/>
         </svg>
         <span v-else></span>

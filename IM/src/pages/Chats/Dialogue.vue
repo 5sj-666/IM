@@ -1,6 +1,6 @@
 <template>
     <article class="dialogue-page" @click="showEmoji=false">
-        <ki-header :title="Route.params.userId"/>
+        <ki-header :title="Route.params.userId" style="position: sticky; left: 0; top: 0;"/>
         <section class="msg-content" ref="msgContainer">
            <div 
                 v-for="(item, index) in msgList" 
@@ -50,7 +50,7 @@
                 <button class="btn-send" v-show="sendAble" @click.stop="send()">{{t('App.Dialogue.send')}}</button>
 
             </div>
-            <div class="emoji-container" v-show="showEmoji"  @click.stop>
+            <div class="emoji-container" v-show="showEmoji"  @click.stop.prevent>
                 <img 
                     class="emoji"
                     v-for="(emoji, i) in emojiList" 
@@ -334,9 +334,10 @@ export default defineComponent({
     }
 
     .btn-send {
+        box-sizing: border-box;
         margin: 0 .48rem .5rem 0;
         flex-shrink: 0;
-        width: 3.52rem;
+        width: 3.7rem;
         height: 1.87rem;
         border: none;
         outline: none;

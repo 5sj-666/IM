@@ -23,7 +23,8 @@ const store = createStore({
         avatar: "",
         gender: null,
         name: "",
-      }
+      },
+      transitionName: 'deep',
     }
   },
   mutations: {
