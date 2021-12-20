@@ -33,8 +33,9 @@ export default {
       document.documentElement.dataset.theme = localStorage.getItem("theme") || "normal";
     
       Router.afterEach((to, from) => {
+        // debugger;
         if(!to.meta.rank || !from.meta.rank) {
-          Transition.value = '';
+          Transition.value = 'main';
           // debugger;
           return;
         }
@@ -62,7 +63,7 @@ export default {
 :root {
 
   --transition-time: .2s;
-
+  --transition-time-short: .15s; 
   /* --- Main Page --- */
   --Main-color_primary: #1b1b1b;
   --Main-color_secondary: #7e7e7e;
@@ -257,53 +258,63 @@ html {
 }
 
 
-
+.main-enter-active, .main-enter-to, .main-leave-active, .main-leave-to {
+  position: absolute !important;
+  left: 0;
+  transform: translate3D(100%, 0, 0);
+  top: 0;
+  z-index: -1;
+  transition: all var(--transition-time-short) cubic-bezier(.04, .69, .41, .98);
+  will-change: transform;
+}
 
 /*
   分析:  shallow -> deep动画：原组件保持不动，新进组件从右到左滑动进来
          deep -> shallow动画：原组件从左到右滑动出去，新组件保持不动
  */
 .slide-deep-enter-active {
-  position: fixed;
-  /* left: 100%; */
-  left: 0;
-  transform: translate3D(100%, 0, 0);
+  position: absolute !important;
+  left: 100%;
+  /* left: 0; */
+  /* transform: translate3D(100%, 0, 0); */
   top: 0;
-  z-index: 100;
+  z-index: 10;
   transition: all var(--transition-time) cubic-bezier(.04, .69, .41, .98);
   will-change: transform;
 }
 .slide-deep-enter-to {
-  transform: translate3d(0, 0, 0);
+  left: 0;
+  /* transform: translate3d(0, 0, 0); */
 }
 
 .slide-deep-leave-active, .silde-deep-leave-from, .slide-deep-leave-to {
-  position: fixed;
+  position: absolute !important;
   left: 0;
   top: 0;
-  z-index: -1;
-  transition: all var(--transition-time) cubic-bezier(.04, .69, .41, .98);
+  z-index: 0;
+  transition: all var(--transition-time-short) cubic-bezier(.04, .69, .41, .98);
 }
 
 
 
 .slide-shallow-leave-active {
-  position: fixed;
+  position: absolute !important;
   left: 0;
   top: 0;
-  z-index: 100;
+  z-index: 10;
   transition: all var(--transition-time) cubic-bezier(.04, .69, .41, .98);
-  will-change: transform;
+  /* will-change: transform; */
 }
 .slide-shallow-leave-to {
-  transform: translate3d(100%, 0, 0);
+  left: 100%;
+  /* transform: translate3d(100%, 0, 0); */
 }
 
 .slide-shallow-enter-active, .slide-shallow-enter-from, .slide-shallow-enter-to {
   position: fixed;
   left: 0%;
   top: 0;
-  z-index: 90;
+  z-index: 0;
   transition: all var(--transition-time) cubic-bezier(.04, .69, .41, .98);
 }
 

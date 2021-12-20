@@ -68,13 +68,14 @@ module.exports = {
       appleMobileWebAppStatusBarStyle: 'black',
   
       // configure the workbox plugin GenerateSW
-      // workboxPluginMode: 'InjectManifest', //
-      workboxPluginMode: 'GenerateSW', //
-      // workboxOptions: {
-      //   // swSrc is required in InjectManifest mode.
-      //   swSrc: './service-worker.js',
-      //   // ...other Workbox options...
-      // }
+      workboxPluginMode: 'InjectManifest', //
+      // workboxPluginMode: 'GenerateSW', //
+      workboxOptions: {
+        // swSrc is required in InjectManifest mode.
+        swSrc: './src/service-worker.js',
+        // importWorkboxFrom: "disabled"// 是否要引入线上的service-worker文件，我们只需要自己定义的文件，不需要谷歌提供的sw文件
+        // ...other Workbox options...
+      }
     }
     
     
