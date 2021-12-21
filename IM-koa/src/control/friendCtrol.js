@@ -9,7 +9,7 @@ const friendCtrol = new KoaRouter({prefix: '/api/friend'});
 
 //token需要作为前置处理，当token为空或失效时候，返回401错误
 
-friendCtrol.post("/getFriendList", async ctx => {
+friendCtrol.get("/getFriendList", async ctx => {
     // let data = ctx.request.body;
     let token = ctx.request.header.token;
     let payload = JWT.parse(token);
