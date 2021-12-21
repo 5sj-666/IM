@@ -66,16 +66,17 @@ see (https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plu
 ☑️ 语言切换(中文-英文)   
 ☑️ 主题切换(普通模式-黑夜模式)   
 ☑️ 路由过渡动画   
-🟦 聊天数据本地持久化(indexDB)   
+🟦 聊天数据本地持久化(indexDB)[部分完成]   
 ☑️ 骨架屏与预渲染（简单实践）  
-🟦 SVG图标   
+🟦 SVG图标[部分完成]   
 🟦 聊天发送图片
+🟦 service-worker 离线应用配置[部分完成]   
 
 🟦 上传头像（优化点： 使用canvas做图片压缩）   
-🟦 添加/拒绝好友   
+☑️ 添加好友   
 
 ☑️ 登录/注册   
-🟦      
+☑️ Main页面swiper切换效果     
 🟦 生产者-消费者模式使用   
 🟦 建造者模式使用   
 🟦 插入排序应用在Contacts页面联系人锚点跳转   
@@ -85,7 +86,8 @@ see (https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plu
 ☑️ 登录/注册   
 ☑️ 获取用户信息   
 ☑️ 获取好友列表   
-🟦 添加、删除好友   
+☑️ 添加、删除好友   
+🟦 删除好友   
 ☑️ JWT   
 ☑️ https   
 ☑️ 用户消息处理与转发   

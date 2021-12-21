@@ -145,7 +145,7 @@ export default {
     const friendList = ref([]);
     async function getFriendList() {
       // console.log("---getFriendList");
-      let res = await Request.post("/api/friend/getFriendList");
+      let res = await Request.get("/api/friend/getFriendList");
       console.log("---getFriendList: ", res);
       if(res.ok) {
         friendList.value = res.data;

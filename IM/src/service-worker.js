@@ -85,11 +85,13 @@ workbox.loadModule('workbox-precaching')
 workbox.loadModule('workbox-routing')
 workbox.loadModule('workbox-strategies')
 workbox.loadModule('workbox-expiration')
+workbox.loadModule('workbox-cacheable-response')
 
 const { cleanupOutdatedCaches, precacheAndRoute } = workbox.precaching
 const { registerRoute } = workbox.routing
-const { CacheFirst, StaleWhileRevalidate } = workbox.strategies
+const { CacheFirst, StaleWhileRevalidate, NetworkFirst } = workbox.strategies
 const { ExpirationPlugin } = workbox.expiration
+const { CacheableResponsePlugin } = workbox.cacheableResponse;
 
 const DAY_IN_SECONDS = 24 * 60 * 60
 const MONTH_IN_SECONDS = DAY_IN_SECONDS * 30
@@ -116,6 +118,23 @@ precacheAndRoute(assetsToCache)
 //     '/emoji/emoji_awesome.png',
 //     new StaleWhileRevalidate()
 // );
+
+// Cache page navigations (html) with a Network First strategy
+registerRoute(
+  // Check to see if the request is a navigation to a new page
+  new RegExp('/api/*/'),
+  // Use a Network First caching strategy
+  new NetworkFirst({
+    // Put all cached files in a cache named 'pages'
+    cacheName: 'api',
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+    ],
+  }),
+);
 
 // routes
 registerRoute(/\.(?:js|css)$/, new StaleWhileRevalidate())
