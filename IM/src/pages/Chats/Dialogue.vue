@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, computed, watchEffect, onMounted } from 'vue';
+import { defineComponent, reactive, ref, computed, watchEffect, onMounted, toRaw, nextTick } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import useI18n from "@/local/index";
@@ -78,6 +78,7 @@ import emojiList from '@/assets/iconNames';
         sender: string,
         recipient?: string,
         type: string,
+        timeStamp?: number,
         content: Object
     }
 
@@ -95,14 +96,37 @@ export default defineComponent({
     setup() {
         const Router = useRouter();
         const Route = useRoute();
-        const store = useStore();
+        const Store = useStore();
         const { t } = useI18n();
 
         var sender = localStorage.getItem("token");
         var recipient = Route.params.userId + "";
 
+        var persistentMsg:any = ref([]);
+        onMounted(async () => {
+            persistentMsg.value = await Store.dispatch('idbStore/getData', recipient);
+            // debugger;
+            // debugger;
+        });
+
+
+
+        // 获取的是此次打开应用发送的消息记录
         var msgList = computed(() => {
-                return store.state.wsStore.msgHistory.filter((msg:Message) => msg.sender === recipient || msg.recipient === recipient);
+                let tempMsg:Array<Message> = Store.state.wsStore.msgHistory.filter((msg:Message) => msg.sender === recipient || msg.recipient === recipient) || [];
+                persistentMsg.value
+                // debugger;
+                tempMsg = tempMsg.filter(message => {
+                    for(let item of persistentMsg.value) {
+                        if(message.timeStamp === item.timeStamp && message.sender === item.sender) {
+                            // debugger;
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+
+                return [...persistentMsg.value, ...tempMsg];
             }
         );
 
@@ -118,6 +142,14 @@ export default defineComponent({
 
         const msgContainer:any = ref(),
               showEmoji = ref(false);
+        
+        onMounted(()=> {
+            // 宏任务执行优先级最低
+            setTimeout(()=> {
+                msgContainer.value!.scrollTop = 99999;
+            },10)
+            // debugger;
+        })
 
         /**
          * @description 用户点击输入框输入
@@ -147,7 +179,7 @@ export default defineComponent({
                 type: "message",
                 content: content.value,
             }
-            store.dispatch("wsStore/wsSend", letter);
+            Store.dispatch("wsStore/wsSend", letter);
 
             content.value = "";
             richText.value!.innerHTML = "";
@@ -236,6 +268,8 @@ export default defineComponent({
     }
 
     .msg-content {
+        box-sizing: border-box;
+        padding-bottom: 1rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
@@ -246,6 +280,7 @@ export default defineComponent({
 
     .msg-content .msg-item {
         margin-top: 1rem;
+        flex-shrink: 0;
         display: flex;
         align-items: flex-start;
         width: calc(100% - 4rem);

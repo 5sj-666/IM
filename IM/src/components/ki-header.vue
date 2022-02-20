@@ -43,6 +43,7 @@ export default {
         position: sticky;
         left: 0;
         top: 0;
+        flex-shrink: 0;
         display: grid;
         grid-template-rows: 1fr;
         grid-template-columns: 3rem auto 3rem;

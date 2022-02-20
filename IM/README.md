@@ -56,6 +56,9 @@ see (https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa)
 ### workbox选择GenerateSW还是InjectManifest   项目中使用InjectManifest
 see (https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plugin#which_plugin_to_use)
 
+### indexDB倒序获取数据 objectStore.openCursor(null, "prev").onsuccess = function(event) {
+see (https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/Using_IndexedDB)
+
 
 ### 1rem = 16px; 设计图大小1080x2248; 1080 / 375 = 2.88; 16 * 2.88 = 46.08; 
 ### 在1080px设计图的情况下  1rem = 46.08px;

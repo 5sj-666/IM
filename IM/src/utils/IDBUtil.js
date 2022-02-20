@@ -44,9 +44,10 @@ export function openDB() {
 }
 
 /**
-   * @param {string} store_name
-   * @param {string} mode either "readonly" or "readwrite"
-   */
+ * @description 获取目标对象仓库(表)
+ * @param {string} store_name
+ * @param {string} mode either "readonly" or "readwrite"
+ */
 export function getObjectStore(db, store_name, mode="readonly") {
     try {
         var tx = db.transaction(store_name, mode);
