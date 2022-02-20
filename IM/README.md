@@ -33,6 +33,9 @@ see (https://zhuanlan.zhihu.com/p/139600720)
 ### MDN信令与视频通话
 see (https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API/Signaling_and_video_calling)
 
+### ios使用video标签播放中遇到的问题
+see (https://blog.csdn.net/m0_45382009/article/details/122620233)
+
 ### 主题切换(修改:root的data-theme)
 see (https://blog.csdn.net/ljw1412/article/details/107260239/)
 

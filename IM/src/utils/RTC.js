@@ -20,7 +20,7 @@ const RTC = {
 }
 
 /**
- * 视频邀请函数
+ * 视频邀请函数 应该要叫localSDP Init
  * @param {*} state 
  */
 function mediaInvite(context) {
@@ -49,6 +49,7 @@ function mediaInvite(context) {
 
     function noDescription(error) {
         console.log('Error creating offer: ', error);
+        alert('Error creating offer: ', error);
     }
 }
 
@@ -60,7 +61,8 @@ function setRemoteSDP(context, data) {
     let { state } = context;
     const remoteDesc = new RTCSessionDescription(data.content);
     state.PC.setRemoteDescription(remoteDesc)
-    .then(()=>{ console.log("---invite成功设置远程SDP"); });
+    .then(()=>{ console.log("---invite成功设置远程SDP"); })
+    .catch(() => {alert("---invite设置远程SDP失败")});
 }
 
 /**
@@ -86,7 +88,10 @@ function answerOffer(context, data) {
         // state.WS.send(JSON.stringify(letter));
         dispatch("wsSend", letter)
     })
-    .catch(err => { console.warn("--应答offer发生错误: ", err) })
+    .catch(err => { 
+        console.warn("--应答offer发生错误: ", err);
+        alert("--应答offer发生错误: ", err);
+    })
 }
 
 /**
@@ -99,7 +104,10 @@ function setRemoteICE(context, msg) {
     var candidate = new RTCIceCandidate(msg.content);
     state.PC.addIceCandidate(candidate)
     .then(() => { console.log("---设置远程candidate成功--:") })
-    .catch(error => { console.error("----设置candidate出错:　", error) })
+    .catch(error => { 
+        console.error("----设置candidate出错:　", error);
+        alert("----设置candidate出错:　", error);
+    })
 }
 
 /**
@@ -110,18 +118,21 @@ function mediaHangUP(context) {
     closeVideoCall(PC);
 }
 
-function getLocalMedia(pc) {
+function getLocalMedia(pc, payload) {
     let mediaConstraints = {audio: true, video: true};
 
     navigator.mediaDevices.getUserMedia(mediaConstraints)
     .then(function(localStream) {
-        console.log("---获取本地媒体权限---");
+        console.log("---获取本地媒体权限---", localStream);
         // let videoSelf = document.querySelector("#video-self");
         // videoSelf.srcObject = localStream;
         console.warn("RTCinit ->　videoSelf", document.querySelector("#local_video"));
 
         document.querySelector("#local_video").srcObject = localStream;
-        console.warn("---获取到本地视频流");
+        document.querySelector("#local_video").load();
+        document.querySelector("#local_video").play();
+        // payload.selfVideo.srcObject = localStream;
+        console.warn("---获取到本地视频流", document.querySelector("#local_video"));
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
     })
     .catch(handleGetUserMediaError);
@@ -132,14 +143,17 @@ function getLocalMedia(pc) {
                 alert("Unable to open your call because no camera and/or microphone were found.");
                 break;
             case "SecurityError":
+                alert("SecurityError");
                 break;
             case "PermissionDeniedError":
                 // Do nothing; this is the same as the user canceling the call.
+                alert("PermissionDeniedError");
                 break;
             default:
                 alert("Error opening your camera and/or microphone: " + e.message);
                 break;
         }
+        alert('handleGetUserMediaError: ', e);
         // closeVideoCall();
     }
 
@@ -149,7 +163,12 @@ function getLocalMedia(pc) {
 function ontrack(media) {
     console.warn("----接收到远程的媒体流----", media);
     // document.getElementById("video").srcObject = media.streams[0];
-    document.querySelector("#receive_video").srcObject = media.streams[0];
+    setTimeout(() => {
+        document.querySelector("#receive_video").srcObject = media.streams[0];
+        document.querySelector("#receive_video").load();
+        document.querySelector("#receive_video").play();
+    }, 1000)
+    
 }
   
 

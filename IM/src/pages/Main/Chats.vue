@@ -115,7 +115,12 @@ export default {
       * @returns {String} 格式化之后的dom
       */
     function formatMsg(text) {
-        text = text.replace(/\[[\u4e00-\u9fa5]+\]/g, replaceEmoji);
+        try {
+          text = text.replace(/\[[\u4e00-\u9fa5]+\]/g, replaceEmoji);
+        } catch (error) {
+          console.log('---formatMsg: ', error);
+          text = '';
+        }
         // debugger;
         return text;
 

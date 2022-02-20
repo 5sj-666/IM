@@ -74,6 +74,9 @@ const store = {
           }
           
           if(Reflect.has(msgMapping, msg.type)) {
+            if(msg.type === 'mediaHangUP') {
+              commit('SET_MEDIA_STATUS', "");
+            }
             msgMapping[msg.type](context, msg);
           }else {
             //如果接收到的是 视频邀请信息， 则直接打开视频会话组件
@@ -124,7 +127,7 @@ const store = {
         let {state} = context;
         state.mediaRecipient = payload.recipient;
         // console.log("---初始化webRTC", window, navigator);
-        console.log("---payload: ", payload);
+        console.log("---initRTC payload: ", payload);
 
         let pc = {};
         const config = {
@@ -144,7 +147,7 @@ const store = {
           iceCandidatePoolSize:"0"
         };
         pc = new RTCPeerConnection(config);
-        utilRTC.getLocalMedia(pc);
+        utilRTC.getLocalMedia(pc, payload);
         pc.ontrack = utilRTC.ontrack;
         pc.onicecandidate = utilRTC.onicecandidate.bind(this, context, payload)
         pc.onnegotiationneeded = utilRTC.onnegotiationneeded;
@@ -156,12 +159,14 @@ const store = {
 
       mediaHangUp(context) {
         console.log("----wsStore mediaHangup: ");
-        let {dispatch} = context;
+        let {dispatch, commit} = context;
+        
         let letter = {
           recipient: context.state.mediaRecipient,
           type: "mediaHangUP",
         };
         dispatch("wsSend", letter);
+        commit('SET_MEDIA_STATUS', "");
         RTC.closeVideoCall(context.state.PC);
         // RTC.closeVideoCall();
       },

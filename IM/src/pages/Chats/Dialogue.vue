@@ -204,7 +204,13 @@ export default defineComponent({
          * @returns {String} 格式化之后的dom
          */
         function formatMsg(text:String) {
-            text = text.replace(/\[[\u4e00-\u9fa5]+\]/g, replaceEmoji);
+            try {
+                text = text.replace(/\[[\u4e00-\u9fa5]+\]/g, replaceEmoji);
+            } catch (error) {
+                text = '';
+                console.log('---formatMsg: ', error)
+            }
+            
             // debugger;
             return text;
 

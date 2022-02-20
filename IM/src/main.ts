@@ -6,6 +6,10 @@ import routes from "./router";
 import store from "./store"
 import './registerServiceWorker';
 
+import VConsole from 'vconsole';
+var vConsole = new VConsole();
+
+
 // import image form "@/assets/logo.png"
 
 // Notification.requestPermission(function(result) {

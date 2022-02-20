@@ -1,8 +1,28 @@
 <template>
     <article class="video-call">
         <!-- 视频通话页面 -->
-        <video id="local_video" src="" autoplay muted loop ref="selfVideo"></video>
-        <video id="receive_video" class="friend-video" src="" autoplay muted loop ref="friendVideo" ></video>
+        <video id="local_video" 
+            autoplay 
+            muted 
+            webkit-playsinline="true"
+            playsinline="true"
+            ref="selfVideo">
+            <source src="" type="video/mp4">
+            <source src="" type="video/ogg">
+            <source src="" type="video/webm">
+        </video>
+        <div class="friend-video" >
+            <video id="receive_video" 
+                autoplay 
+                muted 
+                webkit-playsinline="true"
+                playsinline="true"
+                ref="friendVideo">
+                <source src="" type="video/mp4">
+                <source src="" type="video/ogg">
+                <source src="" type="video/webm">
+            </video>
+        </div>
 
         <section class="profile-card" v-if="mediaStatus !== 'inVideo'">
             <!-- <img class="profile-shrink" src="@/assets/icon/icon-shrink.png" alt=""> -->
@@ -56,12 +76,16 @@ export default {
             // status.value = Route.query.type;
             if(Route.query.type === "invite") {
                 Store.commit('wsStore/SET_MEDIA_STATUS', "invite");
-            }else {
+            }else if(Route.query.type === "waiting") {
                 Store.commit('wsStore/SET_MEDIA_STATUS', "waiting");
             }
-
-            await videoInvite();
-            await getProfile(Route.params.userId);
+            // else {
+            //     Store.commit('wsStore/SET_MEDIA_STATUS', "waiting");
+            // }
+            // setTimeout(async () => {
+            videoInit();
+            getProfile(Route.params.userId);
+            // }, 100);
 
         })
 
@@ -82,7 +106,7 @@ export default {
             // debugger;
         }
 
-        function videoInvite() {
+        function videoInit() {
             try {
                 Store.dispatch("wsStore/initRTC", {
                     selfVideo,
@@ -95,16 +119,19 @@ export default {
         }
 
         function videoAnswer() {
-            
-            let letter = {
-                // sender: localStorage.getItem("token"),
-                recipient: Route.params.userId,
-                type: "videoAnswer",
-                content: "receive",
+            try {
+                let letter = {
+                    // sender: localStorage.getItem("token"),
+                    recipient: Route.params.userId,
+                    type: "videoAnswer",
+                    content: "receive",
+                }
+                Store.dispatch("wsStore/wsSend", letter);
+                Store.commit('wsStore/SET_MEDIA_STATUS', "inVideo");
+            } catch (error) {
+                alert('videoAnswer: ', error);
             }
-
-            Store.dispatch("wsStore/wsSend", letter);
-            Store.commit('wsStore/SET_MEDIA_STATUS', "inVideo");
+            
         }
 
         function hangup() {
@@ -140,6 +167,10 @@ export default {
         width: 100%;
         height: 100%;
         /* background: cyan; */
+    }
+    video::--webkit-media-controls-play-button {
+        display: none !important;
+        -webkit-appearance: none !important;
     }
     .friend-video {
         position: fixed;
